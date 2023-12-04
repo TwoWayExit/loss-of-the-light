@@ -1,0 +1,294 @@
+import { Players, RunService } from "@rbxts/services";
+import { Signal } from "@rbxts/beacon";
+import { globalReplicas } from "shared/replicas";
+import { BaseCharacter } from "shared/models/character";
+import { UserCommand } from "shared/modules/user-command";
+import { ViewVectors } from "shared/modules/view-vectors";
+
+export class PlayerData {
+	public isDucked = false;
+	public isDucking = false;
+
+	public duckTime = 0;
+
+	public allowAutoMovement = true;
+}
+
+export class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
+	/** @virtual */
+	public static readonly playerAdded = new Signal<BasePlayer>();
+
+	public readonly localData = new PlayerData();
+	public readonly command = new UserCommand();
+
+	/** A signal which fires whenever the player dies */
+	public readonly died = new Signal<void>();
+
+	/**
+	 * A signal which fires whenever the player respawns
+	 * @remarks This signal does **not** fire when the player character loads for the first time
+	 */
+	public readonly respawned = new Signal<void>();
+
+	/** @virtual */
+	protected static players: BasePlayer[] = [];
+
+	protected health = 100;
+	protected maxHealth = 100;
+	protected maxSpeed = 0;
+
+	private flags = 0;
+
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P) {
+		if (localPlayer) {
+			assert(
+				!BasePlayer.getPlayerFromLocalPlayer(localPlayer),
+				"Attempt to duplicate BasePlayer from existing localPlayer",
+			);
+		}
+
+		super(character, localPlayer);
+
+		this.janitor.Add(this.died, "Destroy");
+		this.janitor.Add(this.respawned, "Destroy");
+
+		this.died.Connect(() => this.onDied());
+
+		this.onPlayerCreated();
+	}
+
+	/**
+	 * Gets the list of created {@link BasePlayer}s
+	 * @returns The player list
+	 */
+	public static getPlayers() {
+		return this.players as Readonly<typeof this.players>;
+	}
+
+	/**
+	 * Gets the {@link BasePlayer} object from a character
+	 * @param character - The character {@link Model}
+	 * @returns The {@link BasePlayer} object if it exists, otherwise `undefined`
+	 */
+	public static getPlayerFromCharacter(character: Model) {
+		return this.players.find((player) => player.getCharacter() === character);
+	}
+
+	/**
+	 * Gets the {@link BasePlayer} object from a {@link Player}
+	 * @param localPlayer - The {@link Player}
+	 * @returns The {@link BasePlayer} object if it exists, otherwise `undefined`
+	 */
+	public static getPlayerFromLocalPlayer(localPlayer: Player) {
+		return this.players.find((player) => player.getLocalPlayer() === localPlayer);
+	}
+
+	/**
+	 * Gets the player character's bounding box mins (in local space)
+	 * @returns The player character's bounding box mins
+	 */
+	public getPlayerMins() {
+		return ViewVectors.HULL_MIN.mul(this.getModelScale());
+	}
+
+	/**
+	 * Gets the player character's bounding box maxs (in local space)
+	 * @returns The player character's bounding box maxs
+	 */
+	public getPlayerMaxs() {
+		return ViewVectors.HULL_MAX.mul(this.getModelScale());
+	}
+
+	/**
+	 * Gets the player's step size in studs
+	 * @returns The player's step size
+	 */
+	public getStepSize() {
+		const replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
+		const player: Player = this.getLocalPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
+
+		return replicas.movement.GetValue(player).sv_stepsize;
+	}
+
+	/**
+	 * Gets the player's max speed
+	 * @returns The player's max speed
+	 */
+	public getMaxSpeed() {
+		const replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
+		const player: Player = this.getLocalPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
+
+		let maxSpeed = replicas.movement.GetValue(player).sv_maxspeed;
+
+		if (this.maxSpeed > 0 && this.maxSpeed < maxSpeed) {
+			maxSpeed = this.maxSpeed;
+		}
+
+		return maxSpeed;
+	}
+
+	/**
+	 * Sets the player's max speed
+	 * @param maxSpeed - The player's new max speed
+	 */
+	public setMaxSpeed(maxSpeed: number) {
+		this.maxSpeed = maxSpeed;
+	}
+
+	/**
+	 * Gets the player's current health
+	 * @returns The player's current health
+	 */
+	public getHealth() {
+		return this.health;
+	}
+
+	/**
+	 * Sets the player's health with it capped between 0 and the max health
+	 * @param health - The number to set the player's health as
+	 * @returns The health after it gets changed
+	 */
+	public setHealth(health: number) {
+		const oldHealth = this.health;
+
+		this.health = math.clamp(health, 0, this.maxHealth);
+
+		if (health <= 0 && oldHealth > 0) {
+			this.died.Fire();
+		}
+
+		return this.health;
+	}
+
+	/**
+	 * Gets the player's maximum health
+	 * @returns The player's maximum health
+	 */
+	public getMaxHealth() {
+		return this.maxHealth;
+	}
+
+	/**
+	 * Sets the player's maximum health
+	 * @param maxHealth - The number to set the player's maximum health as
+	 */
+	public setMaxHealth(maxHealth: number) {
+		this.maxHealth = math.max(maxHealth, 0);
+
+		this.setHealth(this.getHealth()); // Update our health to be clamped
+	}
+
+	/**
+	 * Makes the player take damage with their health capped between 0 and 100
+	 * @param damage - How much damage the player should take
+	 * @returns The health after the player takes damage
+	 */
+	public takeDamage(damage: number) {
+		this.setHealth(this.health - damage);
+
+		return this.health;
+	}
+
+	/**
+	 * Gets the player's current flags
+	 * @returns The player's current flags
+	 */
+	public getFlags() {
+		return this.flags;
+	}
+
+	/**
+	 * Adds flags to the player
+	 * @param flags - The flags to add
+	 */
+	public addFlag(flags: number) {
+		this.flags |= flags;
+	}
+
+	/**
+	 * Removes flags from the player
+	 * @param flagsToRemove - The flags to remove
+	 */
+	public removeFlag(flagsToRemove: number) {
+		this.flags &= ~flagsToRemove;
+	}
+
+	/**
+	 * Clears the player's flags
+	 */
+	public clearFlags() {
+		this.flags = 0;
+	}
+
+	/**
+	 * Alias for `getHealth() > 0`
+	 * @returns If the player is alive
+	 */
+	public isAlive() {
+		return this.health > 0;
+	}
+
+	/**
+	 * Respawns the player and sets their health back to maximum
+	 */
+	public respawn(): void;
+
+	/**
+	 * Respawns the player and sets their health back to maximum
+	 * @param respawnPoint - The position to spawn the player in
+	 */
+	public respawn(respawnPoint: Vector3): void;
+
+	public respawn(respawnPoint = Vector3.zero) {
+		this.setHealth(this.getMaxHealth());
+
+		this.setAbsOrigin(respawnPoint);
+
+		this.respawned.Fire();
+	}
+
+	public override destroy() {
+		this.onPlayerDestroyed();
+
+		super.destroy();
+	}
+
+	protected override async onCharacterAdded(newCharacter: Model) {
+		await super.onCharacterAdded(newCharacter);
+
+		this.respawn();
+	}
+
+	protected override onCharacterDestroyed() {
+		super.onCharacterDestroyed();
+
+		this.died.Fire();
+	}
+
+	/**
+	 * Called when the {@link BasePlayer} public constructor is ran
+	 * @remarks This method should only be overriden to add this constructed object to a list
+	 * @virtual
+	 */
+	protected onPlayerCreated() {
+		BasePlayer.players.push(this);
+		BasePlayer.playerAdded.Fire(this);
+	}
+
+	/**
+	 * Called when the {@link BasePlayer} destroy() method is ran
+	 * @remarks This method should only be overriden to remove this constructed object from a list
+	 * @virtual
+	 */
+	protected onPlayerDestroyed() {
+		BasePlayer.players.remove(BasePlayer.players.indexOf(this));
+	}
+
+	/**
+	 * Called when the player's health reaches 0
+	 * @virtual
+	 */
+	protected onDied() {
+		this.janitor.AddPromise(Promise.delay(4)).then(() => this.respawn());
+	}
+}
