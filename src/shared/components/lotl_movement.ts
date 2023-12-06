@@ -365,6 +365,36 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		return outVector;
 	}
 
+	protected startGravity() {
+		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
+		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+
+		if (this.groundEntity) {
+			this.velocity.VectorVelocity = new Vector3(this.getVelocity().X, 0, this.getVelocity().Z);
+		} else {
+			this.velocity.VectorVelocity = this.getVelocity().add(
+				new Vector3(0, -Replicas.movement.GetValue(player).sv_gravity * 0.5 * stats.frameTime, 0),
+			);
+		}
+
+		this.checkVelocity();
+	}
+
+	protected finishGravity() {
+		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
+		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+
+		if (this.groundEntity) {
+			this.velocity.VectorVelocity = new Vector3(this.getVelocity().X, 0, this.getVelocity().Z);
+		} else {
+			this.velocity.VectorVelocity = this.getVelocity().add(
+				new Vector3(0, -Replicas.movement.GetValue(player).sv_gravity * 0.5 * stats.frameTime, 0),
+			);
+		}
+
+		this.checkVelocity();
+	}
+
 	protected checkVelocity() {
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
 		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
@@ -659,7 +689,31 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		}
 	}
 
+	protected faceVelocity() {
+		let forward = this.player.getViewCFrame().LookVector;
+		let right = this.player.getViewCFrame().RightVector;
+
+		forward = new Vector3(forward.X, 0, forward.Z).Unit;
+		right = new Vector3(right.X, 0, right.Z).Unit;
+
+		const wishVel = new Vector3(
+			forward.X * this.player.command.forwardMove + right.X * this.player.command.sideMove,
+			0,
+			forward.Z * this.player.command.forwardMove + right.Z * this.player.command.sideMove,
+		);
+
+		if (wishVel.Magnitude < 0.05) {
+			return;
+		}
+
+		const lookCFrame = CFrame.lookAt(Vector3.zero, wishVel.Unit);
+		const targetCFrame = new CFrame(this.instance.GetPivot().Position).mul(lookCFrame);
+
+		this.instance.PivotTo(this.instance.GetPivot().Lerp(targetCFrame, 7 * stats.frameTime));
+	}
+
 	protected fullWalkMove() {
+		this.startGravity();
 		this.checkVelocity();
 
 		this.maxSpeed = this.player.getMaxSpeed();
@@ -669,10 +723,16 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
 		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
 
-		this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
+		if (this.groundEntity) {
+			this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
+		}
+
 		this.walkMove();
 
 		this.checkVelocity();
+		this.finishGravity();
+
+		this.faceVelocity();
 	}
 
 	protected traceBoundingBox(start: Vector3, end_: Vector3) {

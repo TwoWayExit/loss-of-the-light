@@ -37,5 +37,7 @@ job id: %s
 			primaryColor: new Color3(0.14, 0, 0.47),
 			secondaryColor: new Color3(0.02, 0, 0.37),
 		});
+
+		settings.setSetting("ui_core_playerlist", false);
 	}
 }

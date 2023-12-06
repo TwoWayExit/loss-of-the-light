@@ -13,7 +13,7 @@ import { $env } from "rbxts-transform-env";
 interface Attributes {}
 
 @Component({
-	tag: "player-animate",
+	tag: "lotl_player-animate",
 	predicate: (instance) => instance.IsDescendantOf(Workspace),
 })
 export class PlayerAnimate extends BaseComponent<Attributes, Model> implements OnStart, OnTick {
@@ -23,8 +23,6 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 	/** @virtual */
 	protected tree = {
 		$className: "Folder",
-		duck: "Animation",
-		death: "Animation",
 	} as const;
 
 	/** This property is only defined if the player character exists and is fully loaded */

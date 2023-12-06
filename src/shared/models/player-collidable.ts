@@ -164,7 +164,7 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 
 	protected setCharacterCollidable(character: CharacterRigR6 | CharacterRigR15) {
 		for (const v of character.GetDescendants()) {
-			if (v.IsA("BasePart")) {
+			if (v.IsA("BasePart") && v.CollisionGroup === "") {
 				v.CanCollide = false;
 				v.CollisionGroup = "Characters";
 			}

@@ -108,13 +108,7 @@ export class LotlPlayer extends PlayerNetworked {
 		const animations = animate?.getAnimations();
 
 		if (animations) {
-			this.playAnimation(animations.death);
-		}
-
-		const camera = Workspace.CurrentCamera;
-
-		if (camera) {
-			camera.CameraType = Enum.CameraType.Attach;
+			//this.playAnimation(animations.death);
 		}
 	}
 }

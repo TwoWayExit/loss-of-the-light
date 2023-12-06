@@ -1,5 +1,8 @@
 import { Debris, Workspace } from "@rbxts/services";
 
+const BBOX_MARGIN = 0.1; // Bounding box size decrease margin in studs for GetPartsInPart()
+const BBOX_TRACE_MARGIN = 0.2; // Bounding box starting trace direction margin multiplier; Lower number = Higher performance, more trace deadspots
+
 export class RayT {
 	public readonly start: Vector3;
 	public readonly delta: Vector3;
@@ -79,7 +82,7 @@ export class Trace {
 		const trace: Partial<TraceT> = {};
 
 		this.boundingBox.Position = ray.start;
-		this.boundingBox.Size = ray.extents.mul(2).sub(new Vector3(0.1, 0.1, 0.1)); // Reduce by a small margin to avoid false hits
+		this.boundingBox.Size = ray.extents.mul(2).sub(new Vector3(BBOX_MARGIN, BBOX_MARGIN, BBOX_MARGIN)); // Reduce by a small margin to avoid false hits
 
 		trace.startSolid = Workspace.GetPartsInPart(this.boundingBox, this.overlapParams).size() > 0;
 
@@ -95,7 +98,7 @@ export class Trace {
 
 		const start = direction.mul(startFraction * extentsLength * 2);
 		const end_ = direction.mul(endFraction * extentsLength * 2);
-		const pointDelta = end_.sub(start);
+		const pointDelta = end_.sub(start).mul(BBOX_TRACE_MARGIN);
 
 		const result = Workspace.Blockcast(
 			new CFrame(ray.start.sub(pointDelta)),
