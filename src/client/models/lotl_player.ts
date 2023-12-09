@@ -110,5 +110,9 @@ export class LotlPlayer extends PlayerNetworked {
 		if (animations) {
 			//this.playAnimation(animations.death);
 		}
+
+		this.janitor.AddPromise(Promise.delay(4)).then(() => {
+			this.respawn();
+		});
 	}
 }
