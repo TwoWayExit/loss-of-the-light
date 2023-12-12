@@ -1,6 +1,6 @@
 import { Signal } from "@rbxts/beacon";
 
-class Dialogue {
+export class Dialogue {
 	public constructor(
 		public readonly name: string,
 		protected texts: string[],
@@ -12,17 +12,42 @@ class Dialogue {
 
 	protected index = -1;
 
+	protected isFinished = false;
+
+	public getFinished() {
+		return this.isFinished;
+	}
+
+	/**
+	 * Gets any available responses
+	 * @returns Returns all available responses for the current context, always returns `undefined` if this dialogue is not finished
+	 */
+	public getResponses() {
+		return this.isFinished ? this.responses : undefined;
+	}
+
 	/**
 	 * Forwards to the next text
 	 * @returns The next indexed text
 	 */
 	public next() {
-		assert(this.texts[this.index + 1], "The n	ext element is undefined");
+		if (this.isFinished) {
+			return;
+		}
+
+		assert(this.texts[this.index + 1], "The next element is undefined");
 
 		this.index++;
 
+		if (this.index + 1 >= this.texts.size()) {
+			this.isFinished = true;
+			return;
+		}
+
 		if (this.index === this.texts.size() - 1) {
 			this.ended.Fire(this.responses);
+
+			DialogueBuilder.dialogueEnded.Fire(this);
 		}
 
 		return this.texts[this.index];
@@ -32,6 +57,9 @@ class Dialogue {
 export class DialogueBuilder {
 	/** A signal that fires when a new dialogue starts */
 	public static readonly dialogueStarted = new Signal<Dialogue>();
+
+	/** A signal which fires when a dialogue ends */
+	public static readonly dialogueEnded = new Signal<Dialogue>();
 
 	protected name = "";
 	protected texts: string[] = [];

@@ -5,11 +5,11 @@ import { NetworkVar } from "shared/utils/network";
 @Controller({})
 export class ReceiveNetVar implements OnInit {
 	onInit() {
-		Events.receiveNetVar.connect((client, uuid, value) => {
-			const netVar = NetworkVar.getVarFromId(client, uuid);
+		Events.receiveNetVar.connect((uuid, value, client) => {
+			const netVar = NetworkVar.getVarFromId(uuid, client);
 
 			if (!netVar) {
-				print(`No connection found to NetworkVar ${client.UserId}~${uuid}`);
+				warn(`[WARN] No connection found to NetworkVar ${uuid}`);
 				return;
 			}
 

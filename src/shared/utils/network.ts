@@ -117,14 +117,16 @@ export class NetworkVar<T extends string | number | boolean> {
 	/** @internal */
 	public constructor(protected value: T, public readonly uuid: string, public readonly isValid: t.check<T>) {
 		this.valueSet.Connect((value) => this.onValueSet(value));
+
+		NetworkVar.idToVar.set(this.uuid, this);
 	}
 
 	public static is(object: unknown): object is NetworkVar<string | number | boolean> {
 		return typeIs(object, "table") && "value" in object;
 	}
 
-	public static getVarFromId(client: Player, uuid: string) {
-		return this.idToVar.get(`${client.UserId}~${uuid}`);
+	public static getVarFromId(uuid: string, client?: Player) {
+		return client ? this.idToVar.get(`${client.UserId}~${uuid}`) : this.idToVar.get(uuid);
 	}
 
 	public get() {
@@ -146,14 +148,13 @@ export class NetworkVar<T extends string | number | boolean> {
 
 		this.client = client;
 
+		NetworkVar.idToVar.delete(this.uuid);
 		NetworkVar.idToVar.set(`${client.UserId}~${this.uuid}`, this);
 	}
 
 	protected onValueSet(value: T) {
 		if (RunService.IsServer()) {
-			assert(this.client, "No player value associated with this NetworkVar, did you forget to decorate?");
-
-			GlobalEvents.server.receiveNetVar.broadcast(this.client, this.uuid, value);
+			GlobalEvents.server.receiveNetVar.broadcast(this.uuid, value, this.client);
 		}
 	}
 }
@@ -165,7 +166,7 @@ export interface NetworkVarMetadata<T extends string | number | boolean> {
 
 /**
  * Macro to construct a {@link NetworkVar}, which replicates server values to client values (non vice versa)
- * @remarks The {@link NetworkVar} is required to be initialized using the `network()` method with a client
+ * @remarks The {@link NetworkVar} can be initialized and linked to a client using the `network()` method
  * @metadata macro
  */
 export function networkVar<T extends string | number | boolean>(
