@@ -4,6 +4,7 @@ import { globalReplicas } from "shared/replicas";
 import { BaseCharacter } from "shared/models/character";
 import { UserCommand } from "shared/modules/user-command";
 import { ViewVectors } from "shared/modules/view-vectors";
+import { networkVar } from "shared/utils/network";
 
 export class PlayerData {
 	public isDucked = false;
@@ -14,7 +15,7 @@ export class PlayerData {
 	public allowAutoMovement = true;
 }
 
-export class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
+export abstract class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
 	/** @virtual */
 	public static readonly playerAdded = new Signal<BasePlayer>();
 
@@ -23,6 +24,9 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 
 	/** A signal which fires whenever the player dies */
 	public readonly died = new Signal<void>();
+
+	/** The unique identifier for this player */
+	public readonly id: string;
 
 	/**
 	 * A signal which fires whenever the player respawns
@@ -33,13 +37,19 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	/** @virtual */
 	protected static players: BasePlayer[] = [];
 
-	protected health = 100;
-	protected maxHealth = 100;
+	protected health = networkVar<number>(100);
+	protected maxHealth = networkVar<number>(100);
 	protected maxSpeed = 0;
 
 	private flags = 0;
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P) {
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P);
+
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string);
+
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id = tostring(localPlayer?.UserId)) {
+		assert(id, "No player id associated");
+
 		if (localPlayer) {
 			assert(
 				!BasePlayer.getPlayerFromLocalPlayer(localPlayer),
@@ -48,6 +58,11 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 		}
 
 		super(character, localPlayer);
+
+		this.id = id;
+
+		this.health.network(id);
+		this.maxHealth.network(id);
 
 		this.janitor.Add(this.died, "Destroy");
 		this.janitor.Add(this.respawned, "Destroy");
@@ -140,7 +155,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns The player's current health
 	 */
 	public getHealth() {
-		return this.health;
+		return this.health.get();
 	}
 
 	/**
@@ -149,15 +164,15 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns The health after it gets changed
 	 */
 	public setHealth(health: number) {
-		const oldHealth = this.health;
+		const oldHealth = this.health.get();
 
-		this.health = math.clamp(health, 0, this.maxHealth);
+		this.health.set(math.clamp(health, 0, this.maxHealth.get()));
 
 		if (health <= 0 && oldHealth > 0) {
 			this.died.Fire();
 		}
 
-		return this.health;
+		return this.health.get();
 	}
 
 	/**
@@ -165,7 +180,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns The player's maximum health
 	 */
 	public getMaxHealth() {
-		return this.maxHealth;
+		return this.maxHealth.get();
 	}
 
 	/**
@@ -173,7 +188,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @param maxHealth - The number to set the player's maximum health as
 	 */
 	public setMaxHealth(maxHealth: number) {
-		this.maxHealth = math.max(maxHealth, 0);
+		this.maxHealth.set(math.max(maxHealth, 0));
 
 		this.setHealth(this.getHealth()); // Update our health to be clamped
 	}
@@ -184,7 +199,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns The health after the player takes damage
 	 */
 	public takeDamage(damage: number) {
-		this.setHealth(this.health - damage);
+		this.setHealth(this.health.get() - damage);
 
 		return this.health;
 	}
@@ -225,7 +240,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns If the player is alive
 	 */
 	public isAlive() {
-		return this.health > 0;
+		return this.health.get() > 0;
 	}
 
 	/**

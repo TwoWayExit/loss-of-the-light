@@ -6,7 +6,6 @@ import { PlayerCollidable } from "shared/models/player-collidable";
 import { CharacterRigR15, CharacterRigR6 } from "@rbxts/promise-character";
 import { validateTree, EvaluateInstanceTree } from "@rbxts/validate-tree";
 import { LotlMovement } from "shared/components/lotl_movement";
-import { States } from "shared/modules/states";
 import { Actions } from "shared/modules/actions";
 import { $env } from "rbxts-transform-env";
 

@@ -27,10 +27,10 @@ export class Dialogue {
 	}
 
 	/**
-	 * Forwards to the next text
-	 * @returns The next indexed text
+	 * A generator function to run the dialogue, immediately finishing if this dialogue is finished
+	 * @returns A generator function which will iterate to the next element in the text array
 	 */
-	public next() {
+	public *run() {
 		if (this.isFinished) {
 			return;
 		}
@@ -50,7 +50,7 @@ export class Dialogue {
 			DialogueBuilder.dialogueEnded.Fire(this);
 		}
 
-		return this.texts[this.index];
+		yield this.texts[this.index];
 	}
 }
 

@@ -1,6 +1,6 @@
 import { Controller, OnStart } from "@flamework/core";
 import { StarterGui } from "@rbxts/services";
-import "client/models/lotl_player";
+import "client/models/lotl_client";
 
 const MAX_RESET_BUTTON_TRIES = 15;
 

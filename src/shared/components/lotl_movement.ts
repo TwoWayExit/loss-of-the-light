@@ -1,5 +1,6 @@
 import { OnPhysics, OnStart } from "@flamework/core";
-import { Component, BaseComponent } from "@flamework/components";
+import { Component } from "@flamework/components";
+import { DisposableComponent } from "./disposable-component";
 import { CollectionService, Players, RunService, Workspace } from "@rbxts/services";
 import { promiseChildOfClass } from "@rbxts/promise-child";
 import { CharacterRigR15, CharacterRigR6 } from "@rbxts/promise-character";
@@ -80,7 +81,7 @@ export class MoveData {
 	predicate: (instance) => instance.IsDescendantOf(Workspace),
 })
 export class LotlMovement<A extends Attributes = Attributes, I extends Model = Model>
-	extends BaseComponent<A, I>
+	extends DisposableComponent<A, I>
 	implements OnStart, OnPhysics
 {
 	/**
@@ -111,8 +112,8 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 
 		BasePlayer.getPlayers().forEach((player) => this.handlePlayer(player));
 
-		this.maid.GiveTask(() => this.trace.destroy());
-		this.maid.GiveTask(BasePlayer.playerAdded.Connect((player) => this.handlePlayer(player)));
+		this.janitor.Add(() => this.trace.destroy());
+		this.janitor.Add(BasePlayer.playerAdded.Connect((player) => this.handlePlayer(player)));
 	}
 
 	/**
@@ -785,7 +786,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		this.move = new MoveData(this.character);
 		this.velocity = this.createVelocity(this.character.HumanoidRootPart);
 
-		this.maid.GiveTask(this.velocity);
+		this.janitor.Add(this.velocity);
 
 		this.character.Humanoid.SetStateEnabled(Enum.HumanoidStateType.FallingDown, false);
 		this.character.Humanoid.SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false);

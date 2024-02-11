@@ -13,7 +13,7 @@ export interface Character extends Model {
 	HumanoidRootPart: BasePart;
 }
 
-export class BaseCharacter<P extends Player | undefined = Player | undefined> {
+export abstract class BaseCharacter<P extends Player | undefined = Player | undefined> {
 	/** A signal which fires whenever the player character fully loads with all body parts */
 	public readonly characterLoaded = new Signal<[character: CharacterRigR6 | CharacterRigR15]>();
 
@@ -102,15 +102,15 @@ export class BaseCharacter<P extends Player | undefined = Player | undefined> {
 		switch (this.character.Humanoid.RigType) {
 			case Enum.HumanoidRigType.R6:
 				height =
-					(this.character as CharacterRigR6)["Left Leg"].Size.Y + this.character!.HumanoidRootPart.Size.Y / 2;
+					(this.character as CharacterRigR6)["Left Leg"].Size.Y + this.character.HumanoidRootPart.Size.Y / 2;
 				break;
 
 			case Enum.HumanoidRigType.R15:
-				height = this.character!.HumanoidRootPart.Size.Y / 2 + this.character!.Humanoid.HipHeight;
+				height = this.character.HumanoidRootPart.Size.Y / 2 + this.character.Humanoid.HipHeight;
 				break;
 
 			default:
-				throw `${this.character!.Name} has an unknown rig type: ${this.character!.Humanoid.RigType}`;
+				throw `${this.character.Name} has an unknown rig type: ${this.character.Humanoid.RigType}`;
 		}
 
 		return height;

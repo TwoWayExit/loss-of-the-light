@@ -1,5 +1,5 @@
 import { Service, OnInit } from "@flamework/core";
-import { Functions } from "server/network/dev-con";
+import { Functions } from "server/network/global";
 import { Replicas } from "server/replicas";
 import { $env } from "rbxts-transform-env";
 
@@ -8,7 +8,7 @@ const SV_PASSWORD = $env.string("SV_PASSWORD");
 @Service({})
 export class SvPassword implements OnInit {
 	public onInit() {
-		Functions.sv_password.setCallback((player, password) => {
+		Functions.devCon.sv_password.setCallback((player, password) => {
 			if (SV_PASSWORD && password !== SV_PASSWORD) {
 				return "Incorrect password";
 			}

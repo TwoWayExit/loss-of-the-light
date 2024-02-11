@@ -1,11 +1,11 @@
 import { Service, OnInit } from "@flamework/core";
-import { Functions } from "server/network/dev-con";
+import { Functions } from "server/network/global";
 import { PlayerNetworked } from "shared/models/player-networked";
 
 @Service({})
 export class Ping implements OnInit {
 	onInit() {
-		Functions.ping.setCallback(() => {
+		Functions.devCon.ping.setCallback(() => {
 			const pings: { [player: string]: number } = {};
 
 			for (const player of PlayerNetworked.getPlayers()) {

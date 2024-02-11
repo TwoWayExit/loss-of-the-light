@@ -12,7 +12,8 @@ export const enum PlayerStatus {
 	IN_GAME,
 }
 
-@Networked()
+// This Networked decorator may be safely modified if PlayerNetworked is extended to avoid duplicate localPlayer error
+@Networked(false, false)
 export class PlayerNetworked extends PlayerCollidable<Player> {
 	// Override with a new separate signal
 	public static override readonly playerAdded = new Signal<PlayerNetworked>();
@@ -42,9 +43,7 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 	protected ping = networkVar<number>(0);
 
 	public constructor(localPlayer: Player) {
-		const character = new Promise<Model>((resolve) =>
-			resolve(localPlayer.Character ?? localPlayer.CharacterAdded.Wait()[0]),
-		);
+		const character = localPlayer.Character ?? Promise.fromEvent(localPlayer.CharacterAdded);
 
 		super(character, localPlayer);
 

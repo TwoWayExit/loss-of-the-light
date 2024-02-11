@@ -79,6 +79,8 @@ export class LotlCameraController implements OnStart, OnRender {
 	}
 
 	onStart() {
+		Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
+
 		const player = PlayerNetworked.getLocalClient();
 
 		if (player) {

@@ -1,0 +1,13 @@
+diff --git a/node_modules/@flamework/core/out/reflect.lua b/node_modules/@flamework/core/out/reflect.lua
+index e508d77..f8ce5a2 100644
+--- a/node_modules/@flamework/core/out/reflect.lua
++++ b/node_modules/@flamework/core/out/reflect.lua
+@@ -327,7 +327,7 @@ do
+ 			id = id,
+ 			isStatic = isStatic,
+ 			object = object,
+-			contructor = if isConstructor(object) then object else nil,
++			constructor = if isConstructor(object) then object else nil,
+ 			property = property,
+ 		}
+ 		if property == nil then

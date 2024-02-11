@@ -21,8 +21,12 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 
 	protected boundingBox?: BoundingBox;
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P) {
-		super(character, localPlayer);
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P);
+
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string);
+
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string) {
+		super(character, localPlayer, id);
 
 		this.janitor.Add(this.boundingBoxLoaded, "Destroy");
 
@@ -141,7 +145,7 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 	}
 
 	protected updateBoundingBox() {
-		if (!this.boundingBox) {
+		if (!this.boundingBox || !this.isCollidable) {
 			return;
 		}
 
@@ -164,8 +168,11 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 
 	protected setCharacterCollidable(character: CharacterRigR6 | CharacterRigR15) {
 		for (const v of character.GetDescendants()) {
-			if (v.IsA("BasePart") && v.CollisionGroup === "") {
+			// Make sure it isn't a bounding box, else the (potential) server box's CollisionGroup would've been changed to Characters
+			if (v.IsA("BasePart") && v.CollisionGroup !== "BoundingBoxes") {
 				v.CanCollide = false;
+				v.CanTouch = false;
+				v.CanQuery = false;
 				v.CollisionGroup = "Characters";
 			}
 		}

@@ -1,17 +1,12 @@
-import { RunService } from "@rbxts/services";
 import { Setting } from "@twowayexit/dev-con";
-import { DevConFunctions } from "shared/network/dev-con";
+import { Functions } from "client/network/global";
 
 const sv_password: Setting<string> = {
 	value: "",
 	config: {
 		shouldUpdate: async (newValue) => {
-			if (RunService.IsServer()) {
-				return false;
-			}
-
 			try {
-				const result = await DevConFunctions.client.sv_password(newValue);
+				const result = await Functions.devCon.sv_password(newValue);
 
 				print(`! | ${result}`);
 

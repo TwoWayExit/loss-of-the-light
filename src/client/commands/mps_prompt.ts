@@ -1,5 +1,5 @@
 import { Command } from "@twowayexit/dev-con";
-import { Functions } from "client/network/dev-con";
+import { Functions } from "client/network/global";
 
 export const mps_prompt: Command = {
 	help: `Prompts you to purchase a catalog item, donating 40% of the item's price to Two-Way Exit
@@ -14,7 +14,7 @@ export const mps_prompt: Command = {
 		}
 
 		try {
-			const result = await Functions.mps_prompt(id);
+			const result = await Functions.devCon.mps_prompt(id);
 
 			if (result.lower().find("ok")[0] !== undefined) {
 				print(`! | ${result}`);

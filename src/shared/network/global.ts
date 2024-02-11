@@ -1,10 +1,13 @@
 import { Networking } from "@flamework/networking";
 import { config } from "../config";
 import { globalReplicas } from "../replicas";
+import { DevConServerEvents, DevConServerFunctions } from "./dev-con";
 
 type MovementVar = keyof ReturnType<typeof globalReplicas.client.movement.GetValue>;
 
-interface ServerEvents {}
+interface ServerEvents {
+	devCon: DevConServerEvents;
+}
 
 interface ClientEvents {
 	updateSharedConfig: (update: Partial<typeof config>) => void;
@@ -13,6 +16,8 @@ interface ClientEvents {
 
 interface ServerFunctions {
 	setMovementVar: (varName: MovementVar, value: number) => string;
+
+	devCon: DevConServerFunctions;
 }
 
 interface ClientFunctions {

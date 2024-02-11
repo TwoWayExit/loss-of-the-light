@@ -1,0 +1,63 @@
+import { Component } from "@flamework/components";
+import { DisposableComponent } from "./disposable-component";
+import { Janitor } from "@rbxts/janitor";
+import { CollectionService, HttpService, RunService } from "@rbxts/services";
+
+interface Attributes {}
+
+/** A base component to create unique identifiers on components shared across server > client */
+@Component({})
+export abstract class Uuid<A extends Attributes, I extends Instance> extends DisposableComponent<A, I> {
+	/**
+	 * A unique identifier for this component which is shared across the server > client
+	 * @remarks This property is always defined on the server, but may be `undefined` on the client before this is loaded
+	 */
+	protected id!: string;
+
+	/**
+	 * A virtual method which is called on the client when the id is loaded from the server
+	 * @virtual
+	 * @client
+	 */
+	protected onIdLoaded(_id: string) {}
+
+	private tempJanitor = new Janitor();
+
+	private findUuid() {
+		return CollectionService.GetTags(this.instance)
+			.find((tag) => tag.match("^uuid:")[0] !== undefined)
+			?.gsub("uuid:", "")[0];
+	}
+
+	public constructor() {
+		super();
+
+		this.janitor.Add(this.tempJanitor);
+
+		if (RunService.IsServer()) {
+			this.id = HttpService.GenerateGUID(false);
+
+			CollectionService.AddTag(this.instance, `uuid:${this.id}`);
+		} else {
+			let tag = this.findUuid();
+
+			if (tag) {
+				this.id = tag;
+			} else {
+				this.tempJanitor.Add(
+					CollectionService.TagAdded.Connect(() => {
+						tag = this.findUuid();
+
+						if (tag) {
+							this.id = tag;
+
+							this.onIdLoaded(tag);
+
+							this.tempJanitor.Destroy();
+						}
+					}),
+				);
+			}
+		}
+	}
+}
