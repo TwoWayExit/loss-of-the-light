@@ -1,6 +1,5 @@
 import { Component } from "@flamework/components";
 import { DisposableComponent } from "./disposable-component";
-import { Janitor } from "@rbxts/janitor";
 import { CollectionService, HttpService, RunService } from "@rbxts/services";
 
 interface Attributes {}
@@ -21,8 +20,6 @@ export abstract class Uuid<A extends Attributes, I extends Instance> extends Dis
 	 */
 	protected onIdLoaded(_id: string) {}
 
-	private tempJanitor = new Janitor();
-
 	private findUuid() {
 		return CollectionService.GetTags(this.instance)
 			.find((tag) => tag.match("^uuid:")[0] !== undefined)
@@ -31,8 +28,6 @@ export abstract class Uuid<A extends Attributes, I extends Instance> extends Dis
 
 	public constructor() {
 		super();
-
-		this.janitor.Add(this.tempJanitor);
 
 		if (RunService.IsServer()) {
 			this.id = HttpService.GenerateGUID(false);
@@ -44,19 +39,15 @@ export abstract class Uuid<A extends Attributes, I extends Instance> extends Dis
 			if (tag) {
 				this.id = tag;
 			} else {
-				this.tempJanitor.Add(
-					CollectionService.TagAdded.Connect(() => {
-						tag = this.findUuid();
+				this.janitor
+					.AddPromise(
+						Promise.fromEvent(CollectionService.TagAdded, () => (tag = this.findUuid()) !== undefined),
+					)
+					.then(() => {
+						this.id = tag!;
 
-						if (tag) {
-							this.id = tag;
-
-							this.onIdLoaded(tag);
-
-							this.tempJanitor.Destroy();
-						}
-					}),
-				);
+						this.onIdLoaded(tag!);
+					});
 			}
 		}
 	}

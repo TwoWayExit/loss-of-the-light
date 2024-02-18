@@ -1,19 +1,14 @@
 import { Dependency } from "@flamework/core";
 import { Components } from "@flamework/components";
 import { PlayerAnimate } from "shared/components/lotl_player-animate";
-import { PlayerCollidable } from "./player-collidable";
+import { BasePlayer } from "./player";
 import { Networked } from "shared/utils/network";
 
 @Networked()
-export class LotlPlayer<P extends Player | undefined = Player | undefined> extends PlayerCollidable<P> {
+export class LotlPlayer<P extends Player | undefined = Player | undefined> extends BasePlayer<P> {
 	// Make localPlayer the first parameter in order for Networked to automatically pass in the player
 	public constructor(localPlayer?: P, character?: Model | Promise<Model>, id?: string) {
 		super(character, localPlayer, id);
-
-		// If this player is an NPC
-		if (!localPlayer) {
-			this.setCollidable(false); // Save on performance
-		}
 	}
 
 	protected override onDied() {

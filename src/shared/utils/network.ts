@@ -116,6 +116,12 @@ export class NetworkVar<T extends NetworkValue> {
 	) {
 		this.valueSet.Connect((value) => this.onValueSet(value));
 
+		if (NetworkVar.idToVar.get(this.uuid)) {
+			warn(
+				`[WARN] Pre-existing global networkVar ${this.uuid}, this may result in unexpected behavior and should be avoided`,
+			);
+		}
+
 		NetworkVar.idToVar.set(this.uuid, this);
 	}
 

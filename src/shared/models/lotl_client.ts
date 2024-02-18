@@ -12,7 +12,7 @@ import { Networked } from "shared/utils/network";
 export class LotlClientData extends PlayerData {}
 
 /** Derivative of PlayerNetworked purely for handling network related functions */
-@Networked(true, false)
+@Networked(true)
 export class LotlClient extends PlayerNetworked {
 	// Override with a new separate signal
 	public static override readonly playerAdded = new Signal<LotlClient>();

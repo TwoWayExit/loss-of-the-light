@@ -3,6 +3,7 @@ import { Service, OnInit } from "@flamework/core";
 import { Events } from "server/network/global";
 import { config } from "shared/config";
 import { Replicas } from "server/replicas";
+import "shared/models/lotl_client";
 
 @Service({})
 export class PlayerService implements OnInit {

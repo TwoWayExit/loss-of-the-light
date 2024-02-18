@@ -5,6 +5,7 @@ import { BaseCharacter } from "shared/models/character";
 import { UserCommand } from "shared/modules/user-command";
 import { ViewVectors } from "shared/modules/view-vectors";
 import { networkVar } from "shared/utils/network";
+import { $env } from "rbxts-transform-env";
 
 export class PlayerData {
 	public isDucked = false;
@@ -43,6 +44,14 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 
 	private flags = 0;
 
+	static {
+		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
+			print(
+				"[NOTICE] MULTI_LOCALPLAYER_INSTANCE env is TRUE, be wary of potential conflicts when using derivatives",
+			);
+		}
+	}
+
 	public constructor(character?: Model | Promise<Model>, localPlayer?: P);
 
 	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string);
@@ -50,11 +59,15 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id = tostring(localPlayer?.UserId)) {
 		assert(id, "No player id associated");
 
-		if (localPlayer) {
-			assert(
-				!BasePlayer.getPlayerFromLocalPlayer(localPlayer),
-				"Attempt to duplicate BasePlayer from existing localPlayer",
-			);
+		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
+			// Exclude this check
+		} else {
+			if (localPlayer) {
+				assert(
+					!BasePlayer.getPlayerFromLocalPlayer(localPlayer),
+					"Attempt to duplicate BasePlayer from existing localPlayer",
+				);
+			}
 		}
 
 		super(character, localPlayer);

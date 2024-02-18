@@ -1,11 +1,13 @@
 import { LotlPlayer } from "shared/models/lotl_player";
 
-export class Skillset<T extends Record<string, Skill>> {
-	protected static skillsets = new Map<string, Skillset<Record<string, Skill>>>();
+type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
+
+export class Skillset<T extends ReadonlyRecord<string, Skill>> {
+	protected static skillsets = new Map<string, Skillset<ReadonlyRecord<string, Skill>>>();
 
 	public constructor(
 		public readonly name: string,
-		protected skills: T,
+		public readonly skills: T,
 	) {
 		Skillset.skillsets.set(name, this);
 	}
