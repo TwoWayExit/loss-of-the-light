@@ -1,12 +1,11 @@
-import { Spring, useEventListener, useMotor } from "@rbxts/pretty-roact-hooks";
-import { useProducer, useSelector } from "@rbxts/roact-reflex";
-import { useEffect } from "@rbxts/roact-hooked";
+import { Spring, useEventListener, useMotor } from "@rbxts/pretty-react-hooks";
+import { useProducer, useSelector } from "@rbxts/react-reflex";
 import { RootProducer, RootState } from "../producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import { DialogueName } from "./dialogue-name";
 import { DialogueText } from "./dialogue-text";
 import { DialogueBlinker } from "./dialogue-blinker";
-import Roact from "@rbxts/roact";
+import React, { useEffect } from "@rbxts/react";
 
 export function DialogueFrame() {
 	const [scale, setScale, api] = useMotor(0);

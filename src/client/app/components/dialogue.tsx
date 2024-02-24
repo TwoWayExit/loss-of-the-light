@@ -1,5 +1,5 @@
 import { DialogueFrame } from "./dialogue-frame";
-import Roact from "@rbxts/roact";
+import React from "@rbxts/react";
 
 export function Dialogue() {
 	return (

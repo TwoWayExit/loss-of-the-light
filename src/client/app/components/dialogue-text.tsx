@@ -1,6 +1,6 @@
-import { useSelector } from "@rbxts/roact-reflex";
+import { useSelector } from "@rbxts/react-reflex";
 import { RootState } from "../producer";
-import Roact from "@rbxts/roact";
+import React from "@rbxts/react";
 
 export function DialogueText() {
 	const text = useSelector(({ dialogue }: RootState) => dialogue.text);

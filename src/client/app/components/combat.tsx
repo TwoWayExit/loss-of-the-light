@@ -1,5 +1,5 @@
 import { CombatFrame } from "./combat-frame";
-import Roact from "@rbxts/roact";
+import React from "@rbxts/react";
 
 export function Combat() {
 	return (

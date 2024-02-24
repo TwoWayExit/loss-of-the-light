@@ -1,7 +1,7 @@
-import { Linear, useInterval, useMotor } from "@rbxts/pretty-roact-hooks";
-import { useSelector } from "@rbxts/roact-reflex";
+import { Linear, useInterval, useMotor } from "pretty-react-hooks";
+import { useSelector } from "@rbxts/react-reflex";
 import { RootState } from "../producer";
-import Roact from "@rbxts/roact";
+import React from "@rbxts/react";
 
 const BLINK_INTERVAL = 0.35;
 
