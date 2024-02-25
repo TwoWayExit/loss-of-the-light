@@ -11,7 +11,7 @@ import { Networked } from "shared/utils/network";
 
 export class LotlClientData extends PlayerData {}
 
-/** Derivative of PlayerNetworked purely for handling network related functions */
+/** Derivative of PlayerNetworked for handling network players */
 @Networked(true)
 export class LotlClient extends PlayerNetworked {
 	// Override with a new separate signal

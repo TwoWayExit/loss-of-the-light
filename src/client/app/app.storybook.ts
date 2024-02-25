@@ -1,7 +1,4 @@
-import { withHookDetection } from "@rbxts/roact-hooked";
-import Roact from "@rbxts/roact";
-
-withHookDetection(Roact);
+import React from "@rbxts/react";
 
 const [root, parts] = $getModuleTree("./stories/dialogue.story"); // $getModuleTree only works with files, not directories
 
@@ -13,6 +10,6 @@ while (parts.size() > 1) {
 }
 
 export = {
-	roact: Roact,
+	react: React,
 	storyRoots: [instance],
 };

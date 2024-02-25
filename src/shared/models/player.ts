@@ -47,7 +47,7 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 	static {
 		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
 			print(
-				"[NOTICE] MULTI_LOCALPLAYER_INSTANCE env is TRUE, be wary of potential conflicts when using derivatives",
+				"[NOTICE] MULTI_LOCALPLAYER_INSTANCES env is TRUE, be wary of potential conflicts when using derivatives",
 			);
 		}
 	}

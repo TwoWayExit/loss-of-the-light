@@ -7,7 +7,7 @@ export function DialogueName() {
 
 	return (
 		<imagelabel
-			Key={"Name"}
+			key={"Name"}
 			BackgroundColor3={Color3.fromRGB(255, 255, 255)}
 			BorderColor3={Color3.fromRGB(85, 79, 77)}
 			BorderSizePixel={4}

@@ -7,7 +7,7 @@ export function DialogueText() {
 
 	return (
 		<imagelabel
-			Key={"TextCarrier"}
+			key={"TextCarrier"}
 			BackgroundTransparency={1}
 			Image={"rbxassetid://95885578"}
 			ImageColor3={Color3.fromRGB(167, 167, 167)}
@@ -16,7 +16,7 @@ export function DialogueText() {
 			Size={new UDim2(1.534, 0, 1.088, 0)}
 		>
 			<textlabel
-				Key={"Dialogue"}
+				key={"Dialogue"}
 				BackgroundColor3={Color3.fromRGB(70, 63, 55)}
 				BackgroundTransparency={0.2}
 				BorderColor3={Color3.fromRGB(0, 0, 0)}

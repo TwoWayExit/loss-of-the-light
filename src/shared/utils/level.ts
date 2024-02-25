@@ -23,7 +23,11 @@ export class Level<S extends {} = {}, M extends Model = Model, C extends Instanc
 	protected isLoaded = false;
 
 	/** Constructs a new pre-defined level with the arguments inputted */
-	public constructor(public readonly state: S, protected map: M, protected container: C) {
+	public constructor(
+		public readonly state: S,
+		protected map: M,
+		protected container: C,
+	) {
 		assert(!Level.loadedLevels.find((level) => level.map === map), "Attempt to duplicate map level");
 
 		this.instance = map.Clone();

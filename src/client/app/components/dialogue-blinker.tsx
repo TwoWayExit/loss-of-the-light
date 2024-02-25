@@ -1,4 +1,4 @@
-import { Linear, useInterval, useMotor } from "pretty-react-hooks";
+import { Linear, useInterval, useMotor } from "@rbxts/pretty-react-hooks";
 import { useSelector } from "@rbxts/react-reflex";
 import { RootState } from "../producer";
 import React from "@rbxts/react";
@@ -18,7 +18,7 @@ export function DialogueBlinker() {
 
 	return (
 		<textlabel
-			Key={"MakeThisThingBlink"}
+			key={"MakeThisThingBlink"}
 			BackgroundTransparency={1}
 			Font={Enum.Font.Unknown}
 			FontFace={new Font("rbxassetid://12187367362", Enum.FontWeight.Regular, Enum.FontStyle.Normal)}

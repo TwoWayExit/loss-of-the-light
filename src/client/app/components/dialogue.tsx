@@ -3,7 +3,7 @@ import React from "@rbxts/react";
 
 export function Dialogue() {
 	return (
-		<screengui Key={"Dialogue"} IgnoreGuiInset={true} ResetOnSpawn={false}>
+		<screengui key={"Dialogue"} IgnoreGuiInset={true} ResetOnSpawn={false}>
 			<DialogueFrame />
 		</screengui>
 	);

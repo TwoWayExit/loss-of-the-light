@@ -1,7 +1,7 @@
-import { ReflexProvider } from "@rbxts/roact-reflex";
+import { ReflexProvider } from "@rbxts/react-reflex";
 import { DialogueFrame } from "../components/dialogue-frame";
 import { RootState, producer } from "../producer";
-import Roact from "@rbxts/roact";
+import React from "@rbxts/react";
 
 export = {
 	controls: identity<RootState["dialogue"]>({
@@ -16,12 +16,10 @@ export = {
 			dialogue: props.controls,
 		});
 
-		return Roact.createElement(
-			ReflexProvider,
-			{
-				producer,
-			},
-			{ DialogueFrame: Roact.createElement(DialogueFrame) },
+		return (
+			<ReflexProvider producer={producer}>
+				<DialogueFrame />
+			</ReflexProvider>
 		);
 	},
 };

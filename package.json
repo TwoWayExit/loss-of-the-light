@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@rbxts/compiler-types": "^2.2.0-types.0",
+    "@rbxts/compiler-types": "^2.3.0-types.0",
     "@rbxts/types": "^1.0.737",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
@@ -27,8 +27,8 @@
     "rbxts-transformer-flamework": "^1.1.0",
     "rbxts-transformer-runtime-imports": "^1.2.3",
     "rbxts-transformer-t-new": "^1.1.5",
-    "roblox-ts": "^2.2.0",
-    "typescript": "^5.2.2"
+    "roblox-ts": "^2.3.0-dev-3c1cd75",
+    "typescript": "^5.3.3"
   },
   "dependencies": {
     "@flamework/components": "^1.1.0",
@@ -39,19 +39,18 @@
     "@rbxts/fast-replica": "^3.0.2",
     "@rbxts/janitor": "^1.15.4-ts.0",
     "@rbxts/object-utils": "^1.0.4",
-    "@rbxts/pretty-roact-hooks": "^3.2.1",
+    "@rbxts/pretty-react-hooks": "^0.4.2",
     "@rbxts/profileservice": "^1.4.2",
     "@rbxts/promise-character": "^1.0.3",
     "@rbxts/promise-child": "^1.2.1",
+    "@rbxts/react": "^0.3.1",
+    "@rbxts/react-reflex": "^0.3.4",
+    "@rbxts/react-roblox": "^0.3.1",
     "@rbxts/reflex": "^4.3.1",
-    "@rbxts/roact": "^1.4.4-ts.0",
-    "@rbxts/roact-hooked": "^2.6.2",
-    "@rbxts/roact-reflex": "^2.1.0",
-    "@rbxts/roact-spritesheet": "^1.0.1",
     "@rbxts/services": "^1.5.1",
     "@rbxts/set-timeout": "^1.1.2",
     "@rbxts/t": "^3.1.0",
     "@rbxts/validate-tree": "^2.0.2",
-    "@twowayexit/dev-con": "^1.2.0"
+    "@twowayexit/dev-con": "^2.0.1"
   }
 }
