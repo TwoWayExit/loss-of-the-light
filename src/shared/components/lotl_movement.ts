@@ -344,26 +344,18 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 	}
 
 	protected clipVelocity(in_: Vector3, normal: Vector3, overbounce: number) {
-		const inVector = [in_.X, in_.Y, in_.Z];
-		const surfaceNormal = [normal.X, normal.Y, normal.Z];
-		const out = [0, 0, 0];
 		const backoff = in_.Dot(normal) * overbounce;
+		const change = normal.mul(backoff);
 
-		for (let i = 0; i < 3; i++) {
-			const change = surfaceNormal[i] * backoff;
+		let out = in_.sub(change);
 
-			out[i] = inVector[i] - change;
-		}
-
-		let outVector = new Vector3(out[0], out[1], out[2]);
-
-		const adjust = outVector.Dot(normal);
+		const adjust = out.Dot(normal);
 
 		if (adjust < 0) {
-			outVector = outVector.sub(normal.mul(adjust));
+			out = out.sub(normal.mul(adjust));
 		}
 
-		return outVector;
+		return out;
 	}
 
 	protected startGravity() {
@@ -760,7 +752,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		if (localPlayer) {
 			// We don't want this component to attach to another player
 			if (RunService.IsClient() && localPlayer !== Players.LocalPlayer) {
-				this.destroy();
+				this.instance.RemoveTag("lotl_movement");
 				return;
 			}
 
@@ -771,7 +763,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 			} else {
 				// We don't want this component to attach to an NPC on the client if it's not singleplayer
 				if (RunService.IsClient() && Players.MaxPlayers > 1) {
-					this.destroy();
+					this.instance.RemoveTag("lotl_movement");
 					return;
 				}
 			}

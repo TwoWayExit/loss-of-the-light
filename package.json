@@ -25,9 +25,8 @@
     "rbxts-transform-debug": "^2.2.0",
     "rbxts-transform-env": "^2.2.0",
     "rbxts-transformer-flamework": "^1.1.0",
-    "rbxts-transformer-runtime-imports": "^1.2.3",
     "rbxts-transformer-t-new": "^1.1.5",
-    "roblox-ts": "^2.3.0-dev-3c1cd75",
+    "roblox-ts": "^2.3.0-dev-e6e7658",
     "typescript": "^5.3.3"
   },
   "dependencies": {
@@ -51,6 +50,6 @@
     "@rbxts/set-timeout": "^1.1.2",
     "@rbxts/t": "^3.1.0",
     "@rbxts/validate-tree": "^2.0.2",
-    "@twowayexit/dev-con": "^2.0.1"
+    "@twowayexit/dev-con": "^2.1.3"
   }
 }

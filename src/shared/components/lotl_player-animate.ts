@@ -107,7 +107,7 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 			// Animations should be played on the client in lieu of the server as a network player
 			// We also don't want this component to attach to another player if we are on the client
 			if (RunService.IsServer() || (RunService.IsClient() && localPlayer !== Players.LocalPlayer)) {
-				this.destroy();
+				this.instance.RemoveTag("lotl_player-animate");
 				return;
 			}
 
@@ -118,7 +118,7 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 			} else {
 				// We don't want this component to attach to an NPC on the client if it's not singleplayer
 				if (RunService.IsClient() && Players.MaxPlayers > 1) {
-					this.destroy();
+					this.instance.RemoveTag("lotl_player-animate");
 					return;
 				}
 			}

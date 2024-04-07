@@ -2,8 +2,12 @@ import { ReflexProvider } from "@rbxts/react-reflex";
 import { DialogueFrame } from "../components/dialogue-frame";
 import { RootState, producer } from "../producer";
 import React from "@rbxts/react";
+import ReactRoblox from "@rbxts/react-roblox";
 
 export = {
+	react: React,
+	reactRoblox: ReactRoblox,
+
 	controls: identity<RootState["dialogue"]>({
 		isActive: true,
 		name: "",

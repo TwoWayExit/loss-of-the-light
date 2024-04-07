@@ -38,9 +38,6 @@
 			{
                 "transform": "rbxts-transform-env",
             },
-			{
-				"transform": "rbxts-transformer-runtime-imports",
-			},
 		]
 	}
 }
