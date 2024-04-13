@@ -11,7 +11,7 @@ interface ServerEvents {
 
 interface ClientEvents {
 	updateSharedConfig: (update: Partial<typeof config>) => void;
-	receiveNetVar: (uuid: string, value: unknown, client?: Player) => void;
+	receiveNetVar: (uuid: string, value: unknown, client?: string) => void;
 }
 
 interface ServerFunctions {

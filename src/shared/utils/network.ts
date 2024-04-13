@@ -1,26 +1,31 @@
-import { Modding, Reflect } from "@flamework/core";
+import { Modding } from "@flamework/core";
 import { Signal } from "@rbxts/beacon";
 import { Players, RunService } from "@rbxts/services";
 import { t } from "@rbxts/t";
-
-interface Destructor {
-	destroy(): void;
-}
 
 type Constructor<T> = new (...args: never[]) => T;
 type DecoratorConfig = [client?: boolean, server?: boolean];
 type NetworkValue = string | number | boolean | Map<string, unknown>;
 
-const checkDestructor = t.interface({
-	destroy: t.callback,
-});
+/** A dependency to retrieve the `client` property of a {@link Networked} class object */
+export type NetworkPlayer = Player & { _marker?: void };
 
-/** An abstract singleton class to handle the {@link Networked} decorator and has helper methods */
-export abstract class Network {
+/** An interface to implement when using the {@link Networked} decorator */
+export interface Networkable {
+	/** The {@link Player} associated with this {@link Networked} class object */
+	client: Player;
+
+	destroy?: (this: Networkable) => unknown;
+}
+
+/** A static singleton class to handle the {@link Networked} decorator and contains static helper methods */
+export class Network {
 	/** @internal @hidden */
 	public static readonly playerAdded = new Signal<Player>();
 
-	protected static playerInstances = new Map<Player, object[]>();
+	protected static playerInstances = new Map<Player, Networkable[]>();
+
+	private static recentClient?: Player;
 
 	static {
 		Players.GetPlayers().forEach((player) => this.playerInstances.set(player, []));
@@ -54,27 +59,21 @@ export abstract class Network {
 	}
 
 	/** @internal @hidden */
-	public static onPlayerAdded<T extends object>(player: Player, object: Constructor<T>) {
-		const checks = Reflect.getMetadata<t.check<unknown>[]>(object, "flamework:parameter_guards");
+	public static getNetworkPlayer() {
+		return this.recentClient;
+	}
 
-		let instance;
+	/** @internal @hidden */
+	public static onPlayerAdded<T extends Networkable>(player: Player, object: Constructor<T>) {
+		const [instance, construct] = Modding.createDeferredDependency(object);
 
-		if (checks && checks.size() > 0 && checks[0](player)) {
-			// Wacky, wonky in all sorts of ways!
-			instance = new object(player as never);
-		} else {
-			instance = new object();
-		}
+		instance.client = player;
 
-		Reflect.defineMetadata(instance, "player", player);
+		this.recentClient = player; // Allow the NetworkPlayer dependency to access
 
 		this.playerInstances.get(player)!.push(instance);
 
-		for (const [, value] of pairs(instance)) {
-			if (NetworkVar.is(value)) {
-				value.network(player);
-			}
-		}
+		construct();
 	}
 
 	// There may be a better way of doing this
@@ -83,10 +82,7 @@ export abstract class Network {
 
 		if (instances) {
 			for (const instance of instances) {
-				if (checkDestructor(instance)) {
-					// Convert to Destructor to compile to method calling
-					(instance as Destructor).destroy();
-				}
+				instance.destroy?.();
 			}
 
 			// Just in case
@@ -106,7 +102,7 @@ export class NetworkVar<T extends NetworkValue> {
 
 	protected static idToVar = new Map<string, NetworkVar<NetworkValue>>();
 
-	private client?: Player;
+	private client?: string;
 
 	/** @internal @hidden */
 	public constructor(
@@ -129,8 +125,8 @@ export class NetworkVar<T extends NetworkValue> {
 		return typeIs(object, "table") && "value" in object && "valueSet" in object;
 	}
 
-	public static getVarFromId(uuid: string, client?: Player) {
-		return client ? this.idToVar.get(`${client.UserId}~${uuid}`) : this.idToVar.get(uuid);
+	public static getVarFromId(uuid: string, client?: string) {
+		return client !== undefined ? this.idToVar.get(`${client}~${uuid}`) : this.idToVar.get(uuid);
 	}
 
 	public get() {
@@ -147,22 +143,14 @@ export class NetworkVar<T extends NetworkValue> {
 		return this.client;
 	}
 
-	public network(client: Player): void;
-
-	public network(id: string): void;
-
-	public network(client: Player | string) {
-		assert(!this.client, "NetworkVar already networked and initialized");
+	public network(client: string) {
+		assert(this.client === undefined, "NetworkVar already networked and initialized");
 
 		NetworkVar.idToVar.delete(this.uuid);
 
-		if (typeIs(client, "Instance") && client.IsA("Player")) {
-			this.client = client;
+		this.client = client;
 
-			NetworkVar.idToVar.set(`${client.UserId}~${this.uuid}`, this);
-		} else {
-			NetworkVar.idToVar.set(`${client}~${this.uuid}`, this);
-		}
+		NetworkVar.idToVar.set(`${client}~${this.uuid}`, this);
 	}
 
 	protected async onValueSet(value: T) {
@@ -181,7 +169,7 @@ export interface NetworkVarMetadata<T extends NetworkValue> {
 
 /**
  * Macro to construct a {@link NetworkVar}, which replicates server values to client values (non vice versa)
- * @remarks The {@link NetworkVar} can be initialized and linked to a client using the `network()` method
+ * @remarks The {@link NetworkVar} is required to be initialized using the `network()` method with a client's unique ID (ie. UserId) if used within a non-static class member (preferably in the class constructor)
  * @metadata macro
  */
 export function networkVar<T extends NetworkValue>(initialValue: T, metadata?: Modding.Many<NetworkVarMetadata<T>>) {
@@ -193,11 +181,11 @@ export function networkVar<T extends NetworkValue>(initialValue: T, metadata?: M
 /**
  * Networks this class, creating it when a player joins, and destroying it when the player leaves, additionally adding a "player" metadata which stores the {@link Player} when this class is instantiated
  *
- * If the class constructor takes in a {@link Player} as the first parameter, the player is passed in the first argument
+ * If the class constructor takes in a {@link NetworkPlayer} as one of its parameters, the player is passed in through dependency injection
  * @param client - Whether this class should be instantiated on the client or not (default: false)
  * @param server - Whether this class should be instantiated on the server or not (default: true)
  * @remarks The class will only be destroyed if it has a `destroy()` method
- * @metadata flamework:parameter_guards
+ * @metadata flamework:parameters {@link Networkable constraint}
  */
 export const Networked = Modding.createDecorator<DecoratorConfig>(
 	"Class",
@@ -216,8 +204,20 @@ export const Networked = Modding.createDecorator<DecoratorConfig>(
 			return;
 		}
 
-		Players.GetPlayers().forEach((player) => Network.onPlayerAdded(player, constructor));
+		Players.GetPlayers().forEach((player) =>
+			Network.onPlayerAdded(player, constructor as Constructor<Networkable>),
+		);
 
-		Network.playerAdded.Connect((player) => Network.onPlayerAdded(player, constructor));
+		Network.playerAdded.Connect((player) => Network.onPlayerAdded(player, constructor as Constructor<Networkable>));
 	},
 );
+
+Modding.registerDependency<NetworkPlayer>((obj) => {
+	assert(
+		Modding.getDecorator<typeof Networked>(obj),
+		"The NetworkPlayer dependency may only be used in a Networked decorated class",
+	);
+
+	// This will be called right after the instance is constructed, so recentClient will not have an overlap/conflict
+	return Network.getNetworkPlayer();
+});
