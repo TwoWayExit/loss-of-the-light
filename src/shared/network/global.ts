@@ -2,11 +2,13 @@ import { Networking } from "@flamework/networking";
 import { config } from "../config";
 import { globalReplicas } from "../replicas";
 import { DevConServerEvents, DevConServerFunctions } from "./dev-con";
+import { LotlServerEvents } from "./lotl";
 
 type MovementVar = keyof ReturnType<typeof globalReplicas.client.movement.GetValue>;
 
 interface ServerEvents {
 	devCon: DevConServerEvents;
+	lotl: LotlServerEvents;
 }
 
 interface ClientEvents {

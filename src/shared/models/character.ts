@@ -26,8 +26,6 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	/** The {@link Player} instance linked with this {@link BaseCharacter} if provided one */
 	protected localPlayer: P;
 
-	protected modelScale = 1;
-
 	protected viewCFrame = CFrame.identity;
 
 	/**
@@ -114,23 +112,6 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 		}
 
 		return height;
-	}
-
-	/**
-	 * Sets character's model scale
-	 * @param scale - The character's new model scale
-	 * @remarks This does not scale the actual character model, but only sets it for calculation purposes
-	 */
-	public setModelScale(scale: number) {
-		this.modelScale = scale;
-	}
-
-	/**
-	 * Gets the character's currently set model scale
-	 * @returns The character's model scale
-	 */
-	public getModelScale() {
-		return this.modelScale;
 	}
 
 	/**

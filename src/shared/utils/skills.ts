@@ -1,4 +1,4 @@
-import { LotlPlayer } from "shared/models/lotl_player";
+import { Combatant } from "shared/models/combatant";
 
 type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
 
@@ -26,7 +26,7 @@ export abstract class Skill {
 	public constructor(public readonly name: string) {}
 
 	/** @virtual */
-	public cast(target: LotlPlayer) {
+	public cast(target: Combatant) {
 		warn(`[WARN] Skill cast unimplemented, target ${target}`);
 	}
 }

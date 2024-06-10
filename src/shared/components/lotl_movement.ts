@@ -134,7 +134,9 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 	 * @returns The player character's bounding box mins
 	 */
 	public getPlayerMins() {
-		return ViewVectors.HULL_MIN.mul(this.player.getModelScale());
+		assert(this.character);
+
+		return ViewVectors.HULL_MIN.mul(this.character.GetScale());
 	}
 
 	/**
@@ -142,7 +144,9 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 	 * @returns The player character's bounding box maxs
 	 */
 	public getPlayerMaxs() {
-		return ViewVectors.HULL_MAX.mul(this.player.getModelScale());
+		assert(this.character);
+
+		return ViewVectors.HULL_MAX.mul(this.character.GetScale());
 	}
 
 	protected createVelocity(rootPart: BasePart) {

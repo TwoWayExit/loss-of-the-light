@@ -2,7 +2,7 @@ import { Players, RunService } from "@rbxts/services";
 import { PlayerCollidable } from "./player-collidable";
 import { Globals } from "shared/modules/globals";
 import { Signal } from "@rbxts/beacon";
-import { Networked, networkVar } from "shared/utils/network";
+import { NetworkPlayer, Networked, networkVar } from "shared/utils/network";
 import { Reflect } from "@flamework/core";
 
 /** A const enum of possible player statuses */
@@ -13,7 +13,7 @@ export const enum PlayerStatus {
 }
 
 // This Networked decorator may be safely modified if PlayerNetworked is extended to avoid duplicate localPlayer error
-@Networked(false, false)
+@Networked({ server: false, client: false })
 export class PlayerNetworked extends PlayerCollidable<Player> {
 	// Override with a new separate signal
 	public static override readonly playerAdded = new Signal<PlayerNetworked>();
@@ -42,10 +42,13 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 	protected status = networkVar<PlayerStatus>(PlayerStatus.IN_MENUS);
 	protected ping = networkVar<number>(0);
 
-	public constructor(localPlayer: Player) {
+	public constructor(localPlayer: NetworkPlayer) {
 		const character = localPlayer.Character ?? Promise.fromEvent(localPlayer.CharacterAdded);
 
 		super(character, localPlayer);
+
+		this.status.network(tostring(localPlayer.UserId));
+		this.ping.network(tostring(localPlayer.UserId));
 
 		if (this.isLocalClient()) {
 			PlayerNetworked.clPlayer = this;

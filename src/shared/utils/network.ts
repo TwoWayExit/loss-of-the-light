@@ -4,7 +4,6 @@ import { Players, RunService } from "@rbxts/services";
 import { t } from "@rbxts/t";
 
 type Constructor<T> = new (...args: never[]) => T;
-type DecoratorConfig = [client?: boolean, server?: boolean];
 type NetworkValue = string | number | boolean | Map<string, unknown>;
 
 /** A dependency to retrieve the `client` property of a {@link Networked} class object */
@@ -111,14 +110,6 @@ export class NetworkVar<T extends NetworkValue> {
 		public readonly isValid: t.check<T>,
 	) {
 		this.valueSet.Connect((value) => this.onValueSet(value));
-
-		if (NetworkVar.idToVar.get(this.uuid)) {
-			warn(
-				`[WARN] Pre-existing global networkVar ${this.uuid}, this may result in unexpected behavior and should be avoided`,
-			);
-		}
-
-		NetworkVar.idToVar.set(this.uuid, this);
 	}
 
 	public static is(object: unknown): object is NetworkVar<NetworkValue> {
@@ -143,7 +134,27 @@ export class NetworkVar<T extends NetworkValue> {
 		return this.client;
 	}
 
-	public network(client: string) {
+	/** Initializes this {@link NetworkVar} as a global network var */
+	public network(): void;
+
+	/**
+	 * Initializes this {@link NetworkVar} as a player network var
+	 * @param client - A unique identifier for the player
+	 */
+	public network(client: string): void;
+
+	public network(client?: string) {
+		if (client === undefined) {
+			if (NetworkVar.idToVar.get(this.uuid)) {
+				warn(
+					`[WARN] Pre-existing global networkVar ${this.uuid}, this may result in unexpected behavior and should be avoided`,
+				);
+			}
+
+			NetworkVar.idToVar.set(this.uuid, this);
+			return;
+		}
+
 		assert(this.client === undefined, "NetworkVar already networked and initialized");
 
 		NetworkVar.idToVar.delete(this.uuid);
@@ -169,7 +180,7 @@ export interface NetworkVarMetadata<T extends NetworkValue> {
 
 /**
  * Macro to construct a {@link NetworkVar}, which replicates server values to client values (non vice versa)
- * @remarks The {@link NetworkVar} is required to be initialized using the `network()` method with a client's unique ID (ie. UserId) if used within a non-static class member (preferably in the class constructor)
+ * @remarks The {@link NetworkVar} is required to be initialized using the `network()` method with a client's unique ID (ie. UserId) if used within a non-static class member (preferably in the class constructor) or without otherwise (global network var)
  * @metadata macro
  */
 export function networkVar<T extends NetworkValue>(initialValue: T, metadata?: Modding.Many<NetworkVarMetadata<T>>) {
@@ -187,30 +198,39 @@ export function networkVar<T extends NetworkValue>(initialValue: T, metadata?: M
  * @remarks The class will only be destroyed if it has a `destroy()` method
  * @metadata flamework:parameters {@link Networkable constraint}
  */
-export const Networked = Modding.createDecorator<DecoratorConfig>(
-	"Class",
-	({ constructor }, [runClient = false, runServer = true]) => {
-		// If it should create on the client
-		if (RunService.IsClient() && !runClient) {
+export const Networked = Modding.createDecorator<
+	[{ client?: boolean; server?: boolean; predicate?: (player: Player) => boolean }]
+>("Class", ({ constructor }, [{ client: runClient = false, server: runServer = true, predicate }]) => {
+	// If it should create on the client
+	if (RunService.IsClient() && !runClient) {
+		return;
+	}
+
+	// If it should create on the server
+	if (RunService.IsServer() && !runServer) {
+		return;
+	}
+
+	if (!constructor) {
+		return;
+	}
+
+	Players.GetPlayers().forEach((player) => {
+		if (predicate && !predicate(player)) {
 			return;
 		}
 
-		// If it should create on the server
-		if (RunService.IsServer() && !runServer) {
+		Network.onPlayerAdded(player, constructor as Constructor<Networkable>);
+	});
+
+	Network.playerAdded.Connect((player) => {
+		if (predicate && !predicate(player)) {
 			return;
 		}
 
-		if (!constructor) {
-			return;
-		}
-
-		Players.GetPlayers().forEach((player) =>
-			Network.onPlayerAdded(player, constructor as Constructor<Networkable>),
-		);
-
-		Network.playerAdded.Connect((player) => Network.onPlayerAdded(player, constructor as Constructor<Networkable>));
-	},
-);
+		Network.onPlayerAdded(player, constructor as Constructor<Networkable>);
+	});
+});
 
 Modding.registerDependency<NetworkPlayer>((obj) => {
 	assert(

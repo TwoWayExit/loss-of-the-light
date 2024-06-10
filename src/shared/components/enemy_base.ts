@@ -1,13 +1,16 @@
-import { OnStart } from "@flamework/core";
 import { Component } from "@flamework/components";
 import { Uuid } from "./uuid";
 import { LotlPlayer } from "shared/models/lotl_player";
 import { CharacterRigR6 } from "@rbxts/promise-character";
 
-interface Attributes {}
+interface Attributes {
+	combatants: string;
+}
 
-@Component({})
-export class Enemy<A extends Attributes, I extends CharacterRigR6> extends Uuid<A, I> implements OnStart {
+@Component({
+	tag: "enemy",
+})
+export class Enemy<A extends Attributes = Attributes, I extends CharacterRigR6 = CharacterRigR6> extends Uuid<A, I> {
 	/** @virtual */
 	protected player!: LotlPlayer<undefined>;
 
@@ -17,7 +20,9 @@ export class Enemy<A extends Attributes, I extends CharacterRigR6> extends Uuid<
 		if (this.id) {
 			this.player = new LotlPlayer(undefined, this.instance, this.id);
 
-			this.janitor.Add(this.player);
+			this.janitor.Add(this.player, "destroy");
+
+			this.instance.AddTag("battle-trigger");
 		}
 	}
 
@@ -32,8 +37,8 @@ export class Enemy<A extends Attributes, I extends CharacterRigR6> extends Uuid<
 	protected override onIdLoaded(id: string) {
 		this.player = new LotlPlayer(undefined, this.instance, id);
 
-		this.janitor.Add(this.player);
-	}
+		this.janitor.Add(this.player, "destroy");
 
-	onStart() {}
+		this.instance.AddTag("battle-trigger");
+	}
 }

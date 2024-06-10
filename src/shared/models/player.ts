@@ -56,7 +56,11 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 
 	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string);
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id = tostring(localPlayer?.UserId)) {
+	public constructor(
+		character?: Model | Promise<Model>,
+		localPlayer?: P,
+		id = localPlayer && tostring(localPlayer.UserId),
+	) {
 		assert(id, "No player id associated");
 
 		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
@@ -116,7 +120,9 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 	 * @returns The player character's bounding box mins
 	 */
 	public getPlayerMins() {
-		return ViewVectors.HULL_MIN.mul(this.getModelScale());
+		assert(this.character);
+
+		return ViewVectors.HULL_MIN.mul(this.character.GetScale());
 	}
 
 	/**
@@ -124,7 +130,9 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 	 * @returns The player character's bounding box maxs
 	 */
 	public getPlayerMaxs() {
-		return ViewVectors.HULL_MAX.mul(this.getModelScale());
+		assert(this.character);
+
+		return ViewVectors.HULL_MAX.mul(this.character.GetScale());
 	}
 
 	/**

@@ -1,4 +1,4 @@
-import { TweenService, Workspace } from "@rbxts/services";
+import { CollectionService, TweenService, Workspace } from "@rbxts/services";
 import { Controller, OnStart, OnRender } from "@flamework/core";
 import { PlayerNetworked } from "shared/models/player-networked";
 import { ViewVectors } from "shared/modules/view-vectors";
@@ -13,15 +13,34 @@ export class LotlCameraController implements OnStart, OnRender {
 
 	protected oldObstruction?: BasePart;
 
+	protected usingFixedPosition = false;
+
+	private fixedPosition = CFrame.identity;
+
 	private tweenInfo = new TweenInfo(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, 0);
 
 	public constructor() {
-		this.rayParams.FilterType = Enum.RaycastFilterType.Exclude;
-		this.rayParams.FilterDescendantsInstances = [];
+		this.rayParams.FilterType = Enum.RaycastFilterType.Include;
 		this.rayParams.IgnoreWater = true;
 	}
 
+	public getFixedPosition() {
+		return this.fixedPosition;
+	}
+
+	public setFixedPosition(cframe: CFrame) {
+		this.fixedPosition = cframe;
+	}
+
+	public useFixedPosition(use: boolean) {
+		this.usingFixedPosition = use;
+	}
+
 	protected followCharacter() {
+		if (this.usingFixedPosition) {
+			return;
+		}
+
 		const character = PlayerNetworked.getLocalClient()?.getCharacter();
 
 		if (!character) {
@@ -41,6 +60,16 @@ export class LotlCameraController implements OnStart, OnRender {
 	}
 
 	protected fadeObstructions() {
+		if (this.usingFixedPosition) {
+			if (this.oldObstruction) {
+				TweenService.Create(this.oldObstruction, this.tweenInfo, { LocalTransparencyModifier: 0 }).Play();
+
+				this.oldObstruction = undefined;
+			}
+
+			return;
+		}
+
 		const character = PlayerNetworked.getLocalClient()?.getCharacter();
 
 		if (!character) {
@@ -53,10 +82,12 @@ export class LotlCameraController implements OnStart, OnRender {
 			return;
 		}
 
+		this.rayParams.FilterDescendantsInstances = CollectionService.GetTagged("Obstruction");
+
 		const direction = character.HumanoidRootPart.Position.sub(camera.CFrame.Position);
 		const result = Workspace.Raycast(camera.CFrame.Position, direction, this.rayParams);
 
-		if (result) {
+		if (result && (!this.oldObstruction || result.Instance === this.oldObstruction)) {
 			if (!this.oldObstruction) {
 				TweenService.Create(result.Instance, this.tweenInfo, { LocalTransparencyModifier: 0.6 }).Play();
 
@@ -71,6 +102,18 @@ export class LotlCameraController implements OnStart, OnRender {
 		}
 	}
 
+	protected updateFixedPosition() {
+		const camera = Workspace.CurrentCamera;
+
+		if (!camera) {
+			return;
+		}
+
+		if (this.usingFixedPosition) {
+			camera.CFrame = this.fixedPosition;
+		}
+	}
+
 	protected updateRayParams() {
 		this.rayParams.FilterDescendantsInstances = [
 			...PlayerCollidable.getPlayers().mapFiltered((player) => player.getCharacter()),
@@ -79,21 +122,24 @@ export class LotlCameraController implements OnStart, OnRender {
 	}
 
 	onStart() {
-		Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
-
 		const player = PlayerNetworked.getLocalClient();
 
 		if (player) {
 			player.characterLoaded.Once(() => {
 				Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
+
+				this.updateRayParams();
 			});
 		}
+
+		PlayerCollidable.playerAdded.Connect(() => this.updateRayParams());
 	}
 
 	onRender() {
 		this.followCharacter();
 
-		this.updateRayParams();
 		this.fadeObstructions();
+
+		this.updateFixedPosition();
 	}
 }
