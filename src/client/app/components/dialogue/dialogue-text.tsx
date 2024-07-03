@@ -1,5 +1,5 @@
 import { useSelector } from "@rbxts/react-reflex";
-import { RootState } from "../producer";
+import { RootState } from "../../producer";
 import React from "@rbxts/react";
 
 export function DialogueText() {

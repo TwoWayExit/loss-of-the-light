@@ -72,6 +72,8 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 					"Attempt to duplicate BasePlayer from existing localPlayer",
 				);
 			}
+
+			assert(!BasePlayer.getPlayerFromId(id), "Attempt to create BasePlayer from existing id");
 		}
 
 		super(character, localPlayer);
@@ -113,6 +115,15 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 	 */
 	public static getPlayerFromLocalPlayer(localPlayer: Player) {
 		return this.players.find((player) => player.getLocalPlayer() === localPlayer);
+	}
+
+	/**
+	 * Gets the {@link BasePlayer} object from an id
+	 * @param id - A player id to lookup
+	 * @returns The {@link BasePlayer} object if it exists, otherwise `undefined`
+	 */
+	public static getPlayerFromId(id: string) {
+		return this.players.find((player) => player.id === id);
 	}
 
 	/**

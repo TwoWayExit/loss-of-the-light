@@ -18,7 +18,7 @@ export class Enemy<A extends Attributes = Attributes, I extends CharacterRigR6 =
 		super();
 
 		if (this.id) {
-			this.player = new LotlPlayer(undefined, this.instance, this.id);
+			this.player = new LotlPlayer(this.instance, undefined, this.id);
 
 			this.janitor.Add(this.player, "destroy");
 
@@ -35,7 +35,7 @@ export class Enemy<A extends Attributes = Attributes, I extends CharacterRigR6 =
 	}
 
 	protected override onIdLoaded(id: string) {
-		this.player = new LotlPlayer(undefined, this.instance, id);
+		this.player = new LotlPlayer(this.instance, undefined, id);
 
 		this.janitor.Add(this.player, "destroy");
 

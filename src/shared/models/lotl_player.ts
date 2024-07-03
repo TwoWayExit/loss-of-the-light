@@ -3,11 +3,11 @@ import { Components } from "@flamework/components";
 import { Signal } from "@rbxts/beacon";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { PlayerAnimate } from "shared/components/lotl_player-animate";
-import { BasePlayer } from "./player";
-import { NetworkPlayer, Networked } from "shared/utils/network";
-import { Character } from "./character";
-import { $warn } from "rbxts-transform-debug";
+import { BasePlayer, PlayerData } from "./player";
+import { NetworkPlayer, Networked, networkVar } from "shared/utils/network";
 import { Combatant } from "./combatant";
+import { $warn } from "rbxts-transform-debug";
+import { Battle } from "shared/utils/battle";
 
 export const enum LotlPlayerStatus {
 	IDLE,
@@ -16,6 +16,11 @@ export const enum LotlPlayerStatus {
 
 export type CombatantList = Omit<ReplicatedStorage["combatants"], keyof Folder>;
 
+export class LotlPlayerData extends PlayerData {
+	public activeCombatant?: keyof CombatantList;
+	public battle?: Battle;
+}
+
 export class LotlPlayer<P extends Player | undefined = Player | undefined> extends BasePlayer<P> {
 	// Override with a new separate signal
 	public static override readonly playerAdded = new Signal<LotlPlayer>();
@@ -23,14 +28,16 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 	// Override with a new separate array
 	protected static override players: LotlPlayer[] = [];
 
+	public override readonly localData = new LotlPlayerData();
+
 	protected combatants: (keyof CombatantList)[] = [];
-	protected combatantInstances: Character[] = [];
 
-	protected status = LotlPlayerStatus.IDLE;
+	protected status = networkVar<LotlPlayerStatus>(LotlPlayerStatus.IDLE);
 
-	// Make localPlayer the first parameter in order for Networked to automatically pass in the player
-	public constructor(localPlayer?: P, character?: Model | Promise<Model>, id?: string) {
+	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string) {
 		super(character, localPlayer, id);
+
+		this.status.network(this.id);
 	}
 
 	/**
@@ -59,12 +66,25 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 		return super.getPlayerFromLocalPlayer(localPlayer) as LotlPlayer | undefined;
 	}
 
+	/**
+	 * Gets the {@link LotlPlayer} object from an id
+	 * @param id - A player id to lookup
+	 * @returns The {@link LotlPlayer} object if it exists, otherwise `undefined`
+	 */
+	public static getPlayerFromId(id: string) {
+		return super.getPlayerFromId(id) as LotlPlayer | undefined;
+	}
+
 	public getStatus() {
-		return this.status;
+		return this.status.get();
 	}
 
 	public setStatus(status: LotlPlayerStatus) {
-		this.status = status;
+		this.status.set(status);
+	}
+
+	public getCombatants() {
+		return this.combatants as Readonly<typeof this.combatants>;
 	}
 
 	public addCombatant(combatant: keyof CombatantList) {
@@ -78,12 +98,12 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 	public async createCombatants() {
 		const combatants: Combatant[] = [];
 
+		let hasCombatants = false;
+
 		for (const name of this.combatants) {
 			const clone = ReplicatedStorage.combatants[name].Clone();
 
 			clone.Parent = Workspace.combatants;
-
-			this.combatantInstances.push(clone);
 
 			// FIXME: Need a better alternative to await for metadata
 			task.wait();
@@ -96,17 +116,15 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 			}
 
 			combatants.push(combatant);
+
+			hasCombatants = true;
+		}
+
+		if (!hasCombatants) {
+			$warn(`[WARN] Player ${this.localPlayer?.Name ?? this.id} does not have any combatants`);
 		}
 
 		return combatants;
-	}
-
-	public cleanupCombatants() {
-		for (const instance of this.combatantInstances) {
-			instance.Destroy();
-		}
-
-		this.combatantInstances.clear();
 	}
 
 	protected override onDied() {
@@ -139,7 +157,7 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 	}
 }
 
-@Networked({})
+@Networked({ client: true })
 export class LotlPlayerNetworked extends LotlPlayer<Player> {
 	// Override with a new separate signal
 	public static override readonly playerAdded = new Signal<LotlPlayerNetworked>();
@@ -150,7 +168,7 @@ export class LotlPlayerNetworked extends LotlPlayer<Player> {
 	public constructor(localPlayer: NetworkPlayer) {
 		const character = localPlayer.Character ?? Promise.fromEvent(localPlayer.CharacterAdded);
 
-		super(localPlayer, character);
+		super(character, localPlayer);
 	}
 
 	/**
@@ -177,6 +195,15 @@ export class LotlPlayerNetworked extends LotlPlayer<Player> {
 	 */
 	public static override getPlayerFromLocalPlayer(localPlayer: Player) {
 		return super.getPlayerFromLocalPlayer(localPlayer) as LotlPlayerNetworked | undefined;
+	}
+
+	/**
+	 * Gets the {@link LotlPlayerNetworked} object from an id
+	 * @param id - A player id to lookup
+	 * @returns The {@link LotlPlayerNetworked} object if it exists, otherwise `undefined`
+	 */
+	public static getPlayerFromId(id: string) {
+		return super.getPlayerFromId(id) as LotlPlayerNetworked | undefined;
 	}
 
 	protected override onPlayerCreated() {

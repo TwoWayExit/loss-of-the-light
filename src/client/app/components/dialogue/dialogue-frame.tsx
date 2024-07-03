@@ -1,6 +1,8 @@
-import { Spring, useEventListener, useMotor } from "@rbxts/pretty-react-hooks";
+import { useEventListener } from "@rbxts/pretty-react-hooks";
 import { useProducer, useSelector } from "@rbxts/react-reflex";
-import { RootProducer, RootState } from "../producer";
+import { config, spring } from "@rbxts/ripple";
+import { useMotion } from "../../hooks/use-motion";
+import { RootProducer, RootState } from "../../producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import { DialogueName } from "./dialogue-name";
 import { DialogueText } from "./dialogue-text";
@@ -8,7 +10,7 @@ import { DialogueBlinker } from "./dialogue-blinker";
 import React, { useEffect } from "@rbxts/react";
 
 export function DialogueFrame() {
-	const [scale, setScale, api] = useMotor(0);
+	const [scale, motion] = useMotion(0);
 
 	const isActive = useSelector((state: RootState) => state.dialogue.isActive);
 
@@ -19,11 +21,9 @@ export function DialogueFrame() {
 
 	useEffect(() => {
 		if (isActive) {
-			api.setState({ value: 1 }); // Need to include this, the value resets to 0 immediately on render for some reason
-
-			setScale(new Spring(0, { frequency: 4 }));
+			motion.to(spring(0, config.spring.gentle));
 		} else {
-			setScale(new Spring(1, { frequency: 4 }));
+			motion.to(spring(1, config.spring.gentle));
 		}
 	}, [isActive]);
 

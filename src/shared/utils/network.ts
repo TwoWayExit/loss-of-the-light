@@ -4,10 +4,18 @@ import { Players, RunService } from "@rbxts/services";
 import { t } from "@rbxts/t";
 
 type Constructor<T> = new (...args: never[]) => T;
-type NetworkValue = string | number | boolean | Map<string, unknown>;
+type NoFunctionProperties<T> = { [K in keyof T]: T[K] extends (...args: never[]) => unknown ? never : T[K] };
+type NetworkValue<T> = T extends string | number | boolean | Map<string, unknown> | unknown[]
+	? T
+	: T extends object
+		? NoFunctionProperties<T>
+		: never;
 
 /** A dependency to retrieve the `client` property of a {@link Networked} class object */
 export type NetworkPlayer = Player & { _marker?: void };
+
+/** Omits functions from a class type */
+export type NetworkClass<T extends object> = NoFunctionProperties<T>;
 
 /** An interface to implement when using the {@link Networked} decorator */
 export interface Networkable {
@@ -96,10 +104,10 @@ export class Network {
  * A class to create variables which replicate server values to client values (non vice versa)
  * @remarks Do not directly construct this class, instead use the {@link networkVar} macro
  */
-export class NetworkVar<T extends NetworkValue> {
+export class NetworkVar<T> {
 	public readonly valueSet = new Signal<[T]>();
 
-	protected static idToVar = new Map<string, NetworkVar<NetworkValue>>();
+	protected static idToVar = new Map<string, NetworkVar<unknown>>();
 
 	private client?: string;
 
@@ -112,7 +120,7 @@ export class NetworkVar<T extends NetworkValue> {
 		this.valueSet.Connect((value) => this.onValueSet(value));
 	}
 
-	public static is(object: unknown): object is NetworkVar<NetworkValue> {
+	public static is(object: unknown): object is NetworkVar<unknown> {
 		return typeIs(object, "table") && "value" in object && "valueSet" in object;
 	}
 
@@ -164,6 +172,19 @@ export class NetworkVar<T extends NetworkValue> {
 		NetworkVar.idToVar.set(`${client}~${this.uuid}`, this);
 	}
 
+	/** @server */
+	public async refresh(player?: Player) {
+		if (RunService.IsServer()) {
+			const { Events } = await import("server/network/global");
+
+			if (player) {
+				Events.receiveNetVar(player, this.uuid, this.value, this.client);
+			} else {
+				Events.receiveNetVar.broadcast(this.uuid, this.value, this.client);
+			}
+		}
+	}
+
 	protected async onValueSet(value: T) {
 		if (RunService.IsServer()) {
 			const { Events } = await import("server/network/global");
@@ -173,7 +194,7 @@ export class NetworkVar<T extends NetworkValue> {
 	}
 }
 
-export interface NetworkVarMetadata<T extends NetworkValue> {
+export interface NetworkVarMetadata<T> {
 	generic: Modding.Generic<T, "guard">;
 	caller: Modding.Caller<"uuid">;
 }
@@ -183,7 +204,7 @@ export interface NetworkVarMetadata<T extends NetworkValue> {
  * @remarks The {@link NetworkVar} is required to be initialized using the `network()` method with a client's unique ID (ie. UserId) if used within a non-static class member (preferably in the class constructor) or without otherwise (global network var)
  * @metadata macro
  */
-export function networkVar<T extends NetworkValue>(initialValue: T, metadata?: Modding.Many<NetworkVarMetadata<T>>) {
+export function networkVar<T>(initialValue: NetworkValue<T>, metadata?: Modding.Many<NetworkVarMetadata<T>>) {
 	assert(metadata);
 
 	return new NetworkVar(initialValue, metadata.caller, metadata.generic);

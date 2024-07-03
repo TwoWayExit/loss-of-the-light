@@ -1,17 +1,19 @@
-import { Linear, useInterval, useMotor } from "@rbxts/pretty-react-hooks";
+import { useInterval } from "@rbxts/pretty-react-hooks";
 import { useSelector } from "@rbxts/react-reflex";
-import { RootState } from "../producer";
+import { linear } from "@rbxts/ripple";
+import { RootState } from "../../producer";
+import { useMotion } from "../../hooks/use-motion";
 import React from "@rbxts/react";
 
 const BLINK_INTERVAL = 0.35;
 
 export function DialogueBlinker() {
-	const [alpha, setAlpha] = useMotor(0);
+	const [alpha, motion] = useMotion(0);
 
 	const isActive = useSelector((state: RootState) => state.dialogue.isActive);
 
 	useInterval(
-		() => setAlpha(new Linear(alpha.getValue() === 1 ? 0 : 1, { velocity: 5 })),
+		() => motion.to(linear(alpha.getValue() === 1 ? 0 : 1, { speed: 5 })),
 		isActive ? BLINK_INTERVAL : undefined,
 		{ immediate: true },
 	);

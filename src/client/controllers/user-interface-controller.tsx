@@ -2,7 +2,7 @@ import { Players } from "@rbxts/services";
 import { createPortal, createRoot } from "@rbxts/react-roblox";
 import { ReflexProvider } from "@rbxts/react-reflex";
 import { Controller, OnStart } from "@flamework/core";
-import { Dialogue } from "client/app/components/dialogue";
+import { Dialogue } from "client/app/components/dialogue/dialogue";
 import { producer } from "client/app/producer";
 import React, { StrictMode } from "@rbxts/react";
 
