@@ -52,8 +52,6 @@ export class InputController implements OnStart, OnRender {
 		if (player) {
 			this.onPlayerAdded(player);
 		}
-
-		PlayerNetworked.playerAdded.Connect((player) => this.onPlayerAdded(player));
 	}
 
 	onRender() {

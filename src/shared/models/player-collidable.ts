@@ -21,11 +21,11 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 
 	protected boundingBox?: BoundingBox;
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P);
+	public constructor(character?: Model, localPlayer?: P);
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string);
+	public constructor(character?: Model, localPlayer?: P, id?: string);
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string) {
+	public constructor(character?: Model, localPlayer?: P, id?: string) {
 		super(character, localPlayer, id);
 
 		this.janitor.Add(this.boundingBoxLoaded, "Destroy");

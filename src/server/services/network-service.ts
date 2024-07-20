@@ -1,9 +1,12 @@
 import { Service, OnInit } from "@flamework/core";
-import { Functions } from "server/network/global";
+import { Events, Functions } from "server/network/global";
 import { Players, HttpService } from "@rbxts/services";
 import { NetworkingFunctionError } from "@flamework/networking";
 import { Globals } from "shared/modules/globals";
 import { PlayerNetworked } from "shared/models/player-networked";
+import { createBroadcaster } from "@rbxts/reflex";
+import { slices } from "shared/slices";
+import { producer } from "server/producer";
 
 const enum Errors {
 	INCORRECT_KEY = "Incorrect key returned",
@@ -68,7 +71,23 @@ export class NetworkService implements OnInit {
 		);
 	}
 
+	private setupBroadcaster() {
+		const broadcaster = createBroadcaster({
+			producers: slices,
+
+			dispatch: (player, actions) => {
+				Events.dispatch(player, actions);
+			},
+		});
+
+		Events.start.connect((player) => broadcaster.start(player));
+
+		producer.applyMiddleware(broadcaster.middleware);
+	}
+
 	onInit() {
 		PlayerNetworked.playerAdded.Connect((player) => this.startPing(player));
+
+		this.setupBroadcaster();
 	}
 }

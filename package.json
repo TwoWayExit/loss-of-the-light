@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rbxtsc",
     "watch": "rbxtsc -w",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package --exclude 'nothing'"
   },
   "keywords": [],
   "author": "",
@@ -26,8 +26,8 @@
     "rbxts-transform-env": "^2.2.0",
     "rbxts-transformer-flamework": "^1.2.3",
     "rbxts-transformer-t-new": "^1.1.5",
-    "roblox-ts": "^2.3.0-dev-d7847ea",
-    "typescript": "^5.4.5"
+    "roblox-ts": "^2.3.0-dev-576ad98",
+    "typescript": "^5.5.3"
   },
   "dependencies": {
     "@flamework/components": "^1.2.3",
@@ -38,9 +38,9 @@
     "@rbxts/fast-replica": "^3.0.2",
     "@rbxts/janitor": "^1.15.7-ts.0",
     "@rbxts/object-utils": "^1.0.4",
-    "@rbxts/pretty-react-hooks": "^0.5.0",
+    "@rbxts/pretty-react-hooks": "^0.5.1",
     "@rbxts/profileservice": "^1.4.2",
-    "@rbxts/promise-character": "^1.0.3",
+    "@rbxts/promise-character": "file:rbxts-promise-character-1.0.3.tgz",
     "@rbxts/promise-child": "^1.2.1",
     "@rbxts/react": "^0.4.0",
     "@rbxts/react-reflex": "^0.3.4",

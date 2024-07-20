@@ -43,7 +43,7 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	private activeAnimations = new Map<Animation, AnimationTrack>();
 
 	// We're not using a parameter property here to avoid P | undefined
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P) {
+	public constructor(character?: Model, localPlayer?: P) {
 		this.localPlayer = localPlayer!;
 
 		this.janitor.Add(this.characterLoaded, "Destroy");
@@ -58,13 +58,7 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 		);
 
 		if (character) {
-			if (Promise.is(character)) {
-				character.then((character) =>
-					this.getLoadedCharacter(character).then((character) => this.initializeCharacter(character)),
-				);
-			} else {
-				this.getLoadedCharacter(character).then((character) => this.initializeCharacter(character));
-			}
+			this.getLoadedCharacter(character).then((character) => this.initializeCharacter(character));
 		}
 	}
 

@@ -3,10 +3,13 @@ import { config } from "../config";
 import { globalReplicas } from "../replicas";
 import { DevConServerEvents, DevConServerFunctions } from "./dev-con";
 import { LotlClientEvents, LotlServerEvents } from "./lotl";
+import { BroadcastAction } from "@rbxts/reflex";
 
 type MovementVar = keyof ReturnType<typeof globalReplicas.client.movement.GetValue>;
 
 interface ServerEvents {
+	start: () => void;
+
 	devCon: DevConServerEvents;
 	lotl: LotlServerEvents;
 }
@@ -14,6 +17,8 @@ interface ServerEvents {
 interface ClientEvents {
 	updateSharedConfig: (update: Partial<typeof config>) => void;
 	receiveNetVar: (uuid: string, value: unknown, client?: string) => void;
+
+	dispatch: (actions: BroadcastAction[]) => void;
 
 	lotl: LotlClientEvents;
 }

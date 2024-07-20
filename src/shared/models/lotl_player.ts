@@ -1,24 +1,14 @@
-import { Dependency, Reflect } from "@flamework/core";
+import { Dependency } from "@flamework/core";
 import { Components } from "@flamework/components";
 import { Signal } from "@rbxts/beacon";
-import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { PlayerAnimate } from "shared/components/lotl_player-animate";
-import { BasePlayer, PlayerData } from "./player";
+import { BasePlayer } from "./player";
 import { NetworkPlayer, Networked, networkVar } from "shared/utils/network";
-import { Combatant } from "./combatant";
 import { $warn } from "rbxts-transform-debug";
-import { Battle } from "shared/utils/battle";
 
 export const enum LotlPlayerStatus {
 	IDLE,
 	IN_BATTLE,
-}
-
-export type CombatantList = Omit<ReplicatedStorage["combatants"], keyof Folder>;
-
-export class LotlPlayerData extends PlayerData {
-	public activeCombatant?: keyof CombatantList;
-	public battle?: Battle;
 }
 
 export class LotlPlayer<P extends Player | undefined = Player | undefined> extends BasePlayer<P> {
@@ -28,13 +18,9 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 	// Override with a new separate array
 	protected static override players: LotlPlayer[] = [];
 
-	public override readonly localData = new LotlPlayerData();
-
-	protected combatants: (keyof CombatantList)[] = [];
-
 	protected status = networkVar<LotlPlayerStatus>(LotlPlayerStatus.IDLE);
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string) {
+	public constructor(character?: Model, localPlayer?: P, id?: string) {
 		super(character, localPlayer, id);
 
 		this.status.network(this.id);
@@ -83,50 +69,6 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 		this.status.set(status);
 	}
 
-	public getCombatants() {
-		return this.combatants as Readonly<typeof this.combatants>;
-	}
-
-	public addCombatant(combatant: keyof CombatantList) {
-		this.combatants.push(combatant);
-	}
-
-	public removeCombatant(combatant: keyof CombatantList) {
-		this.combatants.remove(this.combatants.indexOf(combatant));
-	}
-
-	public async createCombatants() {
-		const combatants: Combatant[] = [];
-
-		let hasCombatants = false;
-
-		for (const name of this.combatants) {
-			const clone = ReplicatedStorage.combatants[name].Clone();
-
-			clone.Parent = Workspace.combatants;
-
-			// FIXME: Need a better alternative to await for metadata
-			task.wait();
-
-			const combatant = Reflect.getMetadata<Combatant>(clone, "combatant");
-
-			if (!combatant) {
-				$warn(`[WARN] Combatant not found in ${name}`);
-				continue;
-			}
-
-			combatants.push(combatant);
-
-			hasCombatants = true;
-		}
-
-		if (!hasCombatants) {
-			$warn(`[WARN] Player ${this.localPlayer?.Name ?? this.id} does not have any combatants`);
-		}
-
-		return combatants;
-	}
-
 	protected override onDied() {
 		if (!this.character) {
 			return;
@@ -166,9 +108,17 @@ export class LotlPlayerNetworked extends LotlPlayer<Player> {
 	protected static override players: LotlPlayerNetworked[] = [];
 
 	public constructor(localPlayer: NetworkPlayer) {
-		const character = localPlayer.Character ?? Promise.fromEvent(localPlayer.CharacterAdded);
+		const character = localPlayer.Character;
 
 		super(character, localPlayer);
+
+		if (!character) {
+			this.janitor
+				.AddPromise(Promise.fromEvent(localPlayer.CharacterAdded))
+				.then((character) =>
+					this.getLoadedCharacter(character).then((character) => this.initializeCharacter(character)),
+				);
+		}
 	}
 
 	/**

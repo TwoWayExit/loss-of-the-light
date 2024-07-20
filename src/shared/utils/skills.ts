@@ -1,4 +1,4 @@
-import { Combatant } from "shared/models/combatant";
+import type { CombatantInfo } from "server/models/combatant";
 
 type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
 
@@ -15,7 +15,7 @@ export class Skillset<T extends ReadonlyRecord<string, Skill> = ReadonlyRecord<s
 	public static getSkillset(name: string) {
 		const result = Skillset.skillsets.get(name);
 
-		assert(result, "Could not find a skillset with the associated name");
+		assert(result, `Could not find a skillset with name '${name}'`);
 
 		return result;
 	}
@@ -26,7 +26,7 @@ export abstract class Skill {
 	public constructor(public readonly name: string) {}
 
 	/** @virtual */
-	public cast(target: Combatant) {
+	public cast(target: CombatantInfo) {
 		warn(`[WARN] Skill cast unimplemented, target ${target}`);
 	}
 }

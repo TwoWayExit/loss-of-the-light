@@ -1,17 +1,12 @@
-import { Component } from "@flamework/components";
-import { DisposableComponent } from "./disposable-component";
 import { CollectionService, HttpService, Players, RunService } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
 import { $env } from "rbxts-transform-env";
+import { Janitor } from "@rbxts/janitor";
 
-interface Attributes {}
-
-/** A base component to create unique identifiers on components shared across server > client */
-@Component({
-	tag: "uuid-generator",
-})
-export class Uuid<A extends Attributes, I extends Instance> extends DisposableComponent<A, I> {
+export class Uuid {
 	public readonly idLoaded = new Signal<string>();
+
+	protected janitor = new Janitor();
 
 	/**
 	 * A unique identifier for this component which is shared across the server > client
@@ -19,18 +14,19 @@ export class Uuid<A extends Attributes, I extends Instance> extends DisposableCo
 	 */
 	protected id!: string;
 
-	public constructor() {
-		super();
-
+	public constructor(
+		protected instance: Instance,
+		protected discriminator: string,
+	) {
 		if ($env.boolean("SINGLE_PLAYER_TESTING")) {
 			this.id = HttpService.GenerateGUID(false);
 
-			CollectionService.AddTag(this.instance, `uuid:${this.id}`);
+			CollectionService.AddTag(this.instance, `uuid:${this.discriminator}:${this.id}`);
 		} else {
 			if (RunService.IsServer() || Players.MaxPlayers <= 1) {
 				this.id = HttpService.GenerateGUID(false);
 
-				CollectionService.AddTag(this.instance, `uuid:${this.id}`);
+				CollectionService.AddTag(this.instance, `uuid:${this.discriminator}:${this.id}`);
 			} else {
 				const tag = this.findUuid();
 
@@ -55,6 +51,12 @@ export class Uuid<A extends Attributes, I extends Instance> extends DisposableCo
 		return this.id ?? this.idLoaded.Wait();
 	}
 
+	public destroy() {
+		CollectionService.RemoveTag(this.instance, `uuid:${this.discriminator}:${this.id}`);
+
+		this.janitor.Destroy();
+	}
+
 	/**
 	 * A virtual method which is called on the client when the id is loaded from the server
 	 * @virtual
@@ -64,7 +66,7 @@ export class Uuid<A extends Attributes, I extends Instance> extends DisposableCo
 
 	private findUuid() {
 		return CollectionService.GetTags(this.instance)
-			.find((tag) => tag.match("^uuid:")[0] !== undefined)
-			?.gsub("uuid:", "")[0];
+			.find((tag) => tag.match(`^uuid:${this.discriminator}:`)[0] !== undefined)
+			?.gsub(`uuid:${this.discriminator}:`, "")[0];
 	}
 }

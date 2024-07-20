@@ -6,28 +6,26 @@ const MAX_RESET_BUTTON_TRIES = 15;
 
 @Controller({})
 export class PlayerController implements OnStart {
-	private disableResetButton() {
+	private async disableResetButton() {
 		let i = 0;
 
 		return Promise.retryWithDelay(
 			async () => {
 				i++;
 
-				try {
-					StarterGui.SetCore("ResetButtonCallback", false);
-				} catch {
-					return Promise.reject("");
-				}
+				StarterGui.SetCore("ResetButtonCallback", false);
+
+				return i - 1;
 			},
 			MAX_RESET_BUTTON_TRIES,
 			0.5,
-		).finally(() => i - 1);
+		);
 	}
 
 	onStart() {
 		this.disableResetButton().then(
 			(tries) => print(`Disable ResetButtonCallback success after ${tries} retries`),
-			(tries) => warn(`Disable ResetButtonCallback failed after ${tries} retries`),
+			() => warn(`Disable ResetButtonCallback failed after ${MAX_RESET_BUTTON_TRIES} retries`),
 		);
 	}
 }

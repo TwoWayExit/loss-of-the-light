@@ -52,15 +52,11 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 		}
 	}
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P);
+	public constructor(character?: Model, localPlayer?: P);
 
-	public constructor(character?: Model | Promise<Model>, localPlayer?: P, id?: string);
+	public constructor(character?: Model, localPlayer?: P, id?: string);
 
-	public constructor(
-		character?: Model | Promise<Model>,
-		localPlayer?: P,
-		id = localPlayer && tostring(localPlayer.UserId),
-	) {
+	public constructor(character?: Model, localPlayer?: P, id = localPlayer && tostring(localPlayer.UserId)) {
 		assert(id, "No player id associated");
 
 		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {

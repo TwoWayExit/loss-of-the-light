@@ -12,6 +12,7 @@ import { Trace, TraceT, RayT } from "shared/utils/trace";
 import { PlayerCollidable } from "shared/models/player-collidable";
 import { $env } from "rbxts-transform-env";
 import { Tags } from "shared/modules/tags";
+import { States } from "shared/modules/states";
 
 interface Attributes {
 	walkSpeed: number;
@@ -709,6 +710,42 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		this.instance.PivotTo(this.instance.GetPivot().Lerp(targetCFrame, 7 * stats.frameTime));
 	}
 
+	protected fullNoclipMove() {
+		let wishDir: Vector3;
+		let wishSpeed: number;
+
+		const forward = this.player.getViewCFrame().LookVector;
+		const right = this.player.getViewCFrame().RightVector;
+
+		const wishVel = new Vector3(
+			forward.X * this.move.forwardMove + right.X * this.move.sideMove,
+			forward.Y * this.move.forwardMove,
+			forward.Z * this.move.forwardMove + right.Z * this.move.sideMove,
+		);
+
+		wishDir = wishVel.Unit;
+		wishSpeed = wishVel.Magnitude;
+
+		// If wishSpeed is 0, then wishDir is definitely NaN
+		if (wishSpeed === 0) {
+			wishDir = Vector3.zero;
+		}
+
+		if (wishSpeed > this.maxSpeed) {
+			wishSpeed = this.maxSpeed;
+		}
+
+		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
+		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+
+		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate);
+		this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
+
+		this.player.setAbsOrigin(this.player.getAbsOrigin().add(this.velocity.VectorVelocity));
+
+		this.velocity.VectorVelocity = Vector3.zero;
+	}
+
 	protected fullWalkMove() {
 		this.startGravity();
 		this.checkVelocity();
@@ -794,6 +831,11 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		}
 
 		this.reduceTimers();
-		this.fullWalkMove();
+
+		if (this.player.getFlags() & States.NOCLIPPING) {
+			this.fullNoclipMove();
+		} else {
+			this.fullWalkMove();
+		}
 	}
 }

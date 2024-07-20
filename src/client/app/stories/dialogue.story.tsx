@@ -1,6 +1,6 @@
 import { ReflexProvider } from "@rbxts/react-reflex";
 import { DialogueFrame } from "../components/dialogue/dialogue-frame";
-import { RootState, producer } from "../producer";
+import { RootState, producer } from "../../producer";
 import React from "@rbxts/react";
 import ReactRoblox from "@rbxts/react-roblox";
 
@@ -17,6 +17,7 @@ export = {
 
 	story: (props: { controls: RootState["dialogue"] }) => {
 		producer.setState({
+			...producer.getState(),
 			dialogue: props.controls,
 		});
 

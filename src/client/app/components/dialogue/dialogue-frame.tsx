@@ -2,7 +2,7 @@ import { useEventListener } from "@rbxts/pretty-react-hooks";
 import { useProducer, useSelector } from "@rbxts/react-reflex";
 import { config, spring } from "@rbxts/ripple";
 import { useMotion } from "../../hooks/use-motion";
-import { RootProducer, RootState } from "../../producer";
+import { RootProducer, RootState } from "../../../producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import { DialogueName } from "./dialogue-name";
 import { DialogueText } from "./dialogue-text";

@@ -1,11 +1,12 @@
-import type { BattleInfo, NetworkBattleTeam, Teams } from "shared/utils/battle";
-import { NetworkClass } from "shared/utils/network";
+import type { CombatantList } from "server/models/combatant";
 
-export interface LotlServerEvents {}
+export interface LotlServerEvents {
+	castSkill: (skill: string) => void;
+	switchCombatant: (combatant: keyof CombatantList) => void;
+}
 
 export interface LotlClientEvents {
-	startBattle: (teams: Map<Teams, NetworkBattleTeam>, battleId: string, battleInfo: NetworkClass<BattleInfo>) => void;
-	stopBattle: (battleId: string) => void;
+	castSkillVFX: (skill: string) => void;
 }
 
 export interface LotlServerFunctions {}

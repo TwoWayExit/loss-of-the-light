@@ -43,9 +43,17 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 	protected ping = networkVar<number>(0);
 
 	public constructor(localPlayer: NetworkPlayer) {
-		const character = localPlayer.Character ?? Promise.fromEvent(localPlayer.CharacterAdded);
+		const character = localPlayer.Character;
 
 		super(character, localPlayer);
+
+		if (!character) {
+			this.janitor
+				.AddPromise(Promise.fromEvent(localPlayer.CharacterAdded))
+				.then((character) =>
+					this.getLoadedCharacter(character).then((character) => this.initializeCharacter(character)),
+				);
+		}
 
 		this.status.network(tostring(localPlayer.UserId));
 		this.ping.network(tostring(localPlayer.UserId));

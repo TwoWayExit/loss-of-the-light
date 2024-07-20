@@ -3,7 +3,7 @@ import { createPortal, createRoot } from "@rbxts/react-roblox";
 import { ReflexProvider } from "@rbxts/react-reflex";
 import { Controller, OnStart } from "@flamework/core";
 import { Dialogue } from "client/app/components/dialogue/dialogue";
-import { producer } from "client/app/producer";
+import { producer } from "client/producer";
 import React, { StrictMode } from "@rbxts/react";
 
 const app = (

@@ -2,15 +2,17 @@ import { OnTick } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { Character } from "shared/models/character";
-import { CombatantList, LotlPlayer, LotlPlayerNetworked, LotlPlayerStatus } from "shared/models/lotl_player";
-import { Battle } from "shared/utils/battle";
-import { Uuid } from "shared/components/uuid";
+import { LotlPlayer, LotlPlayerNetworked, LotlPlayerStatus } from "shared/models/lotl_player";
+import { Combatant, CombatantList } from "server/models/combatant";
+import { ServerBattle } from "../models/server-battle";
+import { DisposableComponent } from "shared/components/disposable-component";
 import { Enemy } from "shared/components/enemy_base";
 
 interface Attributes {
 	triggerDistance: number;
 }
 
+/** @remarks Do not manually add this component via studio, use the `enemy` component tag instead */
 @Component({
 	tag: "battle-trigger",
 	defaults: {
@@ -18,7 +20,7 @@ interface Attributes {
 	},
 	ancestorWhitelist: [Workspace],
 })
-export class BattleTrigger extends Uuid<Attributes, Character> implements OnTick {
+export class BattleTrigger extends DisposableComponent<Attributes, Character> implements OnTick {
 	protected player: LotlPlayer;
 
 	public constructor(protected readonly components: Components) {
@@ -42,7 +44,13 @@ export class BattleTrigger extends Uuid<Attributes, Character> implements OnTick
 				continue;
 			}
 
-			player.addCombatant(combatant as keyof CombatantList);
+			const clone = ReplicatedStorage.combatants[combatant as keyof CombatantList].Clone();
+
+			Combatant.addCombatant(player, combatant as keyof CombatantList, {
+				name: combatant,
+				character: clone,
+				health: 100,
+			});
 		}
 
 		this.player = player;
@@ -58,7 +66,7 @@ export class BattleTrigger extends Uuid<Attributes, Character> implements OnTick
 		const distance = character.HumanoidRootPart.Position.sub(this.instance.HumanoidRootPart.Position).Magnitude;
 
 		if (distance <= this.attributes.triggerDistance) {
-			Battle.createQuickBattle(player, this.player).then((battle) => battle.startBattle());
+			ServerBattle.createQuickBattle(player, this.player).then((battle) => battle.startBattle());
 		}
 	}
 

@@ -1,7 +1,7 @@
 import { useInterval } from "@rbxts/pretty-react-hooks";
 import { useSelector } from "@rbxts/react-reflex";
 import { linear } from "@rbxts/ripple";
-import { RootState } from "../../producer";
+import { RootState } from "../../../producer";
 import { useMotion } from "../../hooks/use-motion";
 import React from "@rbxts/react";
 
