@@ -1,13 +1,13 @@
-import type { CombatantInfo } from "server/models/combatant";
+import { LotlPlayer } from "shared/models/lotl_player";
 
 type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
 
-export class Skillset<T extends ReadonlyRecord<string, Skill> = ReadonlyRecord<string, Skill>> {
+export class Skillset {
 	protected static skillsets = new Map<string, Skillset>();
 
 	public constructor(
 		public readonly name: string,
-		public readonly skills: T,
+		public readonly skills: ReadonlyRecord<string, Skill>,
 	) {
 		Skillset.skillsets.set(name, this);
 	}
@@ -21,12 +21,19 @@ export class Skillset<T extends ReadonlyRecord<string, Skill> = ReadonlyRecord<s
 	}
 }
 
+export interface SkillProperties {
+	readonly damage: number;
+}
+
 export abstract class Skill {
 	/** @virtual */
-	public constructor(public readonly name: string) {}
+	public constructor(
+		public readonly name: string,
+		public readonly properties: SkillProperties,
+	) {}
 
 	/** @virtual */
-	public cast(target: CombatantInfo) {
-		warn(`[WARN] Skill cast unimplemented, target ${target}`);
+	public cast(caster: LotlPlayer, target: LotlPlayer) {
+		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}`);
 	}
 }

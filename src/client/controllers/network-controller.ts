@@ -1,5 +1,5 @@
 import { Controller, OnInit } from "@flamework/core";
-import { createBroadcastReceiver, loggerMiddleware } from "@rbxts/reflex";
+import { createBroadcastReceiver } from "@rbxts/reflex";
 import { Events } from "client/network/global";
 import { producer } from "client/producer";
 
@@ -13,7 +13,6 @@ export class NetworkController implements OnInit {
 		Events.dispatch.connect((actions) => receiver.dispatch(actions));
 
 		producer.applyMiddleware(receiver.middleware);
-		producer.applyMiddleware(loggerMiddleware);
 	}
 
 	onInit() {

@@ -10,14 +10,14 @@ import { DialogueBlinker } from "./dialogue-blinker";
 import React, { useEffect } from "@rbxts/react";
 
 export function DialogueFrame() {
-	const [scale, motion] = useMotion(0);
+	const [scale, motion] = useMotion(1);
 
 	const isActive = useSelector((state: RootState) => state.dialogue.isActive);
 
 	const producer = useProducer<RootProducer>();
 
-	useEventListener(DialogueBuilder.dialogueStarted, () => producer.setActive(true));
-	useEventListener(DialogueBuilder.dialogueEnded, () => producer.setActive(false));
+	useEventListener(DialogueBuilder.dialogueStarted, () => producer.setDialogueActive(true));
+	useEventListener(DialogueBuilder.dialogueEnded, () => producer.setDialogueActive(false));
 
 	useEffect(() => {
 		if (isActive) {

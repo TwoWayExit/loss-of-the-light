@@ -264,6 +264,14 @@ export abstract class BasePlayer<P extends Player | undefined = Player | undefin
 	}
 
 	/**
+	 * Gets the player's nickname, helpful for debugging
+	 * @returns Returns the player's `Name` if they have a `localPlayer`, else their `id`
+	 */
+	public getNickname() {
+		return this.getLocalPlayer()?.Name ?? this.id;
+	}
+
+	/**
 	 * Alias for `getHealth() > 0`
 	 * @returns If the player is alive
 	 */

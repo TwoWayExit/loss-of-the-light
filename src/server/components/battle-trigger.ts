@@ -4,9 +4,9 @@ import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { Character } from "shared/models/character";
 import { LotlPlayer, LotlPlayerNetworked, LotlPlayerStatus } from "shared/models/lotl_player";
 import { Combatant, CombatantList } from "server/models/combatant";
-import { ServerBattle } from "../models/server-battle";
 import { DisposableComponent } from "shared/components/disposable-component";
 import { Enemy } from "shared/components/enemy_base";
+import { BattleService } from "server/services/battle-service";
 
 interface Attributes {
 	triggerDistance: number;
@@ -23,7 +23,10 @@ interface Attributes {
 export class BattleTrigger extends DisposableComponent<Attributes, Character> implements OnTick {
 	protected player: LotlPlayer;
 
-	public constructor(protected readonly components: Components) {
+	public constructor(
+		protected readonly components: Components,
+		protected readonly battleService: BattleService,
+	) {
 		super();
 
 		const player = LotlPlayer.getPlayerFromCharacter(this.instance);
@@ -36,7 +39,13 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 			`Battle trigger '${this.instance.GetFullName()}' does not have any combatants`,
 		);
 
-		for (const combatant of enemy.attributes.combatants.split(",")) {
+		this.addCombatants(player, enemy.attributes.combatants);
+
+		this.player = player;
+	}
+
+	protected addCombatants(player: LotlPlayer, combatants: string) {
+		for (const combatant of combatants.split(",")) {
 			if (!ReplicatedStorage.combatants.FindFirstChild(combatant)) {
 				warn(
 					`Combatant '${combatant}' not found in ReplicatedStorage.combatants (Battle trigger '${this.instance.GetFullName()}')`,
@@ -52,8 +61,6 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 				health: 100,
 			});
 		}
-
-		this.player = player;
 	}
 
 	protected checkDistance(player: LotlPlayerNetworked) {
@@ -66,7 +73,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 		const distance = character.HumanoidRootPart.Position.sub(this.instance.HumanoidRootPart.Position).Magnitude;
 
 		if (distance <= this.attributes.triggerDistance) {
-			ServerBattle.createQuickBattle(player, this.player).then((battle) => battle.startBattle());
+			this.battleService.startBattle(player, this.player);
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { InferState, combineProducers } from "@rbxts/reflex";
+import { InferState, combineProducers, loggerMiddleware } from "@rbxts/reflex";
 import { dialogue } from "./app/slices/dialogue";
 import { slices } from "shared/slices";
 
@@ -9,3 +9,5 @@ export const producer = combineProducers({
 	...slices,
 	dialogue,
 });
+
+producer.applyMiddleware(loggerMiddleware);

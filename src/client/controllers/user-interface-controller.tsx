@@ -3,12 +3,14 @@ import { createPortal, createRoot } from "@rbxts/react-roblox";
 import { ReflexProvider } from "@rbxts/react-reflex";
 import { Controller, OnStart } from "@flamework/core";
 import { Dialogue } from "client/app/components/dialogue/dialogue";
+import { Combat } from "client/app/components/combat/combat";
 import { producer } from "client/producer";
 import React, { StrictMode } from "@rbxts/react";
 
 const app = (
 	<ReflexProvider producer={producer}>
 		<Dialogue />
+		<Combat />
 	</ReflexProvider>
 );
 @Controller({

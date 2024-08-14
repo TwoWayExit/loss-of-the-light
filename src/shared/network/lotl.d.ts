@@ -1,7 +1,7 @@
 import type { CombatantList } from "server/models/combatant";
 
 export interface LotlServerEvents {
-	castSkill: (skill: string) => void;
+	castSkill: (skill: string, targetId: string) => void;
 	switchCombatant: (combatant: keyof CombatantList) => void;
 }
 

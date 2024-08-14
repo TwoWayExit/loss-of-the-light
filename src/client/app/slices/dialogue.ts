@@ -9,9 +9,9 @@ export const dialogue = createProducer(
 		currentDialogue: undefined as Dialogue | undefined,
 	},
 	{
-		setActive: (state, isActive: boolean) => ({ ...state, isActive }),
-		setName: (state, name: string) => ({ ...state, name }),
-		setText: (state, text: string) => ({ ...state, text }),
+		setDialogueActive: (state, isActive: boolean) => ({ ...state, isActive }),
+		setDialogueName: (state, name: string) => ({ ...state, name }),
+		setDialogueText: (state, text: string) => ({ ...state, text }),
 		setCurrentDialogue: (state, currentDialogue?: Dialogue) => ({ ...state, currentDialogue }),
 	},
 );

@@ -3,6 +3,7 @@ import { producer } from "server/producer";
 import { Battle, Teams } from "shared/models/battle";
 import { Combatant } from "server/models/combatant";
 import { LotlPlayer, LotlPlayerStatus } from "shared/models/lotl_player";
+import { $warn } from "rbxts-transform-debug";
 
 export type BattleTeam = Map<LotlPlayer, Combatant[]>;
 
@@ -21,17 +22,37 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	public static async createQuickBattle(player1: LotlPlayer, player2: LotlPlayer) {
+	public static inBattle(player: LotlPlayer, battleId?: string) {
+		const battles = producer.getState((state) => state.battles.battles);
+
+		for (const [id, battle] of pairs(battles)) {
+			// A little inefficient, but fewer lines of code than trying to index the battle and looping over it
+			if (battleId && id !== battleId) {
+				continue;
+			}
+
+			for (const [, team] of pairs(battle.teams)) {
+				if (team.has(player.id)) {
+					return $tuple(true, id as string);
+				}
+			}
+		}
+
+		return $tuple(false, undefined);
+	}
+
+	public static createQuickBattle(player1: LotlPlayer, player2: LotlPlayer) {
 		return new ServerBattle(
 			new Map([
-				[Teams.TEAM1, new Map([[player1, await Combatant.createCombatants(player1)]])],
-				[Teams.TEAM2, new Map([[player2, await Combatant.createCombatants(player2)]])],
+				[Teams.TEAM1, new Map([[player1, Combatant.createCombatants(player1)]])],
+				[Teams.TEAM2, new Map([[player2, Combatant.createCombatants(player2)]])],
 			]),
 		);
 	}
 
 	public override startBattle() {
-		this.setStatusOfTeams(LotlPlayerStatus.IN_BATTLE);
+		this.setupTeams(true);
+
 		this.stopMovementOfTeams();
 
 		producer.addBattle(this.id);
@@ -53,7 +74,8 @@ export class ServerBattle extends Battle {
 	}
 
 	public override stopBattle() {
-		this.setStatusOfTeams(LotlPlayerStatus.IDLE);
+		this.setupTeams(false);
+
 		this.startMovementOfTeams();
 
 		producer.removeBattle(this.id);
@@ -85,6 +107,16 @@ export class ServerBattle extends Battle {
 		}
 	}
 
+	public nextTurn() {
+		producer.nextBattleTurn(this.id);
+
+		for (const [, team] of this.teams) {
+			for (const [player] of team) {
+				producer.setPlayerSkillCasted(player.id, undefined);
+			}
+		}
+	}
+
 	protected getBattleOrigin() {
 		let total = Vector3.zero;
 		let count = 0;
@@ -95,7 +127,7 @@ export class ServerBattle extends Battle {
 			for (const [player] of team) {
 				const character = player.getCharacter();
 
-				assert(character, `Player ${player.id} does not have a character`);
+				assert(character, `Player ${player.getNickname()} does not have a character`);
 
 				if (!target) {
 					target = player;
@@ -109,10 +141,25 @@ export class ServerBattle extends Battle {
 		return CFrame.lookAt(total.div(count), target!.getCharacter()!.GetPivot().Position);
 	}
 
-	protected setStatusOfTeams(status: LotlPlayerStatus) {
+	protected setupTeams(inBattle: boolean) {
 		for (const [, team] of this.teams) {
 			for (const [player] of team) {
-				player.setStatus(status);
+				const combatantsOrder = producer.getState((state) => state.players.players[player.id].combatantsOrder);
+
+				if (combatantsOrder.size() === 0) {
+					$warn(`Player ${player.getNickname()} does not have any combatants`);
+					continue;
+				}
+
+				if (inBattle) {
+					player.setStatus(LotlPlayerStatus.IN_BATTLE);
+
+					producer.setPlayerActiveCombatant(player.id, combatantsOrder[0]);
+				} else {
+					player.setStatus(LotlPlayerStatus.IDLE);
+
+					producer.setPlayerActiveCombatant(player.id, undefined);
+				}
 			}
 		}
 	}

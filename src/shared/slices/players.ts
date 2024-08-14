@@ -1,12 +1,19 @@
 import { createProducer } from "@rbxts/reflex";
 import type { CombatantInfo, CombatantList } from "server/models/combatant";
 
-interface PlayerInfo {
+export interface PlayerInfo {
+	/** Most recent skill casted */
 	readonly skillCasted?: string;
+
+	/** Combatant selected during battle */
+	readonly activeCombatant?: keyof CombatantList;
 
 	readonly combatants: {
 		readonly [combatant in keyof CombatantList]?: CombatantInfo;
 	};
+
+	/** Synchronized with `combatants` to simply show order, hacky way to do an "ordered map/record" in Luau */
+	readonly combatantsOrder: (keyof CombatantList)[];
 }
 
 interface PlayersState {
@@ -22,7 +29,7 @@ const initialState: PlayersState = {
 export const playersSlice = createProducer(initialState, {
 	addPlayer: (state, id: string) => ({
 		...state,
-		players: { ...state.players, [id]: { combatants: {} as PlayerInfo["combatants"] } },
+		players: { ...state.players, [id]: { combatants: {}, combatantsOrder: [] } },
 	}),
 
 	removePlayer: (state, id: string) => {
@@ -36,13 +43,23 @@ export const playersSlice = createProducer(initialState, {
 		};
 	},
 
-	addPlayerCombatant: (state, id: string, combatant: keyof CombatantList, info: CombatantInfo) => ({
-		...state,
-		players: { ...state.players, [id]: { combatants: { ...state.players[id].combatants, [combatant]: info } } },
-	}),
+	addPlayerCombatant: (state, id: string, combatant: keyof CombatantList, info: CombatantInfo) => {
+		const { combatants, combatantsOrder: order } = state.players[id];
+		const combatantsOrder = [...order];
+
+		combatantsOrder.push(combatant);
+
+		return {
+			...state,
+			players: {
+				...state.players,
+				[id]: { combatants: { ...combatants, [combatant]: info }, combatantsOrder },
+			},
+		};
+	},
 
 	setCombatantHealth: (state, id: string, combatant: keyof CombatantList, health: number) => {
-		const { combatants } = state.players[id];
+		const { combatants, combatantsOrder } = state.players[id];
 		const info = combatants[combatant];
 
 		assert(info, `Combatant ${combatant} not found in player ${id}`);
@@ -51,12 +68,30 @@ export const playersSlice = createProducer(initialState, {
 			...state,
 			players: {
 				...state.players,
-				[id]: { combatants: { ...combatants, [combatant]: { ...info, health } } },
+				[id]: { combatants: { ...combatants, [combatant]: { ...info, health } }, combatantsOrder },
 			},
 		};
 	},
 
-	setPlayerSkill: (state, id: string, skillCasted?: string) => ({
+	takeCombatantDamage: (state, id: string, combatant: keyof CombatantList, damage: number) => {
+		const { combatants, combatantsOrder } = state.players[id];
+		const info = combatants[combatant];
+
+		assert(info, `Combatant ${combatant} not found in player ${id}`);
+
+		return {
+			...state,
+			players: {
+				...state.players,
+				[id]: {
+					combatants: { ...combatants, [combatant]: { ...info, health: info.health - damage } },
+					combatantsOrder,
+				},
+			},
+		};
+	},
+
+	setPlayerSkillCasted: (state, id: string, skillCasted?: string) => ({
 		...state,
 		players: {
 			...state.players,
@@ -67,14 +102,53 @@ export const playersSlice = createProducer(initialState, {
 		},
 	}),
 
-	removePlayerCombatant: (state, id: string, combatant: keyof CombatantList) => {
-		const combatants = { ...state.players[id].combatants };
-
-		delete combatants[combatant];
+	setPlayerActiveCombatant: (state, id: string, activeCombatant?: keyof CombatantList) => {
+		if (activeCombatant) {
+			assert(
+				activeCombatant in state.players[id].combatants,
+				`Combatant ${activeCombatant} not found in player ${id}`,
+			);
+		}
 
 		return {
 			...state,
-			players: { ...state.players, [id]: { combatants } },
+			players: {
+				...state.players,
+				[id]: {
+					...state.players[id],
+					activeCombatant,
+				},
+			},
+		};
+	},
+
+	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, index: number) => {
+		const { combatants, combatantsOrder: order } = state.players[id];
+		const combatantsOrder = [...order];
+
+		combatantsOrder.remove(combatantsOrder.indexOf(combatant));
+		combatantsOrder.insert(index, combatant);
+
+		return {
+			...state,
+			players: {
+				...state.players,
+				[id]: { combatants, combatantsOrder },
+			},
+		};
+	},
+
+	removePlayerCombatant: (state, id: string, combatant: keyof CombatantList) => {
+		const combatants = { ...state.players[id].combatants };
+		const combatantsOrder = [...state.players[id].combatantsOrder];
+
+		delete combatants[combatant];
+
+		combatantsOrder.remove(combatantsOrder.indexOf(combatant));
+
+		return {
+			...state,
+			players: { ...state.players, [id]: { combatants, combatantsOrder } },
 		};
 	},
 });

@@ -31,7 +31,7 @@ export class ClientBattle extends Battle {
 
 				const character = player.getCharacter();
 
-				assert(character, `Player ${player.id} does not have a character`);
+				assert(character, `Player ${player.getNickname()} does not have a character`);
 
 				if (hidden) {
 					character.Parent = undefined;
