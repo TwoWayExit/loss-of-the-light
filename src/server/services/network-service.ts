@@ -1,5 +1,5 @@
 import { Service, OnInit } from "@flamework/core";
-import { Events, Functions } from "server/network/global";
+import { Events, Functions } from "server/network";
 import { Players, HttpService } from "@rbxts/services";
 import { NetworkingFunctionError } from "@flamework/networking";
 import { Globals } from "shared/modules/globals";
@@ -45,7 +45,7 @@ export class NetworkService implements OnInit {
 			} else {
 				//warn(`Rejected ${player.Name}'s response because "${e}"`);
 
-				task.wait(); // Avoid stack overflow
+				await Promise.delay(1); // Try again in 1 second
 				await this.ping(player, key, past);
 			}
 		}

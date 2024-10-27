@@ -1,6 +1,6 @@
 import { Service, OnStart } from "@flamework/core";
 import { HttpService } from "@rbxts/services";
-import { Events } from "server/network/global";
+import { Events } from "server/network";
 import { config } from "shared/config";
 
 const fetch = Promise.promisify((requestOptions: RequestAsyncRequest) => HttpService.RequestAsync(requestOptions));

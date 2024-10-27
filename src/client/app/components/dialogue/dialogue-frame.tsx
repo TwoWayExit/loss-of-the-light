@@ -1,6 +1,6 @@
 import { useEventListener, useMotion } from "@rbxts/pretty-react-hooks";
 import { useProducer, useSelector } from "@rbxts/react-reflex";
-import { config, spring } from "@rbxts/ripple";
+import { tween } from "@rbxts/ripple";
 import { RootProducer, RootState } from "../../../producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import { DialogueName } from "./dialogue-name";
@@ -20,9 +20,9 @@ export function DialogueFrame() {
 
 	useEffect(() => {
 		if (isActive) {
-			motion.to(spring(0, config.spring.gentle));
+			motion.to(tween(0));
 		} else {
-			motion.to(spring(1, config.spring.gentle));
+			motion.to(tween(1));
 		}
 	}, [isActive]);
 
@@ -32,7 +32,7 @@ export function DialogueFrame() {
 			BackgroundTransparency={0}
 			BorderColor3={Color3.fromRGB(85, 79, 77)}
 			BorderSizePixel={4}
-			Position={scale.map((scale) => UDim2.fromScale(0.159, 0.593).Lerp(UDim2.fromScale(0.159, 1.04), scale))}
+			Position={scale.map((scale) => UDim2.fromScale(0.159, 0.593).Lerp(UDim2.fromScale(0.159, 1.1), scale))}
 			Size={UDim2.fromScale(0.652, 0.319)}
 		>
 			<DialogueName />

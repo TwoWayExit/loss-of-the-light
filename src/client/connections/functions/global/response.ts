@@ -1,5 +1,5 @@
 import { Controller, OnStart, OnInit } from "@flamework/core";
-import { Functions } from "client/network/global";
+import { Functions } from "client/network";
 import { extensions } from "client/controllers/dev-con/extensions";
 
 @Controller()

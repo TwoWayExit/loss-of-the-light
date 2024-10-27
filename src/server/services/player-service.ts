@@ -1,6 +1,6 @@
 import { Players, RunService } from "@rbxts/services";
 import { Service, OnInit } from "@flamework/core";
-import { Events } from "server/network/global";
+import { Events } from "server/network";
 import { config } from "shared/config";
 import { Replicas } from "server/replicas";
 import { LotlPlayer } from "shared/models/lotl_player";

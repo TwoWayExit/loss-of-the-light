@@ -175,7 +175,7 @@ export class NetworkVar<T> {
 	/** @server */
 	public async refresh(player?: Player) {
 		if (RunService.IsServer()) {
-			const { Events } = await import("server/network/global");
+			const { Events } = await import("server/network");
 
 			if (player) {
 				Events.receiveNetVar(player, this.uuid, this.value, this.client);
@@ -187,7 +187,7 @@ export class NetworkVar<T> {
 
 	protected async onValueSet(value: T) {
 		if (RunService.IsServer()) {
-			const { Events } = await import("server/network/global");
+			const { Events } = await import("server/network");
 
 			Events.receiveNetVar.broadcast(this.uuid, value, this.client);
 		}

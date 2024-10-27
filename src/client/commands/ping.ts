@@ -1,5 +1,5 @@
 import { Command } from "@twowayexit/dev-con";
-import { Functions } from "client/network/global";
+import { Functions } from "client/network";
 
 const ping: Command = {
 	execute: async () => {

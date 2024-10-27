@@ -1,5 +1,5 @@
 import { Service, OnInit } from "@flamework/core";
-import { Functions } from "server/network/global";
+import { Functions } from "server/network";
 import { Replicas } from "server/replicas";
 
 @Service({})

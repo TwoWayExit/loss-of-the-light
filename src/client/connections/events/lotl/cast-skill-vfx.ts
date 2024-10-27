@@ -1,5 +1,5 @@
 import { Controller, OnInit } from "@flamework/core";
-import { Events } from "client/network/global";
+import { Events } from "client/network";
 import { producer } from "client/producer";
 import { LotlPlayer } from "shared/models/lotl_player";
 import { Skillset } from "shared/utils/skills";
@@ -14,7 +14,7 @@ export class CastSkillVfx implements OnInit {
 			assert(caster);
 			assert(target);
 
-			const combatant = producer.getState((state) => state.players.players[casterId].activeCombatant);
+			const combatant = producer.getState((state) => state.players[casterId].activeCombatant);
 
 			if (!combatant) {
 				return;

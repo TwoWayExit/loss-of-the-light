@@ -1,6 +1,6 @@
 import { Controller, OnInit } from "@flamework/core";
 import { createBroadcastReceiver } from "@rbxts/reflex";
-import { Events } from "client/network/global";
+import { Events } from "client/network";
 import { producer } from "client/producer";
 
 @Controller({})

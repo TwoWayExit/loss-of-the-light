@@ -39,12 +39,9 @@ export class Dialogue {
 
 		this.index++;
 
-		if (this.index + 1 >= this.texts.size()) {
-			this.isFinished = true;
-			return;
-		}
-
 		if (this.index === this.texts.size() - 1) {
+			this.isFinished = true;
+
 			this.ended.Fire(this.responses);
 
 			DialogueBuilder.dialogueEnded.Fire(this);

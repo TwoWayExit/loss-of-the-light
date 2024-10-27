@@ -1,5 +1,5 @@
 import { Command } from "@twowayexit/dev-con";
-import { Functions } from "client/network/global";
+import { Functions } from "client/network";
 
 export const mps_prompt: Command = {
 	help: `Prompts you to purchase a catalog item, donating 40% of the item's price to Two-Way Exit

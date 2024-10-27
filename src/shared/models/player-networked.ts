@@ -112,6 +112,15 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 	}
 
 	/**
+	 * Gets the {@link PlayerNetworked} object from an id
+	 * @param id - A player id to lookup
+	 * @returns The {@link PlayerNetworked} object if it exists, otherwise `undefined`
+	 */
+	public static override getPlayerFromId(id: string) {
+		return super.getPlayerFromId(id) as PlayerNetworked | undefined;
+	}
+
+	/**
 	 * Checks whether the player's localPlayer is the client running the game
 	 * @remarks This always returns false on NPCs and on the server
 	 * @returns If the player is the main {@link PlayerNetworked} running on the client

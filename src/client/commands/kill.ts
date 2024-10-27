@@ -1,5 +1,5 @@
 import { Command } from "@twowayexit/dev-con";
-import { Events } from "client/network/global";
+import { Events } from "client/network";
 import { LotlPlayer } from "shared/models/lotl_player";
 
 export const kill: Command = {

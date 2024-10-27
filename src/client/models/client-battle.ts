@@ -21,7 +21,7 @@ export class ClientBattle extends Battle {
 	}
 
 	protected setPlayersHidden(hidden: boolean) {
-		const teams = producer.getState((state) => state.battles.battles[this.id].teams);
+		const teams = producer.getState((state) => state.battles[this.id].teams);
 
 		for (const [, team] of pairs(teams)) {
 			for (const playerId of team) {

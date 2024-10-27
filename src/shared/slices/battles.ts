@@ -11,55 +11,39 @@ interface BattleInfo {
 }
 
 interface BattlesState {
-	readonly battles: {
-		readonly [id: string]: BattleInfo;
-	};
+	readonly [id: string]: BattleInfo;
 }
 
-const initialState: BattlesState = {
-	battles: {},
-};
+const initialState: BattlesState = {};
 
 export const battlesSlice = createProducer(initialState, {
 	addBattle: (state, id: string) => ({
 		...state,
-		battles: { ...state.battles, [id]: { turn: 0, origin: CFrame.identity, teams: {} as BattleInfo["teams"] } },
+		[id]: { turn: 0, origin: CFrame.identity, teams: {} as BattleInfo["teams"] },
 	}),
 
 	nextBattleTurn: (state, id: string) => {
-		const { turn, origin, teams } = state.battles[id];
+		const { turn, origin, teams } = state[id];
 
-		return {
-			...state,
-			battles: { ...state.battles, [id]: { turn: turn + 1, origin, teams: { ...teams } } },
-		};
+		return { ...state, [id]: { turn: turn + 1, origin, teams: { ...teams } } };
 	},
 
 	setBattleOrigin: (state, id: string, origin: CFrame) => ({
 		...state,
-		battles: {
-			...state.battles,
-			[id]: { turn: state.battles[id].turn, origin, teams: { ...state.battles[id].teams } },
-		},
+		[id]: { turn: state[id].turn, origin, teams: { ...state[id].teams } },
 	}),
 
 	addBattleTeam: (state, id: string, teamName: Teams, team: ReadonlySet<string>) => {
-		const { turn, origin, teams } = state.battles[id];
+		const { turn, origin, teams } = state[id];
 
-		return {
-			...state,
-			battles: { ...state.battles, [id]: { turn, origin, teams: { ...teams, [teamName]: team } } },
-		};
+		return { ...state, [id]: { turn, origin, teams: { ...teams, [teamName]: team } } };
 	},
 
 	removeBattle: (state, id: string) => {
-		const battles = { ...state.battles };
+		const battles = { ...state };
 
 		delete battles[id];
 
-		return {
-			...state,
-			battles,
-		};
+		return battles;
 	},
 });

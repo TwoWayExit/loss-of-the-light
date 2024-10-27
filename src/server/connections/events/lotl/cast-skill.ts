@@ -1,6 +1,6 @@
 import { Service, OnInit } from "@flamework/core";
 import { ServerBattle } from "server/models/server-battle";
-import { Events } from "server/network/global";
+import { Events } from "server/network";
 import { producer } from "server/producer";
 import { LotlPlayer, LotlPlayerNetworked } from "shared/models/lotl_player";
 import { Skillset } from "shared/utils/skills";
@@ -16,7 +16,7 @@ export class CastSkill implements OnInit {
 				return;
 			}
 
-			const combatant = producer.getState((state) => state.players.players[player.id].activeCombatant);
+			const combatant = producer.getState((state) => state.players[player.id].activeCombatant);
 
 			if (!combatant) {
 				return;
@@ -33,7 +33,7 @@ export class CastSkill implements OnInit {
 			}
 
 			// If the player already casted a skill
-			if (producer.getState((state) => state.players.players[player.id].skillCasted)) {
+			if (producer.getState((state) => state.players[player.id].skillCasted)) {
 				return;
 			}
 

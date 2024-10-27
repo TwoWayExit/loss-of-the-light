@@ -1,6 +1,6 @@
 import { Service, OnInit } from "@flamework/core";
 import { MarketplaceService } from "@rbxts/services";
-import { Functions } from "server/network/global";
+import { Functions } from "server/network";
 
 @Service({})
 export class MpsPrompt implements OnInit {

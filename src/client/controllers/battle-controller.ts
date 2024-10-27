@@ -14,7 +14,7 @@ export class BattleController implements OnInit {
 		this.cameraController.useFixedPosition(active);
 
 		if (active) {
-			const origin = producer.getState((state) => state.battles.battles[battle.id].origin);
+			const origin = producer.getState((state) => state.battles[battle.id].origin);
 			const position = origin.mul(
 				teamName === Teams.TEAM1 ? ViewVectors.VIEW_BATTLE : ViewVectors.VIEW_BATTLE.Inverse(),
 			).Position;
@@ -25,7 +25,7 @@ export class BattleController implements OnInit {
 
 	onInit() {
 		producer.observe(
-			(state) => state.battles.battles,
+			(state) => state.battles,
 			(_, id) => id,
 			(battleInfo, battleId) => {
 				let teamName;

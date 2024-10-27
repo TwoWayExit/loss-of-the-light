@@ -23,7 +23,7 @@ export class ServerBattle extends Battle {
 	}
 
 	public static inBattle(player: LotlPlayer, battleId?: string) {
-		const battles = producer.getState((state) => state.battles.battles);
+		const battles = producer.getState((state) => state.battles);
 
 		for (const [id, battle] of pairs(battles)) {
 			// A little inefficient, but fewer lines of code than trying to index the battle and looping over it
@@ -96,7 +96,7 @@ export class ServerBattle extends Battle {
 	}
 
 	public getCombatantPosition(team: Teams) {
-		const origin = producer.getState((state) => state.battles.battles[this.id].origin);
+		const origin = producer.getState((state) => state.battles[this.id].origin);
 
 		switch (team) {
 			case Teams.TEAM1:
@@ -144,7 +144,7 @@ export class ServerBattle extends Battle {
 	protected setupTeams(inBattle: boolean) {
 		for (const [, team] of this.teams) {
 			for (const [player] of team) {
-				const combatantsOrder = producer.getState((state) => state.players.players[player.id].combatantsOrder);
+				const combatantsOrder = producer.getState((state) => state.players[player.id].combatantsOrder);
 
 				if (combatantsOrder.size() === 0) {
 					$warn(`Player ${player.getNickname()} does not have any combatants`);

@@ -54,7 +54,7 @@ export class Combatant extends BaseCharacter<undefined> {
 	}
 
 	public static getCombatantInfos(player: LotlPlayer) {
-		return producer.getState((state) => state.players.players[player.id].combatants);
+		return producer.getState((state) => state.players[player.id].combatants);
 	}
 
 	public static addCombatant(player: LotlPlayer, combatant: keyof CombatantList, info: CombatantInfo) {

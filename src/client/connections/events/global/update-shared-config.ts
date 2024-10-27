@@ -1,5 +1,5 @@
 import { Controller, OnInit } from "@flamework/core";
-import { Events } from "client/network/global";
+import { Events } from "client/network";
 import { config } from "shared/config";
 
 @Controller({})

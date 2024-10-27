@@ -1,6 +1,3 @@
-import React from "@rbxts/react";
-import ReactRoblox from "@rbxts/react-roblox";
-
 const [root, parts] = $getModuleTree("./stories/dialogue.story"); // $getModuleTree only works with files, not directories
 
 let instance = root;
@@ -11,7 +8,5 @@ while (parts.size() > 1) {
 }
 
 export = {
-	react: React,
-	reactRoblox: ReactRoblox,
 	storyRoots: [instance],
 };

@@ -5,7 +5,7 @@ import { PlayerNetworked } from "shared/models/player-networked";
 import React from "@rbxts/react";
 
 export function CombatFrame() {
-	const selectBattles = (state: RootState) => state.battles.battles;
+	const selectBattles = (state: RootState) => state.battles;
 	const selectInBattle = createSelector(selectBattles, (battles) => {
 		for (const [, battle] of pairs(battles)) {
 			for (const [, team] of pairs(battle.teams)) {

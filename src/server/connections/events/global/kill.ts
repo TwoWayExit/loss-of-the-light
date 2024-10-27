@@ -1,5 +1,5 @@
 import { Service, OnInit } from "@flamework/core";
-import { Events } from "server/network/global";
+import { Events } from "server/network";
 import { Replicas } from "server/replicas";
 import { Character } from "shared/models/character";
 import { LotlPlayer } from "shared/models/lotl_player";

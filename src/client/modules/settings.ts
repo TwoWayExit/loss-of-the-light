@@ -1,5 +1,5 @@
 import { BaseSettings, Setting } from "@twowayexit/dev-con";
-import { Functions } from "client/network/global";
+import { Functions } from "client/network";
 import { Replicas } from "client/replicas";
 import settingsList from "./settings-list";
 

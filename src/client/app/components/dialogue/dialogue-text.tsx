@@ -13,7 +13,7 @@ export function DialogueText() {
 			ImageColor3={Color3.fromRGB(167, 167, 167)}
 			ImageTransparency={0.4}
 			ScaleType={Enum.ScaleType.Crop}
-			Size={new UDim2(1.534, 0, 1.088, 0)}
+			Size={new UDim2(1, 0, 1, 0)}
 		>
 			<textlabel
 				key={"Dialogue"}
