@@ -1,8 +1,7 @@
-import { useInterval } from "@rbxts/pretty-react-hooks";
+import { useInterval, useMotion } from "@rbxts/pretty-react-hooks";
 import { useSelector } from "@rbxts/react-reflex";
 import { linear } from "@rbxts/ripple";
-import { RootState } from "../../../producer";
-import { useMotion } from "../../hooks/use-motion";
+import { RootState } from "client/producer";
 import React from "@rbxts/react";
 
 const BLINK_INTERVAL = 0.35;

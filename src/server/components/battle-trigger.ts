@@ -39,12 +39,12 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 			`Battle trigger '${this.instance.GetFullName()}' does not have any combatants`,
 		);
 
-		this.addCombatants(player, enemy.attributes.combatants);
-
 		this.player = player;
+
+		this.addCombatants(enemy.attributes.combatants);
 	}
 
-	protected addCombatants(player: LotlPlayer, combatants: string) {
+	protected addCombatants(combatants: string) {
 		for (const combatant of combatants.split(",")) {
 			if (!ReplicatedStorage.combatants.FindFirstChild(combatant)) {
 				warn(
@@ -55,7 +55,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 
 			const clone = ReplicatedStorage.combatants[combatant as keyof CombatantList].Clone();
 
-			Combatant.addCombatant(player, combatant as keyof CombatantList, {
+			Combatant.addCombatant(this.player, combatant as keyof CombatantList, {
 				name: combatant,
 				character: clone,
 				health: 100,

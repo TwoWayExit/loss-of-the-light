@@ -731,6 +731,8 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 			wishDir = Vector3.zero;
 		}
 
+		this.maxSpeed = this.player.getMaxSpeed();
+
 		if (wishSpeed > this.maxSpeed) {
 			wishSpeed = this.maxSpeed;
 		}
@@ -738,12 +740,13 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
 		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
 
-		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate);
+		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate * 10);
 		this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
 
-		this.player.setAbsOrigin(this.player.getAbsOrigin().add(this.velocity.VectorVelocity));
-
-		this.velocity.VectorVelocity = Vector3.zero;
+		// TODO: Fix underlying server and client position replication conflict to ultimately remove this check
+		if (RunService.IsClient()) {
+			this.move.setAbsOrigin(this.move.getAbsOrigin().add(this.velocity.VectorVelocity.mul(stats.frameTime)));
+		}
 	}
 
 	protected fullWalkMove() {

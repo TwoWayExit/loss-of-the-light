@@ -5,6 +5,7 @@ import { BasePlayer } from "./player";
 import { LifecycleHook } from "shared/utils/lifecycle-hooks";
 import { $env } from "rbxts-transform-env";
 import { Tags } from "shared/modules/tags";
+import { States } from "shared/modules/states";
 
 export type BoundingBox = Part & { Weld: Weld };
 
@@ -161,7 +162,7 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 		).ToObjectSpace(CFrame.identity);
 		const c0 = new CFrame(center.sub(this.character!.HumanoidRootPart.Position)).mul(inverseRotation);
 
-		this.boundingBox.CanCollide = this.isCollidable;
+		this.boundingBox.CanCollide = this.getFlags() & States.NOCLIPPING ? false : this.isCollidable;
 		this.boundingBox.Size = size;
 		this.boundingBox.Weld.C0 = c0;
 	}

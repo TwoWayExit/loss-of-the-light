@@ -122,12 +122,12 @@ export const playersSlice = createProducer(initialState, {
 		};
 	},
 
-	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, index: number) => {
+	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, orderIndex: number) => {
 		const { combatants, combatantsOrder: order } = state.players[id];
 		const combatantsOrder = [...order];
 
 		combatantsOrder.remove(combatantsOrder.indexOf(combatant));
-		combatantsOrder.insert(index, combatant);
+		combatantsOrder.insert(orderIndex, combatant);
 
 		return {
 			...state,

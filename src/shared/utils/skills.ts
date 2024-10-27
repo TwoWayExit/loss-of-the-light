@@ -32,7 +32,10 @@ export abstract class Skill {
 		public readonly properties: SkillProperties,
 	) {}
 
-	/** @virtual */
+	/**
+	 * This method must be overriden on the server for damage handling, and on the client for VFX
+	 * @virtual
+	 */
 	public cast(caster: LotlPlayer, target: LotlPlayer) {
 		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}`);
 	}

@@ -297,6 +297,8 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	protected initializeCharacter(character: CharacterRigR6 | CharacterRigR15) {
 		this.setCharacter(character);
 
+		character.Humanoid.SetStateEnabled(Enum.HumanoidStateType.Dead, false);
+
 		if (!this.localPlayer) {
 			return;
 		}

@@ -6,7 +6,7 @@ export interface LotlServerEvents {
 }
 
 export interface LotlClientEvents {
-	castSkillVFX: (skill: string) => void;
+	castSkillVFX: (skill: string, casterId: string, targetId: string) => void;
 }
 
 export interface LotlServerFunctions {}
