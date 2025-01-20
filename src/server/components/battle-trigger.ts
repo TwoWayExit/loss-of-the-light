@@ -5,7 +5,7 @@ import { Character } from "shared/models/character";
 import { LotlPlayer, LotlPlayerNetworked, LotlPlayerStatus } from "shared/models/lotl_player";
 import { Combatant, CombatantList } from "server/models/combatant";
 import { DisposableComponent } from "shared/components/disposable-component";
-import { Enemy } from "shared/components/enemy_base";
+import { Enemy } from "shared/components/enemy";
 import { BattleService } from "server/services/battle-service";
 
 interface Attributes {
@@ -56,7 +56,6 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 			const clone = ReplicatedStorage.combatants[combatant as keyof CombatantList].Clone();
 
 			Combatant.addCombatant(this.player, combatant as keyof CombatantList, {
-				name: combatant,
 				character: clone,
 				health: 100,
 			});

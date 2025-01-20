@@ -1,12 +1,8 @@
-import { Players, Workspace } from "@rbxts/services";
+import { Workspace } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
-import { CharacterRigR15, CharacterRigR6 } from "@rbxts/promise-character";
 import { PlayerNetworked } from "shared/models/player-networked";
 import { PlayerData } from "shared/models/player";
-import { LifecycleHook } from "shared/utils/lifecycle-hooks";
 import { Janitor } from "@rbxts/janitor";
-import { ViewVectors } from "shared/modules/view-vectors";
-import { Level } from "shared/utils/level";
 import { NetworkPlayer, Networked } from "shared/utils/network";
 
 export class LotlClientData extends PlayerData {}

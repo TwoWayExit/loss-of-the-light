@@ -24,8 +24,8 @@ export class PlayerController implements OnStart {
 
 	onStart() {
 		this.disableResetButton().then(
-			(tries) => print(`Disable ResetButtonCallback success after ${tries} retries`),
-			() => warn(`Disable ResetButtonCallback failed after ${MAX_RESET_BUTTON_TRIES} retries`),
+			(tries) => print(`[STARTUP] Disable ResetButtonCallback success after ${tries} retries`),
+			() => warn(`[STARTUP] Disable ResetButtonCallback failed after ${MAX_RESET_BUTTON_TRIES} retries`),
 		);
 	}
 }

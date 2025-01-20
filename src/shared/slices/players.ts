@@ -1,12 +1,12 @@
+import Object from "@rbxts/object-utils";
 import { createProducer } from "@rbxts/reflex";
 import type { CombatantInfo, CombatantList } from "server/models/combatant";
+import { Region } from "shared/modules/globals";
 
 export interface PlayerInfo {
-	/** Most recent skill casted */
-	readonly skillCasted?: string;
+	readonly battleId?: string;
 
-	/** Combatant selected during battle */
-	readonly activeCombatant?: keyof CombatantList;
+	readonly skillsCasted: Map<keyof CombatantList, string>;
 
 	readonly combatants: {
 		readonly [combatant in keyof CombatantList]?: CombatantInfo;
@@ -14,6 +14,8 @@ export interface PlayerInfo {
 
 	/** Synchronized with `combatants` to simply show order, hacky way to do an "ordered map/record" in Luau */
 	readonly combatantsOrder: (keyof CombatantList)[];
+
+	readonly region: Region;
 }
 
 interface PlayersState {
@@ -23,7 +25,10 @@ interface PlayersState {
 const initialState: PlayersState = {};
 
 export const playersSlice = createProducer(initialState, {
-	addPlayer: (state, id: string) => ({ ...state, [id]: { combatants: {}, combatantsOrder: [] } }),
+	addPlayer: (state, id: string) => ({
+		...state,
+		[id]: { skillsCasted: new Map(), combatants: {}, combatantsOrder: [], region: "baseplate" },
+	}),
 
 	removePlayer: (state, id: string) => {
 		const players = { ...state };
@@ -41,7 +46,7 @@ export const playersSlice = createProducer(initialState, {
 
 		return {
 			...state,
-			[id]: { combatants: { ...combatants, [combatant]: info }, combatantsOrder },
+			[id]: { ...state[id], combatants: { ...combatants, [combatant]: info }, combatantsOrder },
 		};
 	},
 
@@ -53,7 +58,7 @@ export const playersSlice = createProducer(initialState, {
 
 		return {
 			...state,
-			[id]: { combatants: { ...combatants, [combatant]: { ...info, health } }, combatantsOrder },
+			[id]: { ...state[id], combatants: { ...combatants, [combatant]: { ...info, health } }, combatantsOrder },
 		};
 	},
 
@@ -66,33 +71,42 @@ export const playersSlice = createProducer(initialState, {
 		return {
 			...state,
 			[id]: {
+				...state[id],
 				combatants: { ...combatants, [combatant]: { ...info, health: info.health - damage } },
 				combatantsOrder,
 			},
 		};
 	},
 
-	setPlayerSkillCasted: (state, id: string, skillCasted?: string) => ({
+	setPlayerBattleId: (state, id: string, battleId?: string) => ({
 		...state,
 		[id]: {
 			...state[id],
-			skillCasted,
+			battleId,
 		},
 	}),
 
-	setPlayerActiveCombatant: (state, id: string, activeCombatant?: keyof CombatantList) => {
-		if (activeCombatant) {
-			assert(activeCombatant in state[id].combatants, `Combatant ${activeCombatant} not found in player ${id}`);
-		}
+	castSkill: (state, id: string, combatant: keyof CombatantList, skill: string) => {
+		const skillsCasted = Object.assign(new Map(), state[id].skillsCasted);
+
+		skillsCasted.set(combatant, skill);
 
 		return {
 			...state,
 			[id]: {
 				...state[id],
-				activeCombatant,
+				skillsCasted,
 			},
 		};
 	},
+
+	clearSkillsCasted: (state, id: string) => ({
+		...state,
+		[id]: {
+			...state[id],
+			skillsCasted: new Map(),
+		},
+	}),
 
 	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, orderIndex: number) => {
 		const { combatants, combatantsOrder: order } = state[id];
@@ -103,7 +117,7 @@ export const playersSlice = createProducer(initialState, {
 
 		return {
 			...state,
-			[id]: { combatants, combatantsOrder },
+			[id]: { ...state[id], combatants, combatantsOrder },
 		};
 	},
 
@@ -115,6 +129,6 @@ export const playersSlice = createProducer(initialState, {
 
 		combatantsOrder.remove(combatantsOrder.indexOf(combatant));
 
-		return { ...state, [id]: { combatants, combatantsOrder } };
+		return { ...state, [id]: { ...state[id], combatants, combatantsOrder } };
 	},
 });

@@ -21,6 +21,6 @@ export class UserInterfaceController implements OnStart {
 		const root = createRoot(new Instance("Folder"));
 
 		root.render(<StrictMode>{createPortal(app, Players.LocalPlayer.WaitForChild("PlayerGui"))}</StrictMode>);
-		print("React render app");
+		print("[STARTUP] React render app");
 	}
 }

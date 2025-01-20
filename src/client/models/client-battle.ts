@@ -1,44 +1,54 @@
 import { Workspace } from "@rbxts/services";
-import { producer } from "client/producer";
+import type { AnimatedCharacter } from "server/models/combatant";
 import { Battle } from "shared/models/battle";
-import { LotlPlayer } from "shared/models/lotl_player";
 
 export class ClientBattle extends Battle {
+	private combatants = this.findCombatants();
+
 	public constructor(id: string) {
 		super(id);
 	}
 
 	public override startBattle() {
-		this.setPlayersHidden(true);
+		this.hideOtherCombatants();
+		this.playCombatantIdles();
 
 		super.startBattle();
 	}
 
 	public override stopBattle() {
-		this.setPlayersHidden(false);
-
 		super.stopBattle();
 	}
 
-	protected setPlayersHidden(hidden: boolean) {
-		const teams = producer.getState((state) => state.battles[this.id].teams);
+	private findCombatants() {
+		const combatants = new Set<AnimatedCharacter>();
 
-		for (const [, team] of pairs(teams)) {
-			for (const playerId of team) {
-				const player = LotlPlayer.getPlayerFromId(playerId);
+		for (const combatant of Workspace.combatants.GetChildren()) {
+			if (combatant.HasTag(this.id)) {
+				combatants.add(combatant as AnimatedCharacter);
+			}
+		}
 
-				assert(player, `Player ${playerId} does not exist`);
+		return combatants;
+	}
 
-				const character = player.getCharacter();
-
-				assert(character, `Player ${player.getNickname()} does not have a character`);
-
-				if (hidden) {
-					character.Parent = undefined;
-				} else {
-					character.Parent = Workspace;
+	private hideOtherCombatants() {
+		for (const combatant of Workspace.combatants.GetChildren()) {
+			if (!combatant.HasTag(this.id)) {
+				for (const child of combatant.GetDescendants()) {
+					if (child.IsA("BasePart")) {
+						child.LocalTransparencyModifier = 1;
+					}
 				}
 			}
+		}
+	}
+
+	private playCombatantIdles() {
+		for (const combatant of this.combatants) {
+			const anim = combatant.Humanoid.Animator.LoadAnimation(combatant.anims.idle);
+
+			anim.Play();
 		}
 	}
 }

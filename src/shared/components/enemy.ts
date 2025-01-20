@@ -2,7 +2,6 @@ import { Component } from "@flamework/components";
 import { UuidComponent } from "./uuid-component";
 import { LotlPlayer } from "shared/models/lotl_player";
 import { CharacterRigR6 } from "@rbxts/promise-character";
-import "../modules/skillsets/daryl-skillset";
 
 interface Attributes {
 	combatants: string;

@@ -1,54 +1,249 @@
 interface ReplicatedStorage extends Instance {
 	TS: Folder & {
-		modules: Folder & {
-			["view-vectors"]: ModuleScript;
-			["user-command"]: ModuleScript;
-			["stats-defs"]: ModuleScript;
-			["daryl-skillset"]: ModuleScript;
-			levels: ModuleScript;
-		};
 		utils: Folder & {
-			path: ModuleScript;
+			uuid: ModuleScript;
 			network: ModuleScript;
 			dialogue: ModuleScript;
 			["lifecycle-hooks"]: ModuleScript;
-			battle: ModuleScript;
 			level: ModuleScript;
-			skills: ModuleScript;
+			path: ModuleScript;
 			trace: ModuleScript;
+			skills: ModuleScript;
 			essentials: ModuleScript;
 		};
-		settings: Folder & {
-			fov_current: ModuleScript;
-			mv_sidespeed: ModuleScript;
-			mv_forwardspeed: ModuleScript;
-		};
-		config: ModuleScript;
-		replicas: ModuleScript;
 		network: Folder & {
 			middleware: ModuleScript;
 			global: ModuleScript;
-		};
-		components: Folder & {
-			["lotl_player-animate"]: ModuleScript;
-			uuid: ModuleScript;
-			["daryl-combatant"]: ModuleScript;
-			["disposable-component"]: ModuleScript;
-			lotl_movement: ModuleScript;
-			["combatant-component"]: ModuleScript;
-			enemy_base: ModuleScript;
 		};
 		models: Folder & {
 			character: ModuleScript;
 			["player-networked"]: ModuleScript;
 			["player-collidable"]: ModuleScript;
 			lotl_client: ModuleScript;
-			combatant: ModuleScript;
+			battle: ModuleScript;
 			player: ModuleScript;
 			lotl_player: ModuleScript;
 		};
+		config: ModuleScript;
+		settings: Folder & {
+			fov_current: ModuleScript;
+			mv_sidespeed: ModuleScript;
+			mv_forwardspeed: ModuleScript;
+		};
+		replicas: ModuleScript;
+		modules: Folder & {
+			levels: ModuleScript;
+			["user-command"]: ModuleScript;
+			["stats-defs"]: ModuleScript;
+			skills: Folder & {
+				["basic-skill"]: ModuleScript;
+			};
+			skillsets: Folder & {
+				["malemc-skillset"]: ModuleScript;
+				["daryl-skillset"]: ModuleScript;
+			};
+			["view-vectors"]: ModuleScript;
+		};
+		components: Folder & {
+			["lotl_player-animate"]: ModuleScript;
+			["uuid-component"]: ModuleScript;
+			["disposable-component"]: ModuleScript;
+			lotl_movement: ModuleScript;
+			enemy: ModuleScript;
+		};
+		slices: ModuleScript & {
+			players: ModuleScript;
+			battles: ModuleScript;
+		};
 	};
 	combatants: Folder & {
+		MaleMC: Model & {
+			["Left Leg"]: Part & {
+				Snap: Snap;
+				LeftFootAttachment: Attachment;
+			};
+			Humanoid: Humanoid & {
+				HumanoidDescription: HumanoidDescription;
+				Animator: Animator;
+			};
+			Highlight: Highlight;
+			Clothing: Shirt;
+			Lantern: Model & {
+				Handle: UnionOperation & {
+					Mainframe: Motor6D;
+				};
+				Mainframe: UnionOperation & {
+					Light: Weld;
+				};
+				Light: Part & {
+					PointLight: PointLight;
+				};
+			};
+			Torso: Part & {
+				RightCollarAttachment: Attachment;
+				WaistCenterAttachment: Attachment;
+				BodyBackAttachment: Attachment;
+				Neck: Motor6D;
+				LeftCollarAttachment: Attachment;
+				["Left Shoulder"]: Motor6D;
+				["Left Hip"]: Motor6D;
+				["Right Hip"]: Motor6D;
+				["Right Shoulder"]: Motor6D;
+				BodyFrontAttachment: Attachment;
+				WaistBackAttachment: Attachment;
+				WaistFrontAttachment: Attachment;
+				NeckAttachment: Attachment;
+			};
+			HumanoidRootPart: Part & {
+				RootJoint: Motor6D;
+				RootAttachment: Attachment;
+			};
+			["Left Sleeve"]: Accessory & {
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					LeftShoulderAttachment: Attachment;
+					TouchInterest: TouchTransmitter;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+			Pants: Pants;
+			Pendant: Accessory & {
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					NeckAttachment: Attachment;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+			Head: Part & {
+				HatAttachment: Attachment;
+				FaceFrontAttachment: Attachment;
+				HairAttachment: Attachment;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+			anims: Folder & {
+				hurt: Animation;
+				idle: Animation;
+				basic: Animation;
+			};
+			AnimSaves: Model & {
+				IDLEDONTCRASH: KeyframeSequence;
+				HURTDONTCRASH: KeyframeSequence;
+				["IDLEDONTCRASH w/ Lam"]: KeyframeSequence;
+				BASICDONTCRASH: KeyframeSequence;
+				["BASICDONTCRASH w/lam"]: KeyframeSequence;
+			};
+			Suit: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraTarget: ObjectValue;
+					ThumbnailCameraValue: CFrameValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					BodyBackAttachment: Attachment;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			Face: Accessory & {
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					Highlight: Highlight;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+			TopHat: Accessory & {
+				Handle: Part & {
+					HatAttachment: Attachment;
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+			["Right Leg"]: Part & {
+				Snap: Snap;
+				RightFootAttachment: Attachment;
+			};
+			["Right Arm"]: Part & {
+				Handle: Motor6D;
+				RightGripAttachment: Attachment;
+				RightShoulderAttachment: Attachment;
+			};
+			["Left Arm"]: Part & {
+				LeftGripAttachment: Attachment;
+				LeftShoulderAttachment: Attachment;
+			};
+			Belt: Accessory & {
+				Handle: Part & {
+					WaistCenterAttachment: Attachment;
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+			["Body Colors"]: BodyColors;
+			["Right Sleeve"]: Accessory & {
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					RightShoulderAttachment: Attachment;
+					AvatarPartScaleType: StringValue;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+			Hair: Accessory & {
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					TouchInterest: TouchTransmitter;
+					HairAttachment: Attachment;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+			};
+		};
 		Daryl: Model & {
 			["Left Leg"]: Part & {
 				LeftFootAttachment: Attachment;
@@ -88,11 +283,17 @@ interface ReplicatedStorage extends Instance {
 				RootJoint: Motor6D;
 				RootAttachment: Attachment;
 			};
+			anims: Folder & {
+				hurt: Animation;
+				idle: Animation;
+				basic: Animation;
+			};
 			["Body Colors"]: BodyColors;
 			MessyHairstyleAccessory: Accessory & {
 				Handle: Part & {
-					HairAttachment: Attachment;
 					TouchInterest: TouchTransmitter;
+					HairAttachment: Attachment;
+					AccessoryWeld: Weld;
 					SpecialMesh: SpecialMesh;
 					AvatarPartScaleType: StringValue;
 				};
@@ -109,6 +310,7 @@ interface ReplicatedStorage extends Instance {
 			MeshPartAccessory: Accessory & {
 				Handle: Part & {
 					TouchInterest: TouchTransmitter;
+					AccessoryWeld: Weld;
 					LeftCollarAttachment: Attachment;
 					SpecialMesh: SpecialMesh;
 					AvatarPartScaleType: StringValue;
@@ -116,8 +318,9 @@ interface ReplicatedStorage extends Instance {
 			};
 			Fedora: Accessory & {
 				Handle: Part & {
-					TouchInterest: TouchTransmitter;
 					HatAttachment: Attachment;
+					TouchInterest: TouchTransmitter;
+					AccessoryWeld: Weld;
 					SpecialMesh: SpecialMesh;
 					AvatarPartScaleType: StringValue;
 				};
@@ -201,24 +404,6 @@ interface ReplicatedStorage extends Instance {
 							signals: ModuleScript;
 							["commands-list"]: ModuleScript;
 						};
-						utils: Folder & {
-							["input-profiler"]: ModuleScript;
-							commands: ModuleScript;
-							settings: ModuleScript;
-							binds: ModuleScript;
-							extensions: ModuleScript;
-							essentials: ModuleScript;
-						};
-						settings: Folder & {
-							ui_core_playerlist: ModuleScript;
-							ui_core_chat: ModuleScript;
-							ui_core_all: ModuleScript;
-							con_allowspam: ModuleScript;
-							ui_core_backpack: ModuleScript;
-							fov_current: ModuleScript;
-							sv_password: ModuleScript;
-						};
-						config: ModuleScript;
 						commands: Folder & {
 							con_clear: ModuleScript;
 							donut_spin: ModuleScript;
@@ -226,8 +411,26 @@ interface ReplicatedStorage extends Instance {
 							unbindall: ModuleScript;
 							con_close: ModuleScript;
 							unbind: ModuleScript;
-							echo: ModuleScript;
 							help: ModuleScript;
+							echo: ModuleScript;
+						};
+						settings: Folder & {
+							ui_core_playerlist: ModuleScript;
+							ui_core_backpack: ModuleScript;
+							ui_core_chat: ModuleScript;
+							ui_core_health: ModuleScript;
+							con_allowspam: ModuleScript;
+							ui_core_all: ModuleScript;
+							fov_current: ModuleScript;
+							sv_password: ModuleScript;
+						};
+						utils: Folder & {
+							["input-profiler"]: ModuleScript;
+							commands: ModuleScript;
+							settings: ModuleScript;
+							binds: ModuleScript;
+							extensions: ModuleScript;
+							essentials: ModuleScript;
 						};
 						app: Folder & {
 							contexts: Folder & {
@@ -248,24 +451,33 @@ interface ReplicatedStorage extends Instance {
 								results: ModuleScript;
 							};
 							producer: ModuleScript;
-							components: Folder & {
+							ui: Folder & {
+								warning: ModuleScript;
+								console: ModuleScript;
 								stats: ModuleScript;
-								["mobile-button"]: ModuleScript;
 								modal: ModuleScript;
 								["console-bar-bg"]: ModuleScript;
 								["dev-console"]: ModuleScript;
 								["console-bar"]: ModuleScript;
 								["warning-description"]: ModuleScript;
-								["console-bg"]: ModuleScript;
+								["mobile-button"]: ModuleScript;
 								["warning-message"]: ModuleScript;
-								console: ModuleScript;
+								shadow: ModuleScript;
 								["console-text"]: ModuleScript;
-								warning: ModuleScript;
+								["console-bg"]: ModuleScript;
 								frame: ModuleScript;
 								result: ModuleScript;
 								results: ModuleScript;
 							};
+							providers: Folder & {
+								["rem-provider"]: ModuleScript;
+							};
+							hooks: Folder & {
+								["use-px"]: ModuleScript;
+								["use-rem"]: ModuleScript;
+							};
 						};
+						config: ModuleScript;
 					};
 				};
 			};
@@ -274,12 +486,29 @@ interface ReplicatedStorage extends Instance {
 					src: ModuleScript;
 				};
 				["object-utils"]: ModuleScript;
+				ripple: Folder & {
+					src: ModuleScript & {
+						config: ModuleScript;
+						solvers: Folder & {
+							tween: ModuleScript;
+							spring: ModuleScript;
+							linear: ModuleScript;
+							immediate: ModuleScript;
+						};
+						utils: Folder & {
+							assign: ModuleScript;
+							spy: ModuleScript;
+							snapshot: ModuleScript;
+							intermediate: ModuleScript;
+							merge: ModuleScript;
+						};
+						createMotion: ModuleScript;
+						types: ModuleScript;
+					};
+				};
 				["react-roblox"]: ModuleScript;
 				react: ModuleScript & {
 					tags: ModuleScript;
-				};
-				trove: Folder & {
-					out: ModuleScript;
 				};
 				ReactLua: Folder & {
 					node_modules: Folder & {
@@ -319,6 +548,7 @@ interface ReplicatedStorage extends Instance {
 								["ReactReconciler.roblox"]: ModuleScript;
 							};
 							["react-devtools-shared"]: ModuleScript & {
+								["jest.config"]: ModuleScript;
 								hook: ModuleScript;
 								bridge: ModuleScript;
 								constants: ModuleScript;
@@ -567,6 +797,7 @@ interface ReplicatedStorage extends Instance {
 								["ReactFiber.new"]: ModuleScript;
 								["ReactFiberCommitWork.new"]: ModuleScript;
 								ReactFiberTransition: ModuleScript;
+								RobloxReactProfiling: ModuleScript;
 								forks: Folder & {
 									["ReactFiberHostConfig.test"]: ModuleScript;
 								};
@@ -747,7 +978,9 @@ interface ReplicatedStorage extends Instance {
 					};
 					Reflex: ModuleScript;
 				};
-				signal: ModuleScript;
+				trove: Folder & {
+					out: ModuleScript;
+				};
 				types: Folder & {
 					include: Folder & {
 						generated: Folder;
@@ -764,7 +997,6 @@ interface ReplicatedStorage extends Instance {
 							hoarcekat: ModuleScript;
 							["shallow-equal"]: ModuleScript;
 							math: ModuleScript;
-							motor: ModuleScript;
 							testez: ModuleScript;
 						};
 						["use-binding-state"]: ModuleScript & {
@@ -784,6 +1016,12 @@ interface ReplicatedStorage extends Instance {
 						};
 						["use-debounce-callback"]: ModuleScript & {
 							["use-debounce-callback"]: ModuleScript;
+						};
+						["use-spring"]: ModuleScript & {
+							["use-spring"]: ModuleScript;
+						};
+						["use-motion"]: ModuleScript & {
+							["use-motion"]: ModuleScript;
 						};
 						["use-defer-state"]: ModuleScript & {
 							["use-defer-state"]: ModuleScript;
@@ -812,8 +1050,8 @@ interface ReplicatedStorage extends Instance {
 						["use-latest-callback"]: ModuleScript & {
 							["use-latest-callback"]: ModuleScript;
 						};
-						["use-motor"]: ModuleScript & {
-							["use-motor"]: ModuleScript;
+						["use-event-listener"]: ModuleScript & {
+							["use-event-listener"]: ModuleScript;
 						};
 						["use-throttle-callback"]: ModuleScript & {
 							["use-throttle-callback"]: ModuleScript;
@@ -824,14 +1062,14 @@ interface ReplicatedStorage extends Instance {
 						["use-async-effect"]: ModuleScript & {
 							["use-async-effect"]: ModuleScript;
 						};
-						["use-debounce-effect"]: ModuleScript & {
-							["use-debounce-effect"]: ModuleScript;
-						};
 						["use-binding-listener"]: ModuleScript & {
 							["use-binding-listener"]: ModuleScript;
 						};
 						["use-async"]: ModuleScript & {
 							["use-async"]: ModuleScript;
+						};
+						["use-debounce-effect"]: ModuleScript & {
+							["use-debounce-effect"]: ModuleScript;
 						};
 						["use-viewport"]: ModuleScript & {
 							["use-viewport"]: ModuleScript;
@@ -839,17 +1077,14 @@ interface ReplicatedStorage extends Instance {
 						["use-throttle-effect"]: ModuleScript & {
 							["use-throttle-effect"]: ModuleScript;
 						};
-						["use-timer"]: ModuleScript & {
-							["use-timer"]: ModuleScript;
-						};
 						["use-defer-effect"]: ModuleScript & {
 							["use-defer-effect"]: ModuleScript;
 						};
 						["use-debounce-state"]: ModuleScript & {
 							["use-debounce-state"]: ModuleScript;
 						};
-						["use-event-listener"]: ModuleScript & {
-							["use-event-listener"]: ModuleScript;
+						["use-timer"]: ModuleScript & {
+							["use-timer"]: ModuleScript;
 						};
 						["use-lifetime"]: ModuleScript & {
 							["use-lifetime"]: ModuleScript;
@@ -865,12 +1100,12 @@ interface ReplicatedStorage extends Instance {
 						};
 					};
 				};
+				["validate-tree"]: ModuleScript;
 				t: Folder & {
 					lib: Folder & {
 						ts: ModuleScript;
 					};
 				};
-				["validate-tree"]: ModuleScript;
 				goodsignal: Folder & {
 					src: ModuleScript;
 					out: ModuleScript;
@@ -892,15 +1127,7 @@ interface ReplicatedStorage extends Instance {
 				maid: Folder & {
 					Maid: ModuleScript;
 				};
-				["promise-character"]: ModuleScript & {
-					node_modules: Folder & {
-						["@rbxts"]: Folder & {
-							["compiler-types"]: Folder & {
-								types: Folder;
-							};
-						};
-					};
-				};
+				["promise-character"]: ModuleScript;
 				reflex: Folder & {
 					src: ModuleScript & {
 						createProducer: ModuleScript;
@@ -940,7 +1167,9 @@ interface ReplicatedStorage extends Instance {
 					};
 				};
 				janitor: Folder & {
-					src: ModuleScript;
+					src: ModuleScript & {
+						Promise: ModuleScript;
+					};
 				};
 				["compiler-types"]: Folder & {
 					types: Folder;
@@ -966,19 +1195,7 @@ interface ReplicatedStorage extends Instance {
 						["replica-client"]: ModuleScript;
 					};
 				};
-				flipper: Folder & {
-					typings: Folder;
-					src: ModuleScript & {
-						isMotor: ModuleScript;
-						Spring: ModuleScript;
-						GroupMotor: ModuleScript;
-						Signal: ModuleScript;
-						SingleMotor: ModuleScript;
-						Instant: ModuleScript;
-						Linear: ModuleScript;
-						BaseMotor: ModuleScript;
-					};
-				};
+				signal: ModuleScript;
 			};
 		};
 	};

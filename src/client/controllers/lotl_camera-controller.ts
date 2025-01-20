@@ -32,8 +32,8 @@ export class LotlCameraController implements OnStart, OnRender {
 		this.fixedPosition = cframe;
 	}
 
-	public useFixedPosition(use: boolean) {
-		this.usingFixedPosition = use;
+	public useFixedPosition(using: boolean) {
+		this.usingFixedPosition = using;
 	}
 
 	protected followCharacter() {
@@ -123,13 +123,18 @@ export class LotlCameraController implements OnStart, OnRender {
 
 	onStart() {
 		const player = PlayerNetworked.getLocalClient();
+		const character = player?.getCharacter();
 
 		if (player) {
-			player.characterLoaded.Once(() => {
+			if (character) {
 				Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
+			} else {
+				player.characterLoaded.Once(() => {
+					Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
 
-				this.updateRayParams();
-			});
+					this.updateRayParams();
+				});
+			}
 		}
 
 		PlayerCollidable.playerAdded.Connect(() => this.updateRayParams());

@@ -1,3 +1,4 @@
+import { CombatantList } from "server/models/combatant";
 import { LotlPlayer } from "shared/models/lotl_player";
 
 type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
@@ -34,9 +35,12 @@ export abstract class Skill {
 
 	/**
 	 * This method must be overriden on the server for damage handling, and on the client for VFX
+	 * @returns A success status boolean
 	 * @virtual
 	 */
-	public cast(caster: LotlPlayer, target: LotlPlayer) {
-		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}`);
+	public cast(caster: LotlPlayer, target: LotlPlayer, combatant: keyof CombatantList) {
+		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}, combatant ${combatant}`);
+
+		return false;
 	}
 }

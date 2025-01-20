@@ -5,7 +5,7 @@ import { BaseCharacter } from "shared/models/character";
 import { LotlPlayer } from "shared/models/lotl_player";
 import { producer } from "server/producer";
 
-interface AnimatedCharacter extends CharacterRigR6 {
+export interface AnimatedCharacter extends CharacterRigR6 {
 	anims: Folder & {
 		idle: Animation;
 	};
@@ -13,8 +13,7 @@ interface AnimatedCharacter extends CharacterRigR6 {
 
 // Immutability they said, it'd be great they said (it isn't)
 export interface CombatantInfo {
-	readonly name: string;
-	readonly character: CharacterRigR6;
+	readonly character: AnimatedCharacter;
 
 	readonly health: number;
 }
@@ -24,7 +23,7 @@ export type CombatantList = Omit<ReplicatedStorage["combatants"], keyof Folder>;
 export class Combatant extends BaseCharacter<undefined> {
 	public readonly skillset: Skillset;
 
-	public constructor(
+	protected constructor(
 		public readonly name: string,
 		character: Model,
 	) {

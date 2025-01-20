@@ -99,6 +99,7 @@ export class LotlPlayer<P extends Player | undefined = Player | undefined> exten
 	}
 }
 
+// Creates a LotlPlayer for remote clients
 @Networked({ client: true })
 export class LotlPlayerNetworked extends LotlPlayer<Player> {
 	// Override with a new separate signal
