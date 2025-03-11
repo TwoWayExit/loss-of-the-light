@@ -5,18 +5,8 @@ import { PlayerNetworked } from "shared/models/player-networked";
 import React from "@rbxts/react";
 
 export function CombatFrame() {
-	const selectBattles = (state: RootState) => state.battles;
-	const selectInBattle = createSelector(selectBattles, (battles) => {
-		for (const [, battle] of pairs(battles)) {
-			for (const [, team] of pairs(battle.teams)) {
-				if (team.has(PlayerNetworked.getLocalClient()!.id)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	});
+	const selectPlayer = (state: RootState) => state.players[PlayerNetworked.getLocalClient()!.id];
+	const selectInBattle = createSelector(selectPlayer, (player) => player?.battleId !== undefined);
 
 	const inBattle = useSelector(selectInBattle);
 

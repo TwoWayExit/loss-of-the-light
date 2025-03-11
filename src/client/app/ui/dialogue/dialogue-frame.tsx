@@ -1,7 +1,7 @@
 import { useEventListener, useMotion } from "@rbxts/pretty-react-hooks";
 import { useProducer, useSelector } from "@rbxts/react-reflex";
 import { tween } from "@rbxts/ripple";
-import { RootProducer, RootState } from "../../../producer";
+import { RootProducer, RootState } from "client/producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import { DialogueName } from "./dialogue-name";
 import { DialogueText } from "./dialogue-text";
