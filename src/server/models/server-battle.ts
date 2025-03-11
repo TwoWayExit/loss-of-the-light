@@ -99,16 +99,16 @@ export class ServerBattle extends Battle {
 	protected setupTeams(inBattle: boolean) {
 		for (const [teamName, team] of this.teams) {
 			for (const [player] of team) {
-				const { combatants, combatantsOrder } = producer.getState((state) => state.players[player.id]);
+				const { combatants } = producer.getState((state) => state.players[player.id]);
 
 				if (inBattle) {
 					player.setStatus(LotlPlayerStatus.IN_BATTLE);
 
 					producer.setPlayerBattleId(player.id, this.id);
 
-					combatantsOrder.forEach((name, index) => {
-						combatants[name]!.character.PivotTo(this.getCombatantPosition(teamName, player, index));
-						combatants[name]!.character.AddTag(this.id);
+					combatants.forEach((combatant, index) => {
+						combatant.character.PivotTo(this.getCombatantPosition(teamName, player, index));
+						combatant.character.AddTag(this.id);
 					});
 				} else {
 					player.setStatus(LotlPlayerStatus.IDLE);

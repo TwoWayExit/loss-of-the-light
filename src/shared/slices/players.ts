@@ -8,12 +8,7 @@ export interface PlayerInfo {
 
 	readonly skillsCasted: Map<keyof CombatantList, string>;
 
-	readonly combatants: {
-		readonly [combatant in keyof CombatantList]?: CombatantInfo;
-	};
-
-	/** Synchronized with `combatants` to simply show order, hacky way to do an "ordered map/record" in Luau */
-	readonly combatantsOrder: (keyof CombatantList)[];
+	readonly combatants: CombatantInfo[];
 
 	readonly region: Region;
 }
@@ -27,7 +22,7 @@ const initialState: PlayersState = {};
 export const playersSlice = createProducer(initialState, {
 	addPlayer: (state, id: string) => ({
 		...state,
-		[id]: { skillsCasted: new Map(), combatants: {}, combatantsOrder: [], region: "baseplate" },
+		[id]: { skillsCasted: new Map(), combatants: [], region: "baseplate" },
 	}),
 
 	removePlayer: (state, id: string) => {
@@ -38,42 +33,44 @@ export const playersSlice = createProducer(initialState, {
 		return players;
 	},
 
-	addPlayerCombatant: (state, id: string, combatant: keyof CombatantList, info: CombatantInfo) => {
-		const { combatants, combatantsOrder: order } = state[id];
-		const combatantsOrder = [...order];
-
-		combatantsOrder.push(combatant);
+	addPlayerCombatant: (state, id: string, info: CombatantInfo) => {
+		const { combatants } = state[id];
 
 		return {
 			...state,
-			[id]: { ...state[id], combatants: { ...combatants, [combatant]: info }, combatantsOrder },
+			[id]: { ...state[id], combatants: [...combatants, info] },
 		};
 	},
 
 	setCombatantHealth: (state, id: string, combatant: keyof CombatantList, health: number) => {
-		const { combatants, combatantsOrder } = state[id];
-		const info = combatants[combatant];
+		const combatants = [...state[id].combatants];
+		const index = combatants.findIndex((c) => c.name === combatant);
+		const info = combatants[index];
 
 		assert(info, `Combatant ${combatant} not found in player ${id}`);
 
+		combatants[index] = { ...info, health };
+
 		return {
 			...state,
-			[id]: { ...state[id], combatants: { ...combatants, [combatant]: { ...info, health } }, combatantsOrder },
+			[id]: { ...state[id], combatants },
 		};
 	},
 
 	takeCombatantDamage: (state, id: string, combatant: keyof CombatantList, damage: number) => {
-		const { combatants, combatantsOrder } = state[id];
-		const info = combatants[combatant];
+		const combatants = [...state[id].combatants];
+		const index = combatants.findIndex((c) => c.name === combatant);
+		const info = combatants[index];
 
 		assert(info, `Combatant ${combatant} not found in player ${id}`);
+
+		combatants[index] = { ...info, health: info.health - damage };
 
 		return {
 			...state,
 			[id]: {
 				...state[id],
-				combatants: { ...combatants, [combatant]: { ...info, health: info.health - damage } },
-				combatantsOrder,
+				combatants,
 			},
 		};
 	},
@@ -109,26 +106,25 @@ export const playersSlice = createProducer(initialState, {
 	}),
 
 	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, orderIndex: number) => {
-		const { combatants, combatantsOrder: order } = state[id];
-		const combatantsOrder = [...order];
+		const { combatants } = state[id];
+		const info = combatants.remove(combatants.findIndex((c) => c.name === combatant));
 
-		combatantsOrder.remove(combatantsOrder.indexOf(combatant));
-		combatantsOrder.insert(orderIndex, combatant);
+		assert(info, `Combatant ${combatant} not found in player ${id}`);
+
+		combatants.insert(orderIndex, info);
 
 		return {
 			...state,
-			[id]: { ...state[id], combatants, combatantsOrder },
+			[id]: { ...state[id], combatants },
 		};
 	},
 
 	removePlayerCombatant: (state, id: string, combatant: keyof CombatantList) => {
-		const combatants = { ...state[id].combatants };
-		const combatantsOrder = [...state[id].combatantsOrder];
+		const combatants = [...state[id].combatants];
+		const index = combatants.findIndex((c) => c.name === combatant);
 
-		delete combatants[combatant];
+		delete combatants[index];
 
-		combatantsOrder.remove(combatantsOrder.indexOf(combatant));
-
-		return { ...state, [id]: { ...state[id], combatants, combatantsOrder } };
+		return { ...state, [id]: { ...state[id], combatants } };
 	},
 });

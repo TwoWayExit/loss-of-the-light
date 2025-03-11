@@ -13,6 +13,7 @@ export interface AnimatedCharacter extends CharacterRigR6 {
 
 // Immutability they said, it'd be great they said (it isn't)
 export interface CombatantInfo {
+	readonly name: keyof CombatantList;
 	readonly character: AnimatedCharacter;
 
 	readonly health: number;
@@ -37,8 +38,8 @@ export class Combatant extends BaseCharacter<undefined> {
 
 		let hasCombatants = false;
 
-		for (const [name, info] of pairs(this.getCombatantInfos(player))) {
-			const combatant = new Combatant(name, info.character);
+		for (const info of this.getCombatantInfos(player)) {
+			const combatant = new Combatant(info.name, info.character);
 
 			info.character.Parent = Workspace.combatants;
 
@@ -56,8 +57,8 @@ export class Combatant extends BaseCharacter<undefined> {
 		return producer.getState((state) => state.players[player.id].combatants);
 	}
 
-	public static addCombatant(player: LotlPlayer, combatant: keyof CombatantList, info: CombatantInfo) {
-		producer.addPlayerCombatant(player.id, combatant, info);
+	public static addCombatant(player: LotlPlayer, info: CombatantInfo) {
+		producer.addPlayerCombatant(player.id, info);
 	}
 
 	public static removeCombatant(player: LotlPlayer, combatant: keyof CombatantList) {
