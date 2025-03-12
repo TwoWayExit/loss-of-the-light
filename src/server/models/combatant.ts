@@ -13,7 +13,6 @@ export interface AnimatedCharacter extends CharacterRigR6 {
 
 // Immutability they said, it'd be great they said (it isn't)
 export interface CombatantInfo {
-	readonly name: keyof CombatantList;
 	readonly character: AnimatedCharacter;
 
 	readonly health: number;
@@ -24,13 +23,10 @@ export type CombatantList = Omit<ReplicatedStorage["combatants"], keyof Folder>;
 export class Combatant extends BaseCharacter<undefined> {
 	public readonly skillset: Skillset;
 
-	protected constructor(
-		public readonly name: string,
-		character: Model,
-	) {
+	protected constructor(character: Model) {
 		super(character);
 
-		this.skillset = Skillset.getSkillset(name);
+		this.skillset = Skillset.getSkillset(character.Name);
 	}
 
 	public static createCombatants(player: LotlPlayer) {
@@ -39,7 +35,7 @@ export class Combatant extends BaseCharacter<undefined> {
 		let hasCombatants = false;
 
 		for (const info of this.getCombatantInfos(player)) {
-			const combatant = new Combatant(info.name, info.character);
+			const combatant = new Combatant(info.character);
 
 			info.character.Parent = Workspace.combatants;
 

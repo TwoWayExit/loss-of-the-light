@@ -15,8 +15,7 @@ export class PlaceholderService implements OnStart {
 			}
 
 			producer.addPlayerCombatant(player.id, {
-				name: "MaleMC",
-				character: ReplicatedStorage.combatants.Daryl.Clone(),
+				character: ReplicatedStorage.combatants.MaleMC.Clone(),
 				health: 100,
 			});
 		});

@@ -44,7 +44,7 @@ export const playersSlice = createProducer(initialState, {
 
 	setCombatantHealth: (state, id: string, combatant: keyof CombatantList, health: number) => {
 		const combatants = [...state[id].combatants];
-		const index = combatants.findIndex((c) => c.name === combatant);
+		const index = combatants.findIndex((c) => c.character.Name === combatant);
 		const info = combatants[index];
 
 		assert(info, `Combatant ${combatant} not found in player ${id}`);
@@ -59,7 +59,7 @@ export const playersSlice = createProducer(initialState, {
 
 	takeCombatantDamage: (state, id: string, combatant: keyof CombatantList, damage: number) => {
 		const combatants = [...state[id].combatants];
-		const index = combatants.findIndex((c) => c.name === combatant);
+		const index = combatants.findIndex((c) => c.character.Name === combatant);
 		const info = combatants[index];
 
 		assert(info, `Combatant ${combatant} not found in player ${id}`);
@@ -107,7 +107,7 @@ export const playersSlice = createProducer(initialState, {
 
 	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, orderIndex: number) => {
 		const { combatants } = state[id];
-		const info = combatants.remove(combatants.findIndex((c) => c.name === combatant));
+		const info = combatants.remove(combatants.findIndex((c) => c.character.Name === combatant));
 
 		assert(info, `Combatant ${combatant} not found in player ${id}`);
 
@@ -121,7 +121,7 @@ export const playersSlice = createProducer(initialState, {
 
 	removePlayerCombatant: (state, id: string, combatant: keyof CombatantList) => {
 		const combatants = [...state[id].combatants];
-		const index = combatants.findIndex((c) => c.name === combatant);
+		const index = combatants.findIndex((c) => c.character.Name === combatant);
 
 		delete combatants[index];
 
