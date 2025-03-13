@@ -55,6 +55,8 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 
 			const clone = ReplicatedStorage.combatants[combatant as keyof CombatantList].Clone();
 
+			clone.Parent = Workspace.combatants;
+
 			Combatant.addCombatant(this.player, {
 				character: clone,
 				health: 100,

@@ -1,16 +1,31 @@
 import { Workspace } from "@rbxts/services";
+import { RootState } from "client/producer";
 import type { AnimatedCharacter } from "server/models/combatant";
+import { producer } from "client/producer";
 import { Battle } from "shared/models/battle";
+import { LotlClient } from "shared/models/lotl_client";
 
 export class ClientBattle extends Battle {
-	private combatants = this.findCombatants();
+	private combatants: Map<string, AnimatedCharacter[]> = new Map();
 
 	public constructor(id: string) {
 		super(id);
+
+		for (const [, team] of pairs(producer.getState((state: RootState) => state.battles[id].teams))) {
+			for (const playerId of team) {
+				const list: AnimatedCharacter[] = [];
+
+				this.combatants.set(playerId, list);
+
+				producer
+					.getState((state: RootState) => state.players[playerId].combatants.map((c) => c.character))
+					.forEach((c) => list.push(c));
+			}
+		}
 	}
 
 	public override startBattle() {
-		this.hideOtherCombatants();
+		this.hideCombatants();
 		this.playCombatantIdles();
 
 		super.startBattle();
@@ -20,19 +35,17 @@ export class ClientBattle extends Battle {
 		super.stopBattle();
 	}
 
-	private findCombatants() {
-		const combatants = new Set<AnimatedCharacter>();
-
-		for (const combatant of Workspace.combatants.GetChildren()) {
-			if (combatant.HasTag(this.id)) {
-				combatants.add(combatant as AnimatedCharacter);
+	private hideCombatants() {
+		// Hide the player's combatants
+		for (const character of this.combatants.get(LotlClient.getLocalClient()!.id)!) {
+			for (const child of character.GetDescendants()) {
+				if (child.IsA("BasePart")) {
+					child.LocalTransparencyModifier = 1;
+				}
 			}
 		}
 
-		return combatants;
-	}
-
-	private hideOtherCombatants() {
+		// Hide other people's combatants
 		for (const combatant of Workspace.combatants.GetChildren()) {
 			if (!combatant.HasTag(this.id)) {
 				for (const child of combatant.GetDescendants()) {
@@ -45,10 +58,12 @@ export class ClientBattle extends Battle {
 	}
 
 	private playCombatantIdles() {
-		for (const combatant of this.combatants) {
-			const anim = combatant.Humanoid.Animator.LoadAnimation(combatant.anims.idle);
+		for (const [, combatants] of this.combatants) {
+			for (const combatant of combatants) {
+				const anim = combatant.Humanoid.Animator.LoadAnimation(combatant.anims.idle);
 
-			anim.Play();
+				anim.Play();
+			}
 		}
 	}
 }

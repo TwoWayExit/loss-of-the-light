@@ -10,6 +10,8 @@ export interface PlayerInfo {
 
 	readonly combatants: CombatantInfo[];
 
+	readonly selectedCombatant: number;
+
 	readonly region: Region;
 }
 
@@ -22,7 +24,7 @@ const initialState: PlayersState = {};
 export const playersSlice = createProducer(initialState, {
 	addPlayer: (state, id: string) => ({
 		...state,
-		[id]: { skillsCasted: new Map(), combatants: [], region: "baseplate" },
+		[id]: { skillsCasted: new Map(), combatants: [], selectedCombatant: -1, region: "baseplate" },
 	}),
 
 	removePlayer: (state, id: string) => {
@@ -127,4 +129,32 @@ export const playersSlice = createProducer(initialState, {
 
 		return { ...state, [id]: { ...state[id], combatants } };
 	},
+
+	setSelectedCombatant: (state, id: string, index: number) => {
+		assert(index < state[id].combatants.size() && index >= 0, "Attempt to select combatant would be out of bounds");
+
+		return {
+			...state,
+			[id]: {
+				...state[id],
+				selectedCombatant: index,
+			},
+		};
+	},
+
+	clearSelectedCombatant: (state, id: string) => ({
+		...state,
+		[id]: {
+			...state[id],
+			selectedCombatant: -1,
+		},
+	}),
+
+	setRegion: (state, id: string, region: Region) => ({
+		...state,
+		[id]: {
+			...state[id],
+			region,
+		},
+	}),
 });

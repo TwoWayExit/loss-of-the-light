@@ -8,6 +8,8 @@ import { minusRightMove, plusRightMove } from "client/commands/rightmove";
 import { minusLeftMove, plusLeftMove } from "client/commands/leftmove";
 import { minusAttack1, plusAttack1 } from "client/commands/attack1";
 import { minusAttack2, plusAttack2 } from "client/commands/attack2";
+import { switch_left } from "client/commands/switch_left";
+import { switch_right } from "client/commands/switch_right";
 
 const commandsList = {
 	ping,
@@ -15,6 +17,9 @@ const commandsList = {
 	kill,
 
 	mps_prompt,
+
+	switch_left,
+	switch_right,
 
 	["+forwardmove"]: plusForwardMove,
 	["-forwardmove"]: minusForwardMove,

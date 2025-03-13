@@ -3,7 +3,7 @@ import { producer } from "server/producer";
 import { Battle, Teams } from "shared/models/battle";
 import { Combatant } from "server/models/combatant";
 import { LotlPlayer, LotlPlayerStatus } from "shared/models/lotl_player";
-import { Region } from "shared/modules/globals";
+import { Globals, Region } from "shared/modules/globals";
 
 export type BattleTeam = Map<LotlPlayer, Combatant[]>;
 
@@ -38,27 +38,25 @@ export class ServerBattle extends Battle {
 	public override startBattle() {
 		producer.addBattle(this.id, this.region);
 
-		this.setupTeams(true);
+		this.setupPlayers(true);
 
 		this.stopMovementOfTeams();
 
-		const players = new Set<string>();
-
 		for (const [name, team] of this.teams) {
+			const players = new Set<string>();
+
 			for (const [player] of team) {
 				players.add(player.id);
 			}
 
-			producer.addBattleTeam(this.id, name, new Set([...players])); // Cloning the set on the producer itself doesn't work???
-
-			players.clear();
+			producer.addBattleTeam(this.id, name, players);
 		}
 
 		super.startBattle();
 	}
 
 	public override stopBattle() {
-		this.setupTeams(false);
+		this.setupPlayers(false);
 
 		this.startMovementOfTeams();
 
@@ -81,9 +79,10 @@ export class ServerBattle extends Battle {
 
 	public getCombatantPosition(team: Teams, player: LotlPlayer, index: number) {
 		const origin = Workspace.battlegrounds[this.region][team].CFrame;
-		const firstPosition = origin.mul(new CFrame(-1 * (this.teams.get(team)!.get(player)!.size() - 1), 0, 0));
+		const combatantAmount = this.teams.get(team)!.get(player)!.size();
+		const firstPosition = origin.mul(new CFrame(-1 * (combatantAmount - 1), 0, 0));
 
-		return firstPosition.mul(new CFrame(2 * index, 0, 0));
+		return firstPosition.mul(new CFrame(Globals.COMBATANT_SPACING * index, 0, 0));
 	}
 
 	public nextTurn() {
@@ -96,7 +95,7 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected setupTeams(inBattle: boolean) {
+	protected setupPlayers(inBattle: boolean) {
 		for (const [teamName, team] of this.teams) {
 			for (const [player] of team) {
 				const { combatants } = producer.getState((state) => state.players[player.id]);
@@ -104,6 +103,7 @@ export class ServerBattle extends Battle {
 				if (inBattle) {
 					player.setStatus(LotlPlayerStatus.IN_BATTLE);
 
+					producer.setSelectedCombatant(player.id, 0);
 					producer.setPlayerBattleId(player.id, this.id);
 
 					combatants.forEach((combatant, index) => {
@@ -114,6 +114,7 @@ export class ServerBattle extends Battle {
 					player.setStatus(LotlPlayerStatus.IDLE);
 
 					producer.setPlayerBattleId(player.id, undefined);
+					producer.clearSelectedCombatant(player.id);
 				}
 			}
 		}

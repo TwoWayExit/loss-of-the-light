@@ -6,7 +6,7 @@ export const enum Teams {
 	TEAM2 = "Team2",
 }
 
-export class Battle {
+export abstract class Battle {
 	public readonly battleStarted = new Signal<void>();
 	public readonly battleEnded = new Signal<void>();
 

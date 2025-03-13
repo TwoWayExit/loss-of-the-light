@@ -34,7 +34,7 @@ export abstract class Skill {
 	) {}
 
 	/**
-	 * This method must be overriden on the server for damage handling, and on the client for VFX
+	 * This method must be overriden on the server for logic handling, and on the client for VFX
 	 * @returns A success status boolean
 	 * @virtual
 	 */

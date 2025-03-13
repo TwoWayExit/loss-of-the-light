@@ -1,62 +1,105 @@
 import { Controller, OnInit } from "@flamework/core";
-import { Players } from "@rbxts/services";
-import { Workspace } from "@rbxts/services";
 import { LotlCameraController } from "client/controllers/lotl_camera-controller";
-import { producer } from "client/producer";
+import { producer, RootState } from "client/producer";
 import { ClientBattle } from "client/models/client-battle";
 import { ViewVectors } from "shared/modules/view-vectors";
-import { Teams } from "shared/models/battle";
-import { Region } from "shared/modules/globals";
+import { LotlClient } from "shared/models/lotl_client";
+import { TweenService, Workspace } from "@rbxts/services";
 
 @Controller({})
 export class BattleController implements OnInit {
+	private tweenInfos = {
+		transparency: new TweenInfo(0.35, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, 0),
+		position: new TweenInfo(0.95, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, 0),
+	};
+
 	public constructor(protected readonly cameraController: LotlCameraController) {}
 
-	protected setCameraActive(active: boolean, region: Region, teamName: Teams) {
+	protected setCameraActive(active: boolean) {
 		this.cameraController.useFixedPosition(active);
 
 		if (active) {
-			const origin = Workspace.battlegrounds[region].origin.CFrame;
-			const position = origin.mul(
-				teamName === Teams.TEAM1 ? ViewVectors.VIEW_BATTLE : ViewVectors.VIEW_BATTLE.Inverse(),
-			).Position;
+			const { selectedCombatant, combatants, region } = producer.getState(
+				(state: RootState) => state.players[LotlClient.getLocalClient()!.id],
+			);
+			const combatant = combatants[selectedCombatant];
+			const position = combatant.character.GetPivot().Position;
 
-			this.cameraController.setFixedPosition(CFrame.lookAt(position, origin.Position));
+			this.cameraController.setFixedPosition(
+				CFrame.lookAt(position, Workspace.battlegrounds[region].origin.Position).mul(ViewVectors.VIEW_BATTLE),
+			);
 		}
+	}
+
+	private onCombatantSwitch(selected: number) {
+		const { combatants, region } = producer.getState(
+			(state: RootState) => state.players[LotlClient.getLocalClient()!.id],
+		);
+		const character = combatants[selected].character;
+
+		for (const { character } of combatants) {
+			for (const child of character.GetDescendants()) {
+				if (child.IsA("BasePart")) {
+					const tween = TweenService.Create(child, this.tweenInfos.transparency, {
+						LocalTransparencyModifier: 1,
+					});
+
+					tween.Play();
+				}
+			}
+		}
+
+		for (const child of character.GetDescendants()) {
+			if (child.IsA("BasePart")) {
+				const tween = TweenService.Create(child, this.tweenInfos.transparency, {
+					LocalTransparencyModifier: 0,
+				});
+
+				tween.Play();
+			}
+		}
+
+		const position = character.GetPivot().Position;
+
+		const tween = TweenService.Create(Workspace.CurrentCamera!, this.tweenInfos.position, {
+			CFrame: CFrame.lookAt(position, Workspace.battlegrounds[region].origin.Position).mul(
+				ViewVectors.VIEW_BATTLE,
+			),
+		});
+
+		tween.Play();
 	}
 
 	onInit() {
 		producer.observe(
 			(state) => state.battles,
 			(_, id) => id,
-			(battleInfo, battleId) => {
-				let teamName;
-
-				for (const [name, team] of pairs(battleInfo.teams)) {
-					if ([...team].find((id) => id === tostring(Players.LocalPlayer.UserId))) {
-						teamName = name;
-						break;
-					}
-				}
-
-				if (!teamName) {
-					return;
-				}
-
+			(_, battleId) => {
 				const battle = new ClientBattle(battleId as string);
 
 				battle.startBattle();
 
-				const region = producer.getState((state) => state.players[tostring(Players.LocalPlayer.UserId)].region);
-
-				this.setCameraActive(true, region, teamName);
+				this.setCameraActive(true);
 
 				return () => {
 					battle.stopBattle();
 
-					this.setCameraActive(false, region, teamName);
+					this.setCameraActive(false);
 				};
 			},
 		);
+
+		producer
+			.wait(
+				(state) => state.players,
+				(state) => LotlClient.getLocalClient()!.id in state,
+			)
+			.then(() => {
+				producer.subscribe(
+					(state) => state.players[LotlClient.getLocalClient()!.id].selectedCombatant,
+					(current) => current !== -1,
+					(selected) => this.onCombatantSwitch(selected),
+				);
+			});
 	}
 }

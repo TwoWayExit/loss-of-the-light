@@ -37,8 +37,6 @@ export class Combatant extends BaseCharacter<undefined> {
 		for (const info of this.getCombatantInfos(player)) {
 			const combatant = new Combatant(info.character);
 
-			info.character.Parent = Workspace.combatants;
-
 			combatants.push(combatant);
 
 			hasCombatants = true;

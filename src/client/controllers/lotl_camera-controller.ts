@@ -30,10 +30,15 @@ export class LotlCameraController implements OnStart, OnRender {
 
 	public setFixedPosition(cframe: CFrame) {
 		this.fixedPosition = cframe;
+
+		this.updateFixedPosition();
 	}
 
-	public useFixedPosition(using: boolean) {
-		this.usingFixedPosition = using;
+	/** @param isUsing - If true, sets the camera type to Scriptable and positions the camera to the last set fixed position, else Custom */
+	public useFixedPosition(isUsing: boolean) {
+		this.usingFixedPosition = isUsing;
+
+		this.updateFixedPosition();
 	}
 
 	protected followCharacter() {
@@ -110,7 +115,10 @@ export class LotlCameraController implements OnStart, OnRender {
 		}
 
 		if (this.usingFixedPosition) {
+			camera.CameraType = Enum.CameraType.Scriptable;
 			camera.CFrame = this.fixedPosition;
+		} else {
+			camera.CameraType = Enum.CameraType.Custom;
 		}
 	}
 
@@ -144,7 +152,5 @@ export class LotlCameraController implements OnStart, OnRender {
 		this.followCharacter();
 
 		this.fadeObstructions();
-
-		this.updateFixedPosition();
 	}
 }
