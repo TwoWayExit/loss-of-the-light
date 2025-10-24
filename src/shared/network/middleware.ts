@@ -1,25 +1,5 @@
 import { Networking } from "@flamework/networking";
 import { Players, RunService } from "@rbxts/services";
-import { PlayerNetworked } from "../models/player-networked";
-
-export function pingVerifier<I extends unknown[]>(): Networking.EventMiddleware<I> {
-	return (processNext, event) => {
-		if (RunService.IsClient()) {
-			throw "Ping verifier middleware can only be loaded on the server";
-		}
-
-		print(`Loaded ping verifier middleware for ${event.name}`);
-
-		return (player, ...args) => {
-			const networkPlayer = PlayerNetworked.getPlayerFromLocalPlayer(player!);
-			const success = networkPlayer?.pingResolved.Wait();
-
-			if (success || !networkPlayer) {
-				processNext(player, ...args);
-			}
-		};
-	};
-}
 
 export function rateLimiter<I extends unknown[], O>(rate: number): Networking.FunctionMiddleware<I, O> {
 	return (processNext, event) => {

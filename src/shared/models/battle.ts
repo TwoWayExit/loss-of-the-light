@@ -2,8 +2,8 @@ import { Janitor } from "@rbxts/janitor";
 import { Signal } from "@rbxts/beacon";
 
 export const enum Teams {
-	TEAM1 = "Team1",
-	TEAM2 = "Team2",
+	TEAM1 = "0",
+	TEAM2 = "1",
 }
 
 export abstract class Battle {

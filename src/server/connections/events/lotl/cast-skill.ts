@@ -1,14 +1,15 @@
 import { Service, OnInit } from "@flamework/core";
 import { Events } from "server/network";
 import { producer } from "server/producer";
-import { LotlPlayer, LotlPlayerNetworked } from "shared/models/lotl_player";
+import { LotlClient } from "shared/models/lotl_client";
+import { BasePlayer } from "shared/models/player";
 import { Skillset } from "shared/utils/skills";
 
 @Service({})
 export class CastSkill implements OnInit {
 	onInit() {
 		Events.lotl.castSkill.connect(async (localPlayer, skill, targetId, casterCombatant, targetCombatant) => {
-			const player = LotlPlayerNetworked.getPlayerFromLocalPlayer(localPlayer)!;
+			const player = LotlClient.getPlayerFromLocalPlayer(localPlayer)!;
 
 			const battleId = producer.getState((state) => state.players[player.id].battleId);
 
@@ -16,7 +17,7 @@ export class CastSkill implements OnInit {
 				return;
 			}
 
-			const target = LotlPlayer.getPlayerFromId(targetId);
+			const target = BasePlayer.getPlayerFromId(targetId);
 
 			if (!target) {
 				return;
@@ -39,11 +40,7 @@ export class CastSkill implements OnInit {
 				return;
 			}
 
-			const success = await Skillset.getSkillset(casterCombatant).skills[skill].cast(
-				player,
-				target,
-				targetCombatant,
-			);
+			const success = Skillset.getSkillset(casterCombatant).skills[skill].cast(player, target, targetCombatant);
 
 			if (!success) {
 				return;

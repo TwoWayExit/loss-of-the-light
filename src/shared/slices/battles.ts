@@ -1,15 +1,16 @@
 import { createProducer } from "@rbxts/reflex";
 import { Teams } from "shared/models/battle";
 import { Region } from "shared/modules/globals";
+import { produce } from "@rbxts/better-immut";
 
 interface BattleInfo {
 	readonly turn: number;
 	readonly region: Region;
 
 	readonly teams: {
-		readonly [teamName in Teams]: ReadonlySet<string>;
+		readonly [teamName in Teams]: Set<string>;
 	};
-	readonly spectators: ReadonlySet<string>;
+	readonly spectators: Set<string>;
 }
 
 interface BattlesState {
@@ -19,27 +20,23 @@ interface BattlesState {
 const initialState: BattlesState = {};
 
 export const battlesSlice = createProducer(initialState, {
-	addBattle: (state, id: string, region: BattleInfo["region"]) => ({
-		...state,
-		[id]: { turn: 0, region, teams: {} as BattleInfo["teams"], spectators: new Set() },
-	}),
+	addBattle: (state, id: string, region: BattleInfo["region"]) =>
+		produce(state, (draft) => {
+			draft[id] = { turn: 0, region, teams: {} as BattleInfo["teams"], spectators: new Set() };
+		}),
 
-	nextBattleTurn: (state, id: string) => {
-		const { turn, teams } = state[id];
+	nextBattleTurn: (state, id: string) =>
+		produce(state, (draft) => {
+			draft[id].turn++;
+		}),
 
-		return { ...state, [id]: { ...state[id], turn: turn + 1, teams: { ...teams } } };
-	},
+	addBattleTeam: (state, id: string, teamName: Teams, team: Set<string>) =>
+		produce(state, (draft) => {
+			draft[id].teams[teamName] = team;
+		}),
 
-	addBattleTeam: (state, id: string, teamName: Teams, team: ReadonlySet<string>) => ({
-		...state,
-		[id]: { ...state[id], teams: { ...state[id].teams, [teamName]: team } },
-	}),
-
-	removeBattle: (state, id: string) => {
-		const battles = { ...state };
-
-		delete battles[id];
-
-		return battles;
-	},
+	removeBattle: (state, id: string) =>
+		produce(state, (draft) => {
+			delete draft[id];
+		}),
 });

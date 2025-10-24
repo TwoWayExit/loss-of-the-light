@@ -34,6 +34,7 @@
     "@flamework/core": "^1.2.3",
     "@flamework/networking": "^1.2.3",
     "@rbxts/beacon": "^2.1.1",
+    "@rbxts/better-immut": "^0.3.0",
     "@rbxts/clack": "^3.1.1",
     "@rbxts/fast-replica": "^3.0.2",
     "@rbxts/janitor": "^1.17.0-ts.1",
@@ -51,7 +52,7 @@
     "@rbxts/set-timeout": "^1.1.2",
     "@rbxts/t": "^3.1.1",
     "@rbxts/validate-tree": "^2.0.2",
-    "@twowayexit/dev-con": "^2.2.7"
+    "@twowayexit/dev-con": "^2.2.8"
   },
   "overrides": {
     "@rbxts/promise-character": {

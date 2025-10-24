@@ -3,7 +3,7 @@ import { Service, OnInit } from "@flamework/core";
 import { Events } from "server/network";
 import { config } from "shared/config";
 import { Replicas } from "server/replicas";
-import { LotlPlayer } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 import { producer } from "server/producer";
 import "shared/models/lotl_client";
 
@@ -20,6 +20,6 @@ export class PlayerService implements OnInit {
 			Replicas.movement.SetValue(player, Replicas.movement.GetValue(player)); // Update vars on join
 		});
 
-		LotlPlayer.playerAdded.Connect((player) => producer.addPlayer(player.id));
+		BasePlayer.playerAdded.Connect((player) => producer.addPlayer(player.id));
 	}
 }

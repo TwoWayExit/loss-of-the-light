@@ -2,11 +2,14 @@ import { OnTick } from "@flamework/core";
 import { Component, Components } from "@flamework/components";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { Character } from "shared/models/character";
-import { LotlPlayer, LotlPlayerNetworked, LotlPlayerStatus } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 import { Combatant, CombatantList } from "server/models/combatant";
 import { DisposableComponent } from "shared/components/disposable-component";
 import { Enemy } from "shared/components/enemy";
 import { BattleService } from "server/services/battle-service";
+import { LotlClient } from "shared/models/lotl_client";
+import { LotlPlayerStatus } from "shared/slices/players";
+import { producer } from "server/producer";
 
 interface Attributes {
 	triggerDistance: number;
@@ -21,7 +24,7 @@ interface Attributes {
 	ancestorWhitelist: [Workspace],
 })
 export class BattleTrigger extends DisposableComponent<Attributes, Character> implements OnTick {
-	protected player: LotlPlayer;
+	protected player: BasePlayer;
 
 	public constructor(
 		protected readonly components: Components,
@@ -29,7 +32,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 	) {
 		super();
 
-		const player = LotlPlayer.getPlayerFromCharacter(this.instance);
+		const player = BasePlayer.getPlayerFromCharacter(this.instance);
 		const enemy = components.getComponents<Enemy>(this.instance)[0];
 
 		assert(player, `No player found in battle trigger '${this.instance.GetFullName()}'`);
@@ -64,7 +67,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 		}
 	}
 
-	protected checkDistance(player: LotlPlayerNetworked) {
+	protected checkDistance(player: LotlClient) {
 		const character = player.getCharacter();
 
 		if (!character) {
@@ -79,11 +82,11 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 	}
 
 	onTick() {
-		if (this.player.getStatus() === LotlPlayerStatus.IN_BATTLE) {
+		if (producer.getState((state) => state.players[this.player.id].status) === LotlPlayerStatus.IN_BATTLE) {
 			return;
 		}
 
-		for (const player of LotlPlayerNetworked.getPlayers()) {
+		for (const player of LotlClient.getPlayers()) {
 			this.checkDistance(player);
 		}
 	}

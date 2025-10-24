@@ -22,7 +22,7 @@ interface ReplicatedStorage extends Instance {
 			lotl_client: ModuleScript;
 			battle: ModuleScript;
 			player: ModuleScript;
-			lotl_player: ModuleScript;
+			player: ModuleScript;
 		};
 		config: ModuleScript;
 		settings: Folder & {
@@ -45,7 +45,7 @@ interface ReplicatedStorage extends Instance {
 			["view-vectors"]: ModuleScript;
 		};
 		components: Folder & {
-			["lotl_player-animate"]: ModuleScript;
+			["player-animate"]: ModuleScript;
 			["uuid-component"]: ModuleScript;
 			["disposable-component"]: ModuleScript;
 			lotl_movement: ModuleScript;

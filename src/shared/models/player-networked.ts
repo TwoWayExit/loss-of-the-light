@@ -1,6 +1,5 @@
 import { Players, RunService } from "@rbxts/services";
 import { PlayerCollidable } from "./player-collidable";
-import { Globals } from "shared/modules/globals";
 import { Signal } from "@rbxts/beacon";
 import { NetworkPlayer, Networked, networkVar } from "shared/utils/network";
 import { Reflect } from "@flamework/core";
@@ -20,13 +19,6 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 
 	/** A signal which fires whenever the player's status changes */
 	public readonly statusChanged = new Signal<PlayerStatus>();
-
-	/**
-	 * A signal which fires whenever the player's ping is set, with the returned boolean indicating whether the player has reached the network timeout or not
-	 * @remarks This property is only defined on the server
-	 * @server
-	 */
-	public readonly pingResolved!: Signal<boolean>;
 
 	// Override with a new separate array
 	protected static override players: PlayerNetworked[] = [];
@@ -67,12 +59,6 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 		}
 
 		Reflect.defineMetadata(localPlayer, "player-networked", this);
-
-		if (RunService.IsServer()) {
-			this.pingResolved = new Signal();
-
-			this.janitor.Add(this.pingResolved, "Destroy");
-		}
 	}
 
 	/**
@@ -147,24 +133,6 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 
 			this.statusChanged.Fire(status);
 		}
-	}
-
-	/**
-	 * Gets the player's latency in ms
-	 * @returns The player's ping
-	 */
-	public getPing() {
-		return this.ping.get();
-	}
-
-	/**
-	 * Sets the player's ping and fires the pingResolved event
-	 * @param ping - The player's new ping in ms
-	 */
-	public setPing(ping: number) {
-		this.ping.set(ping);
-
-		this.pingResolved?.Fire(ping < Globals.NETWORK_TIMEOUT);
 	}
 
 	protected override onPlayerCreated() {

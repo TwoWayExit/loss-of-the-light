@@ -31,7 +31,7 @@ branch: %s
 compile time: %s
 job id: %s
 
-© 2022-2024 LapisThe. All rights reserved.`;
+© 2022-2025 LapisThe. All rights reserved.`;
 
 		DevCon.init(extensions, settings, commands, binds, {
 			primaryColor: new Color3(0.14, 0, 0.47),

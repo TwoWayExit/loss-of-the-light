@@ -1,8 +1,7 @@
-import { Workspace } from "@rbxts/services";
 import { CharacterRigR6 } from "@rbxts/promise-character";
 import { Skillset } from "shared/utils/skills";
 import { BaseCharacter } from "shared/models/character";
-import { LotlPlayer } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 import { producer } from "server/producer";
 
 export interface AnimatedCharacter extends CharacterRigR6 {
@@ -29,7 +28,7 @@ export class Combatant extends BaseCharacter<undefined> {
 		this.skillset = Skillset.getSkillset(character.Name);
 	}
 
-	public static createCombatants(player: LotlPlayer) {
+	public static createCombatants(player: BasePlayer) {
 		const combatants: Combatant[] = [];
 
 		let hasCombatants = false;
@@ -47,15 +46,15 @@ export class Combatant extends BaseCharacter<undefined> {
 		return combatants;
 	}
 
-	public static getCombatantInfos(player: LotlPlayer) {
+	public static getCombatantInfos(player: BasePlayer) {
 		return producer.getState((state) => state.players[player.id].combatants);
 	}
 
-	public static addCombatant(player: LotlPlayer, info: CombatantInfo) {
+	public static addCombatant(player: BasePlayer, info: CombatantInfo) {
 		producer.addPlayerCombatant(player.id, info);
 	}
 
-	public static removeCombatant(player: LotlPlayer, combatant: keyof CombatantList) {
+	public static removeCombatant(player: BasePlayer, combatant: keyof CombatantList) {
 		producer.removePlayerCombatant(player.id, combatant);
 	}
 }

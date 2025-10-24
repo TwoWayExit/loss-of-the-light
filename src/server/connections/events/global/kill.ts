@@ -2,7 +2,7 @@ import { Service, OnInit } from "@flamework/core";
 import { Events } from "server/network";
 import { Replicas } from "server/replicas";
 import { Character } from "shared/models/character";
-import { LotlPlayer } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 
 @Service({})
 export class Kill implements OnInit {
@@ -12,7 +12,7 @@ export class Kill implements OnInit {
 				return;
 			}
 
-			LotlPlayer.getPlayerFromCharacter(
+			BasePlayer.getPlayerFromCharacter(
 				Replicas.authorized.GetValue(player) ? target : player.Character,
 			)?.setHealth(0);
 		});

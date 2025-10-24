@@ -1,83 +1,24 @@
 interface Workspace extends Model {
-	fgw: Model & {
-		["Paladin's Shield"]: UnionOperation;
-		["Magic Dagger"]: UnionOperation;
-		["🐠⚔"]: Model & {
+	trestet: Model & {
+		test: Model & {
 			["Left Leg"]: Part & {
+				Snap: Snap;
 				LeftFootAttachment: Attachment;
 			};
 			Humanoid: Humanoid & {
-				Animator: Animator;
 				HumanoidDescription: HumanoidDescription;
 			};
 			["Right Leg"]: Part & {
+				Snap: Snap;
 				RightFootAttachment: Attachment;
-			};
-			Helmet: Accessory & {
-				Handle: Part & {
-					HatAttachment: Attachment;
-					OriginalSize: Vector3Value;
-					AccessoryWeld: Weld;
-					SpecialMesh: SpecialMesh;
-					AvatarPartScaleType: StringValue;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
-				};
-			};
-			["Body Colors"]: BodyColors;
-			HumanoidRootPart: Part & {
-				RootJoint: Motor6D;
-				RootAttachment: Attachment;
-			};
-			CharacterMesh: CharacterMesh;
-			Pants: Pants;
-			PauldronR: Accessory & {
-				Handle: Part & {
-					OriginalSize: Vector3Value;
-					AccessoryWeld: Weld;
-					RightShoulderAttachment: Attachment;
-					SpecialMesh: SpecialMesh;
-					AvatarPartScaleType: StringValue;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
-				};
 			};
 			Head: Part & {
 				HatAttachment: Attachment;
-				FaceFrontAttachment: Attachment;
 				HairAttachment: Attachment;
+				FaceFrontAttachment: Attachment;
+				face: Decal;
 				Mesh: SpecialMesh;
 				FaceCenterAttachment: Attachment;
-			};
-			Crest: Accessory & {
-				Handle: Part & {
-					HatAttachment: Attachment;
-					OriginalSize: Vector3Value;
-					AccessoryWeld: Weld;
-					SpecialMesh: SpecialMesh;
-					AvatarPartScaleType: StringValue;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
-				};
-			};
-			CrestCircle: Accessory & {
-				Handle: Part & {
-					OriginalSize: Vector3Value;
-					FaceFrontAttachment: Attachment;
-					AccessoryWeld: Weld;
-					Mesh: SpecialMesh;
-					AvatarPartScaleType: StringValue;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
-				};
 			};
 			Torso: Part & {
 				RightCollarAttachment: Attachment;
@@ -85,15 +26,18 @@ interface Workspace extends Model {
 				BodyBackAttachment: Attachment;
 				Neck: Motor6D;
 				LeftCollarAttachment: Attachment;
-				["Left Hip"]: Motor6D;
-				roblox: Decal;
-				["Right Hip"]: Motor6D;
 				["Left Shoulder"]: Motor6D;
+				["Left Hip"]: Motor6D;
+				["Right Hip"]: Motor6D;
 				["Right Shoulder"]: Motor6D;
 				BodyFrontAttachment: Attachment;
 				WaistBackAttachment: Attachment;
 				WaistFrontAttachment: Attachment;
 				NeckAttachment: Attachment;
+			};
+			HumanoidRootPart: Part & {
+				RootJoint: Motor6D;
+				RootAttachment: Attachment;
 			};
 			["Right Arm"]: Part & {
 				RightShoulderAttachment: Attachment;
@@ -103,80 +47,289 @@ interface Workspace extends Model {
 				LeftGripAttachment: Attachment;
 				LeftShoulderAttachment: Attachment;
 			};
-			Face: Accessory & {
-				Handle: Part & {
-					["Blush Lines"]: Decal;
-					Scar: Decal;
-					AccessoryWeld: Weld;
-					Eyes: Decal;
-					Eyebrows: Decal;
-					Blush: Decal;
-					OriginalSize: Vector3Value;
-					Mouth: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
+			AnimSaves: Model & {
+				Untitled: KeyframeSequence & {
+					Keyframe: Keyframe & {
+						HumanoidRootPart: Pose & {
+							Null: IntValue;
+							Torso: Pose;
+						};
+					};
 				};
 			};
-			PauldronL: Accessory & {
-				Handle: Part & {
-					OriginalSize: Vector3Value;
-					LeftShoulderAttachment: Attachment;
-					AccessoryWeld: Weld;
-					SpecialMesh: SpecialMesh;
-					AvatarPartScaleType: StringValue;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
-				};
+		};
+		quizzicle: Model & {
+			["Left Leg"]: Part & {
+				Snap: Snap;
+				LeftFootAttachment: Attachment;
 			};
-			Shirt: Shirt;
-			Hair: Accessory & {
-				Handle: Part & {
-					OriginalSize: Vector3Value;
-					HairAttachment: Attachment;
-					AccessoryWeld: Weld;
-					SpecialMesh: SpecialMesh;
-					AvatarPartScaleType: StringValue;
-				};
-				ThumbnailConfiguration: Configuration & {
-					ThumbnailCameraValue: CFrameValue;
-					ThumbnailCameraTarget: ObjectValue;
+			Humanoid: Humanoid & {
+				HumanoidDescription: HumanoidDescription;
+			};
+			["Right Leg"]: Part & {
+				Snap: Snap;
+				RightFootAttachment: Attachment;
+			};
+			Head: Part & {
+				HatAttachment: Attachment;
+				HairAttachment: Attachment;
+				FaceFrontAttachment: Attachment;
+				face: Decal;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+			Torso: Part & {
+				RightCollarAttachment: Attachment;
+				WaistCenterAttachment: Attachment;
+				BodyBackAttachment: Attachment;
+				Neck: Motor6D;
+				LeftCollarAttachment: Attachment;
+				["Left Shoulder"]: Motor6D;
+				["Left Hip"]: Motor6D;
+				["Right Hip"]: Motor6D;
+				["Right Shoulder"]: Motor6D;
+				BodyFrontAttachment: Attachment;
+				WaistBackAttachment: Attachment;
+				WaistFrontAttachment: Attachment;
+				NeckAttachment: Attachment;
+			};
+			HumanoidRootPart: Part & {
+				RootJoint: Motor6D;
+				RootAttachment: Attachment;
+			};
+			["Right Arm"]: Part & {
+				RightShoulderAttachment: Attachment;
+				RightGripAttachment: Attachment;
+			};
+			["Left Arm"]: Part & {
+				LeftGripAttachment: Attachment;
+				LeftShoulderAttachment: Attachment;
+			};
+			AnimSaves: Model & {
+				Untitled: KeyframeSequence & {
+					Keyframe: Keyframe & {
+						HumanoidRootPart: Pose & {
+							Null: IntValue;
+							Torso: Pose;
+						};
+					};
 				};
 			};
 		};
 	};
-	BackupModels: Folder;
-	battlegrounds: Folder & {
-		baseplate: Model & {
-			Starfish: Model & {
-				Torso: MeshPart & {
-					Eyes: Model;
-					Mouth: Model;
-				};
+	["A/DOOR w/ Sign"]: Model & {
+		Sign: Part & {
+			SurfaceGui: SurfaceGui & {
+				SIGN: TextLabel;
 			};
-			camera: Model & {
-				AnimationController: AnimationController;
-				camera: Part & {
-					Decal: Decal;
-				};
+		};
+	};
+	["female protag test"]: Model & {
+		["Left Leg"]: Part & {
+			Snap: Snap;
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			HumanoidDescription: HumanoidDescription;
+		};
+		Highlight: Highlight;
+		Clothing: Pants;
+		Face: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
-			Team2: Part & {
-				Decal: Decal;
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Face: Decal;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
 			};
-			origin: Part & {
-				Decal: Decal;
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		Scarf: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
-			Team1: Part & {
-				Decal: Decal;
+			Handle: Part & {
+				BodyBackAttachment: Attachment;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
 			};
-			["hatsune miku but she has JEANS"]: Model & {
-				["Legs With Shorts"]: Model;
+		};
+		Shirt: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				BodyFrontAttachment: Attachment;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Jacket: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				BodyFrontAttachment: Attachment;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hat: Accessory & {
+			Handle: Part & {
+				HatAttachment: Attachment;
+				Highlight: Highlight;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			HairAttachment: Attachment;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		["Pearl Necklace"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				NeckAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Leg"]: Part & {
+			Snap: Snap;
+			RightFootAttachment: Attachment;
+		};
+		["Blocky Girl Torso"]: CharacterMesh;
+		["Right Arm"]: Part & {
+			RightShoulderAttachment: Attachment;
+			RightGripAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			["Left Shoulder"]: Motor6D;
+			["Left Hip"]: Motor6D;
+			["Right Hip"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		["Left Sleeve"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				LeftShoulderAttachment: Attachment;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Sleeve"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				RightShoulderAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hair: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				Highlight: Highlight;
+				HairAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+	};
+	["talkablenpc do something with him"]: Model & {
+		["Left Leg"]: Part & {
+			Snap: Snap;
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			HumanoidDescription: HumanoidDescription;
+		};
+		["Right Arm"]: Part & {
+			RightShoulderAttachment: Attachment;
+			RightGripAttachment: Attachment;
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			HairAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			face: Decal;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		["Right Leg"]: Part & {
+			Snap: Snap;
+			RightFootAttachment: Attachment;
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			["Left Shoulder"]: Motor6D;
+			["Left Hip"]: Motor6D;
+			["Right Hip"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
 		};
 	};
 	AnimationPlate: Model & {
@@ -190,6 +343,7 @@ interface Workspace extends Model {
 			Decal: Decal;
 		};
 	};
+	["Brick Store"]: Model;
 	sp1kecactus: Model & {
 		["Left Leg"]: Part & {
 			LeftFootAttachment: Attachment;
@@ -197,18 +351,65 @@ interface Workspace extends Model {
 		Humanoid: Humanoid & {
 			Animator: Animator;
 			HumanoidDescription: HumanoidDescription;
-			Status: Status;
 		};
 		["Right Leg"]: Part & {
 			RightFootAttachment: Attachment;
 		};
-		Head: Part & {
-			HatAttachment: Attachment;
-			HairAttachment: Attachment;
-			FaceFrontAttachment: Attachment;
-			face: Decal;
-			Mesh: SpecialMesh;
-			FaceCenterAttachment: Attachment;
+		Infinity_Scarf_WHT_Accessory: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				NeckAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		SproutSorority: Accessory & {
+			Handle: Part & {
+				HatAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		VoidAntlers: Accessory & {
+			Handle: Part & {
+				HatAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Arm"]: Part & {
+			RightShoulderAttachment: Attachment;
+			RightGripAttachment: Attachment;
+		};
+		CarrotNose: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				FaceFrontAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
 		};
 		Torso: Part & {
 			RightCollarAttachment: Attachment;
@@ -226,41 +427,6 @@ interface Workspace extends Model {
 			WaistFrontAttachment: Attachment;
 			NeckAttachment: Attachment;
 		};
-		HumanoidRootPart: Part & {
-			RootJoint: Motor6D;
-			RootAttachment: Attachment;
-		};
-		["Body Colors"]: BodyColors;
-		VoidAntlers: Accessory & {
-			Handle: Part & {
-				HatAttachment: Attachment & {
-					OriginalPosition: Vector3Value;
-				};
-				OriginalSize: Vector3Value;
-				AccessoryWeld: Weld;
-				SpecialMesh: SpecialMesh;
-				AvatarPartScaleType: StringValue;
-			};
-		};
-		["Right Arm"]: Part & {
-			RightShoulderAttachment: Attachment;
-			RightGripAttachment: Attachment;
-		};
-		["Left Arm"]: Part & {
-			LeftGripAttachment: Attachment;
-			LeftShoulderAttachment: Attachment;
-		};
-		Infinity_Scarf_WHT_Accessory: Accessory & {
-			Handle: Part & {
-				OriginalSize: Vector3Value;
-				AccessoryWeld: Weld;
-				NeckAttachment: Attachment & {
-					OriginalPosition: Vector3Value;
-				};
-				SpecialMesh: SpecialMesh;
-				AvatarPartScaleType: StringValue;
-			};
-		};
 		MeshPartAccessory: Accessory & {
 			Handle: Part & {
 				HatAttachment: Attachment & {
@@ -272,106 +438,18 @@ interface Workspace extends Model {
 				AvatarPartScaleType: StringValue;
 			};
 		};
-		CarrotNose: Accessory & {
-			Handle: Part & {
-				OriginalSize: Vector3Value;
-				FaceFrontAttachment: Attachment & {
-					OriginalPosition: Vector3Value;
-				};
-				AccessoryWeld: Weld;
-				SpecialMesh: SpecialMesh;
-				AvatarPartScaleType: StringValue;
-			};
+		Head: Part & {
+			HatAttachment: Attachment;
+			HairAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			face: Decal;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
 		};
-		SproutSorority: Accessory & {
-			Handle: Part & {
-				HatAttachment: Attachment & {
-					OriginalPosition: Vector3Value;
-				};
-				OriginalSize: Vector3Value;
-				AccessoryWeld: Weld;
-				SpecialMesh: SpecialMesh;
-				AvatarPartScaleType: StringValue;
-			};
-		};
+		["Body Colors"]: BodyColors;
 	};
 	regions: Folder & {
 		baseplate: Folder & {
-			Daryl: Model & {
-				["Left Leg"]: Part & {
-					LeftFootAttachment: Attachment;
-				};
-				Humanoid: Humanoid & {
-					Animator: Animator;
-					HumanoidDescription: HumanoidDescription;
-				};
-				["Right Leg"]: Part & {
-					RightFootAttachment: Attachment;
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				Torso: Part & {
-					RightCollarAttachment: Attachment;
-					WaistCenterAttachment: Attachment;
-					BodyBackAttachment: Attachment;
-					Neck: Motor6D;
-					LeftCollarAttachment: Attachment;
-					["Left Hip"]: Motor6D;
-					roblox: Decal;
-					["Right Hip"]: Motor6D;
-					["Left Shoulder"]: Motor6D;
-					["Right Shoulder"]: Motor6D;
-					BodyFrontAttachment: Attachment;
-					WaistBackAttachment: Attachment;
-					WaistFrontAttachment: Attachment;
-					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				["Body Colors"]: BodyColors;
-				MessyHairstyleAccessory: Accessory & {
-					Handle: Part & {
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-				};
-				["Right Arm"]: Part & {
-					RightShoulderAttachment: Attachment;
-					RightGripAttachment: Attachment;
-				};
-				["Left Arm"]: Part & {
-					LeftGripAttachment: Attachment;
-					LeftShoulderAttachment: Attachment;
-				};
-				Pants: Pants;
-				MeshPartAccessory: Accessory & {
-					Handle: Part & {
-						AccessoryWeld: Weld;
-						LeftCollarAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-				};
-				Fedora: Accessory & {
-					Handle: Part & {
-						AccessoryWeld: Weld;
-						HatAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-				};
-				Shirt: Shirt;
-			};
 			["fake male backup3"]: Model & {
 				["Left Leg"]: Part & {
 					Snap: Snap;
@@ -381,7 +459,74 @@ interface Workspace extends Model {
 					HumanoidDescription: HumanoidDescription;
 				};
 				Highlight: Highlight;
-				Clothing: Shirt;
+				AnimSaves: Model & {
+					IDLEDONTCRASH: KeyframeSequence;
+					BASICDONTCRASH: KeyframeSequence;
+					HURTDONTCRASH: KeyframeSequence;
+				};
+				Face: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						face: Decal;
+						Mesh: SpecialMesh;
+						FaceCenterAttachment: Attachment;
+					};
+				};
+				Belt: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						WaistCenterAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				["Left Sleeve"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						LeftShoulderAttachment: Attachment;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Pants: Pants;
+				Pendant: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						NeckAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					HairAttachment: Attachment;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
 					WaistCenterAttachment: Attachment;
@@ -396,50 +541,6 @@ interface Workspace extends Model {
 					WaistBackAttachment: Attachment;
 					WaistFrontAttachment: Attachment;
 					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				["Left Sleeve"]: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						LeftShoulderAttachment: Attachment;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Pants: Pants;
-				Pendant: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						NeckAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					HairAttachment: Attachment;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				AnimSaves: Model & {
-					IDLEDONTCRASH: KeyframeSequence;
-					BASICDONTCRASH: KeyframeSequence;
-					HURTDONTCRASH: KeyframeSequence;
 				};
 				Suit: Accessory & {
 					ThumbnailConfiguration: Configuration & {
@@ -455,31 +556,18 @@ interface Workspace extends Model {
 						AvatarPartScaleType: StringValue;
 					};
 				};
-				Face: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						face: Decal;
-						Mesh: SpecialMesh;
-						FaceCenterAttachment: Attachment;
-					};
+				Clothing: Shirt;
+				TopHat: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				TopHat: Accessory & {
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				["Right Leg"]: Part & {
@@ -494,22 +582,16 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				Belt: Accessory & {
-					Handle: Part & {
-						WaistCenterAttachment: Attachment;
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Body Colors"]: BodyColors;
+				["Right Sleeve"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Body Colors"]: BodyColors;
-				["Right Sleeve"]: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
@@ -518,22 +600,18 @@ interface Workspace extends Model {
 						RightShoulderAttachment: Attachment;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Hair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Hair: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 			};
@@ -641,12 +719,15 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
-				AnimSaves: Model & {
-					Untitled: KeyframeSequence;
+				Highlight: Highlight;
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					angryface: Decal;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
 				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
@@ -667,18 +748,9 @@ interface Workspace extends Model {
 					RootJoint: Motor6D;
 					RootAttachment: Attachment;
 				};
-				EyeCoveringBlackHair: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
 				};
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
@@ -688,7 +760,27 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
+				EyeCoveringBlackHair: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						HairAttachment: Attachment;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				AnimSaves: Model & {
+					Untitled: KeyframeSequence;
+				};
 				["Meshes/untitled_catAccessory"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
@@ -696,21 +788,7 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					angryface: Decal;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				Highlight: Highlight;
 				["Blocky Girl Torso"]: CharacterMesh;
 			};
 			max: Part;
@@ -833,9 +911,13 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
+				["Lady's Floppy Hat"]: Accessory & {
+					Handle: Part & {
+						AccessoryWeld: Weld;
+						HatAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
 				};
 				Head: Part & {
 					HatAttachment: Attachment;
@@ -864,7 +946,10 @@ interface Workspace extends Model {
 					RootJoint: Motor6D;
 					RootAttachment: Attachment;
 				};
-				Highlight: Highlight;
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
+				};
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
 					RightGripAttachment: Attachment;
@@ -873,36 +958,29 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				["Lady's Floppy Hat"]: Accessory & {
-					Handle: Part & {
-						AccessoryWeld: Weld;
-						HatAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-				};
+				Highlight: Highlight;
 				["Short wavy"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				["Meshes/itsthisonedespiteallthepreviousonesAccessory"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Meshes/itsthisonedespiteallthepreviousonesAccessory"]: Accessory & {
 					Handle: Part & {
 						AccessoryWeld: Weld;
 						BodyBackAttachment: Attachment;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				["Blocky Girl Torso"]: CharacterMesh;
@@ -916,14 +994,8 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					Animator: Animator;
 				};
-				["Meshes/Right Shin"]: MeshPart & {
-					["Meshes/Left Foot"]: Motor6D & {
-						DefaultC1: CFrameValue;
-					};
-				};
-				HumanoidRootPart: Part & {
-					["Meshes/Freddy Endo Torso"]: Motor6D;
-				};
+				["Meshes/Left Foot"]: MeshPart;
+				["Meshes/Right Hand"]: MeshPart;
 				["Meshes/Right Thigh"]: MeshPart & {
 					["Meshes/Right Shin"]: Motor6D & {
 						DefaultC1: CFrameValue;
@@ -943,28 +1015,6 @@ interface Workspace extends Model {
 				};
 				["Meshes/Left Shin"]: MeshPart & {
 					["Meshes/Left Thigh"]: Motor6D & {
-						DefaultC1: CFrameValue;
-					};
-				};
-				Model: Model & {
-					["mic dark"]: MeshPart & {
-						["mic 1"]: Weld;
-						["mic 2"]: Weld;
-					};
-					["mic 1"]: MeshPart;
-					["mic 2"]: MeshPart;
-				};
-				["Meshes/Freddy Endo Torso"]: MeshPart & {
-					["endo chica yay"]: Motor6D & {
-						DefaultC1: CFrameValue;
-					};
-					["Meshes/Endo Head"]: Motor6D & {
-						DefaultC1: CFrameValue;
-					};
-					["Meshes/Root Pelvis"]: Motor6D & {
-						DefaultC1: CFrameValue;
-					};
-					["Meshes/Right Upper Arm"]: Motor6D & {
 						DefaultC1: CFrameValue;
 					};
 				};
@@ -991,8 +1041,22 @@ interface Workspace extends Model {
 						DefaultC1: CFrameValue;
 					};
 				};
-				["Meshes/Left Hand"]: MeshPart;
+				["Meshes/Freddy Endo Torso"]: MeshPart & {
+					["endo chica yay"]: Motor6D & {
+						DefaultC1: CFrameValue;
+					};
+					["Meshes/Endo Head"]: Motor6D & {
+						DefaultC1: CFrameValue;
+					};
+					["Meshes/Root Pelvis"]: Motor6D & {
+						DefaultC1: CFrameValue;
+					};
+					["Meshes/Right Upper Arm"]: Motor6D & {
+						DefaultC1: CFrameValue;
+					};
+				};
 				["Meshes/Eyelid Lower1"]: MeshPart;
+				["Meshes/Left Hand"]: MeshPart;
 				["Meshes/Root Pelvis"]: MeshPart & {
 					["Meshes/Left Shin"]: Motor6D & {
 						DefaultC1: CFrameValue;
@@ -1001,6 +1065,7 @@ interface Workspace extends Model {
 						DefaultC1: CFrameValue;
 					};
 				};
+				["Meshes/Jaw"]: MeshPart;
 				Suit: Model & {
 					["Meshes/Right Shoulder Pad"]: MeshPart & {
 						["Meshes/Freddy Endo Torso"]: Weld;
@@ -1042,11 +1107,6 @@ interface Workspace extends Model {
 						["Meshes/Right Shin"]: Weld;
 					};
 				};
-				["Meshes/Right Upper Arm"]: MeshPart & {
-					["Meshes/Right Lower Arm"]: Motor6D & {
-						DefaultC1: CFrameValue;
-					};
-				};
 				["Meshes/Left Thigh"]: MeshPart & {
 					["Meshes/Right Foot"]: Motor6D & {
 						DefaultC1: CFrameValue;
@@ -1054,13 +1114,31 @@ interface Workspace extends Model {
 				};
 				RightEye: MeshPart;
 				["Meshes/Eyelid Upper1"]: MeshPart;
-				["Meshes/Jaw"]: MeshPart;
-				["Meshes/Left Foot"]: MeshPart;
-				["Meshes/Eyelid Upper"]: MeshPart;
+				["Meshes/Right Upper Arm"]: MeshPart & {
+					["Meshes/Right Lower Arm"]: Motor6D & {
+						DefaultC1: CFrameValue;
+					};
+				};
+				Model: Model & {
+					["mic dark"]: MeshPart & {
+						["mic 1"]: Weld;
+						["mic 2"]: Weld;
+					};
+					["mic 1"]: MeshPart;
+					["mic 2"]: MeshPart;
+				};
+				HumanoidRootPart: Part & {
+					["Meshes/Freddy Endo Torso"]: Motor6D;
+				};
+				["Meshes/Right Shin"]: MeshPart & {
+					["Meshes/Left Foot"]: Motor6D & {
+						DefaultC1: CFrameValue;
+					};
+				};
 				["Meshes/Right Foot"]: MeshPart;
-				["Meshes/Right Hand"]: MeshPart;
+				["Meshes/Eyelid Upper"]: MeshPart;
 			};
-			["real male"]: Model & {
+			WitchDefensive: Model & {
 				["Left Leg"]: Part & {
 					Snap: Snap;
 					LeftFootAttachment: Attachment;
@@ -1068,8 +1146,18 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				Highlight: Highlight;
-				Clothing: Shirt;
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
+				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
 					WaistCenterAttachment: Attachment;
@@ -1089,85 +1177,18 @@ interface Workspace extends Model {
 					RootJoint: Motor6D;
 					RootAttachment: Attachment;
 				};
-				["Left Sleeve"]: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						LeftShoulderAttachment: Attachment;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				LongHairr: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Pants: Pants;
-				Pendant: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						NeckAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					HairAttachment: Attachment;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				Suit: Accessory & {
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraTarget: ObjectValue;
-						ThumbnailCameraValue: CFrameValue;
-					};
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						BodyBackAttachment: Attachment;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-				};
-				Face: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						face: Decal;
-						Mesh: SpecialMesh;
-						FaceCenterAttachment: Attachment;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				TopHat: Accessory & {
-					Handle: Part & {
-						HatAttachment: Attachment;
-						OriginalSize: Vector3Value;
+						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
 				};
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
@@ -1177,48 +1198,33 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				Belt: Accessory & {
+				["Witch Wizard Hat Orange"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						HatAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				ReallyBlackBeltAccessory: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						WaistCenterAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
-						Highlight: Highlight;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
-				["Body Colors"]: BodyColors;
-				["Right Sleeve"]: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						RightShoulderAttachment: Attachment;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Hair: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
+				["Blocky Girl Torso"]: CharacterMesh;
 			};
 			["male protag"]: Model & {
 				["Left Leg"]: Part & {
@@ -1228,28 +1234,34 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				Highlight: Highlight;
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
+				};
 				Clothing: Shirt;
-				Torso: Part & {
-					RightCollarAttachment: Attachment;
-					WaistCenterAttachment: Attachment;
-					BodyBackAttachment: Attachment;
-					Neck: Motor6D;
-					LeftCollarAttachment: Attachment;
-					["Left Shoulder"]: Motor6D;
-					["Left Hip"]: Motor6D;
-					["Right Hip"]: Motor6D;
-					["Right Shoulder"]: Motor6D;
-					BodyFrontAttachment: Attachment;
-					WaistBackAttachment: Attachment;
-					WaistFrontAttachment: Attachment;
-					NeckAttachment: Attachment;
+				Face: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						face: Decal;
+						Mesh: SpecialMesh;
+						FaceCenterAttachment: Attachment;
+					};
 				};
 				HumanoidRootPart: Part & {
 					RootJoint: Motor6D;
 					RootAttachment: Attachment;
 				};
 				["Left Sleeve"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						LeftShoulderAttachment: Attachment;
@@ -1258,23 +1270,19 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Pants: Pants;
+				Pendant: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Pants: Pants;
-				Pendant: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						NeckAttachment: Attachment;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				Head: Part & {
@@ -1298,21 +1306,26 @@ interface Workspace extends Model {
 						AvatarPartScaleType: StringValue;
 					};
 				};
-				Face: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						face: Decal;
-						Mesh: SpecialMesh;
-						FaceCenterAttachment: Attachment;
-					};
+				Torso: Part & {
+					RightCollarAttachment: Attachment;
+					WaistCenterAttachment: Attachment;
+					BodyBackAttachment: Attachment;
+					Neck: Motor6D;
+					LeftCollarAttachment: Attachment;
+					["Left Shoulder"]: Motor6D;
+					["Left Hip"]: Motor6D;
+					["Right Hip"]: Motor6D;
+					["Right Shoulder"]: Motor6D;
+					BodyFrontAttachment: Attachment;
+					WaistBackAttachment: Attachment;
+					WaistFrontAttachment: Attachment;
+					NeckAttachment: Attachment;
+				};
+				TopHat: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				TopHat: Accessory & {
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
@@ -1320,15 +1333,8 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
+				Highlight: Highlight;
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
 					RightGripAttachment: Attachment;
@@ -1337,7 +1343,12 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
+				["Body Colors"]: BodyColors;
 				Belt: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						WaistCenterAttachment: Attachment;
 						OriginalSize: Vector3Value;
@@ -1346,13 +1357,12 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				["Right Sleeve"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Body Colors"]: BodyColors;
-				["Right Sleeve"]: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
@@ -1361,22 +1371,18 @@ interface Workspace extends Model {
 						RightShoulderAttachment: Attachment;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Hair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Hair: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 			};
@@ -1388,17 +1394,51 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
+				Highlight: Highlight;
+				AnimSaves: Model & {
+					Idle: KeyframeSequence;
+					Untitled: KeyframeSequence;
+				};
+				["Body Colors"]: BodyColors;
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				TopHat: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						AccessoryWeld: Weld;
+						HatAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
 				["Right Leg"]: Part & {
 					Snap: Snap;
 					RightFootAttachment: Attachment;
 				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
+				["Right Arm"]: Part & {
+					RightShoulderAttachment: Attachment;
+					RightGripAttachment: Attachment;
+				};
+				["Accessory (Takaba Slick Hair)"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						HairAttachment: Attachment;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				["Left Arm"]: Part & {
+					LeftGripAttachment: Attachment;
+					LeftShoulderAttachment: Attachment;
 				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
@@ -1415,59 +1455,25 @@ interface Workspace extends Model {
 					WaistFrontAttachment: Attachment;
 					NeckAttachment: Attachment;
 				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				AnimSaves: Model & {
-					Idle: KeyframeSequence;
-					Untitled: KeyframeSequence;
-				};
-				TopHat: Accessory & {
-					Handle: Part & {
-						AccessoryWeld: Weld;
-						HatAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				["Miau Pendant Medallion Silver"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Highlight: Highlight;
-				["Right Arm"]: Part & {
-					RightShoulderAttachment: Attachment;
-					RightGripAttachment: Attachment;
-				};
-				["Left Arm"]: Part & {
-					LeftGripAttachment: Attachment;
-					LeftShoulderAttachment: Attachment;
-				};
-				["Body Colors"]: BodyColors;
-				["Miau Pendant Medallion Silver"]: Accessory & {
 					Handle: Part & {
 						AccessoryWeld: Weld;
 						NeckAttachment: Attachment;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
-				["Accessory (Takaba Slick Hair)"]: Accessory & {
-					Handle: Part & {
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
 				};
 			};
 			["female protag test"]: Model & {
@@ -1478,46 +1484,6 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				Torso: Part & {
-					RightCollarAttachment: Attachment;
-					WaistCenterAttachment: Attachment;
-					BodyBackAttachment: Attachment;
-					Neck: Motor6D;
-					LeftCollarAttachment: Attachment;
-					["Left Shoulder"]: Motor6D;
-					["Left Hip"]: Motor6D;
-					["Right Hip"]: Motor6D;
-					["Right Shoulder"]: Motor6D;
-					BodyFrontAttachment: Attachment;
-					WaistBackAttachment: Attachment;
-					WaistFrontAttachment: Attachment;
-					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				Highlight: Highlight;
-				["Right Arm"]: Part & {
-					RightShoulderAttachment: Attachment;
-					RightGripAttachment: Attachment;
-				};
-				["Left Arm"]: Part & {
-					LeftGripAttachment: Attachment;
-					LeftShoulderAttachment: Attachment;
-				};
 				["Lady's Floppy Hat"]: Accessory & {
 					Handle: Part & {
 						AccessoryWeld: Weld;
@@ -1526,169 +1492,79 @@ interface Workspace extends Model {
 						AvatarPartScaleType: StringValue;
 					};
 				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
+				Torso: Part & {
+					RightCollarAttachment: Attachment;
+					WaistCenterAttachment: Attachment;
+					BodyBackAttachment: Attachment;
+					Neck: Motor6D;
+					LeftCollarAttachment: Attachment;
+					["Left Shoulder"]: Motor6D;
+					["Left Hip"]: Motor6D;
+					["Right Hip"]: Motor6D;
+					["Right Shoulder"]: Motor6D;
+					BodyFrontAttachment: Attachment;
+					WaistBackAttachment: Attachment;
+					WaistFrontAttachment: Attachment;
+					NeckAttachment: Attachment;
+				};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
+				};
+				["Right Arm"]: Part & {
+					RightShoulderAttachment: Attachment;
+					RightGripAttachment: Attachment;
+				};
+				["Left Arm"]: Part & {
+					LeftGripAttachment: Attachment;
+					LeftShoulderAttachment: Attachment;
+				};
+				Highlight: Highlight;
 				["Short wavy"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				["Meshes/itsthisonedespiteallthepreviousonesAccessory"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Meshes/itsthisonedespiteallthepreviousonesAccessory"]: Accessory & {
 					Handle: Part & {
 						AccessoryWeld: Weld;
 						BodyBackAttachment: Attachment;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
 				["Blocky Girl Torso"]: CharacterMesh;
 			};
 			Clock: MeshPart;
-			["male protag23213213"]: Model & {
-				["Left Leg"]: Part & {
-					Snap: Snap;
-					LeftFootAttachment: Attachment;
-				};
-				Humanoid: Humanoid & {
-					HumanoidDescription: HumanoidDescription;
-				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				Torso: Part & {
-					RightCollarAttachment: Attachment;
-					WaistCenterAttachment: Attachment;
-					BodyBackAttachment: Attachment;
-					Neck: Motor6D;
-					LeftCollarAttachment: Attachment;
-					["Left Shoulder"]: Motor6D;
-					["Left Hip"]: Motor6D;
-					["Right Hip"]: Motor6D;
-					["Right Shoulder"]: Motor6D;
-					BodyFrontAttachment: Attachment;
-					WaistBackAttachment: Attachment;
-					WaistFrontAttachment: Attachment;
-					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				TopHat: Accessory & {
-					Handle: Part & {
-						AccessoryWeld: Weld;
-						HatAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Highlight: Highlight;
-				["Right Arm"]: Part & {
-					RightShoulderAttachment: Attachment;
-					RightGripAttachment: Attachment;
-				};
-				["Left Arm"]: Part & {
-					LeftGripAttachment: Attachment;
-					LeftShoulderAttachment: Attachment;
-				};
-				["Body Colors"]: BodyColors;
-				["Miau Pendant Medallion Silver"]: Accessory & {
-					Handle: Part & {
-						AccessoryWeld: Weld;
-						NeckAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				["Accessory (Takaba Slick Hair)"]: Accessory & {
-					Handle: Part & {
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-			};
-			ShopDude: Model & {
-				["Left Leg"]: Part & {
-					Snap: Snap;
-					LeftFootAttachment: Attachment;
-				};
-				Humanoid: Humanoid & {
-					HumanoidDescription: HumanoidDescription;
-				};
-				["Right Arm"]: Part & {
-					RightShoulderAttachment: Attachment;
-					RightGripAttachment: Attachment;
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
-				Torso: Part & {
-					RightCollarAttachment: Attachment;
-					WaistCenterAttachment: Attachment;
-					BodyBackAttachment: Attachment;
-					Neck: Motor6D;
-					LeftCollarAttachment: Attachment;
-					["Left Shoulder"]: Motor6D;
-					["Left Hip"]: Motor6D;
-					["Right Hip"]: Motor6D;
-					["Right Shoulder"]: Motor6D;
-					BodyFrontAttachment: Attachment;
-					WaistBackAttachment: Attachment;
-					WaistFrontAttachment: Attachment;
-					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				["Left Arm"]: Part & {
-					LeftGripAttachment: Attachment;
-					LeftShoulderAttachment: Attachment;
-				};
-			};
 			["Myrkr Emitter"]: Part & {
 				ParticleEmitter: ParticleEmitter;
+			};
+			Handle: Part & {
+				Trail: Trail;
+				Mesh: SpecialMesh;
 			};
 			Beast_BestiaWelded: Model & {
 				["Left Leg"]: Part & {
@@ -1725,6 +1601,10 @@ interface Workspace extends Model {
 				};
 				TorsoCover: Part;
 				["Meshes/untitled_catAccessory"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
@@ -1732,22 +1612,18 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				["Right Leg Cover"]: Part;
+				EyeCoveringBlackHair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Right Leg Cover"]: Part;
-				EyeCoveringBlackHair: Accessory & {
 					Handle: Part & {
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				Head: Part & {
@@ -1802,7 +1678,73 @@ interface Workspace extends Model {
 					HumanoidDescription: HumanoidDescription;
 				};
 				Highlight: Highlight;
-				Clothing: Shirt;
+				AnimSaves: Model & {
+					IDLEDONTCRASH: KeyframeSequence;
+					BASICDONTCRASH: KeyframeSequence;
+				};
+				Face: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						face: Decal;
+						Mesh: SpecialMesh;
+						FaceCenterAttachment: Attachment;
+					};
+				};
+				Belt: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						WaistCenterAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				["Left Sleeve"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						LeftShoulderAttachment: Attachment;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Pants: Pants;
+				Pendant: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						NeckAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					HairAttachment: Attachment;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
 					WaistCenterAttachment: Attachment;
@@ -1817,49 +1759,6 @@ interface Workspace extends Model {
 					WaistBackAttachment: Attachment;
 					WaistFrontAttachment: Attachment;
 					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				["Left Sleeve"]: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						LeftShoulderAttachment: Attachment;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Pants: Pants;
-				Pendant: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						NeckAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					HairAttachment: Attachment;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				AnimSaves: Model & {
-					IDLEDONTCRASH: KeyframeSequence;
-					BASICDONTCRASH: KeyframeSequence;
 				};
 				Suit: Accessory & {
 					ThumbnailConfiguration: Configuration & {
@@ -1875,31 +1774,18 @@ interface Workspace extends Model {
 						AvatarPartScaleType: StringValue;
 					};
 				};
-				Face: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						face: Decal;
-						Mesh: SpecialMesh;
-						FaceCenterAttachment: Attachment;
-					};
+				Clothing: Shirt;
+				TopHat: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				TopHat: Accessory & {
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				["Right Leg"]: Part & {
@@ -1914,22 +1800,16 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				Belt: Accessory & {
-					Handle: Part & {
-						WaistCenterAttachment: Attachment;
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Body Colors"]: BodyColors;
+				["Right Sleeve"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Body Colors"]: BodyColors;
-				["Right Sleeve"]: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
@@ -1938,12 +1818,12 @@ interface Workspace extends Model {
 						RightShoulderAttachment: Attachment;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Hair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Hair: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						HairAttachment: Attachment;
@@ -1951,14 +1831,10 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
 			};
 			Cabinet: Model;
-			WitchDefensive: Model & {
+			["real male"]: Model & {
 				["Left Leg"]: Part & {
 					Snap: Snap;
 					LeftFootAttachment: Attachment;
@@ -1970,13 +1846,73 @@ interface Workspace extends Model {
 					Snap: Snap;
 					RightFootAttachment: Attachment;
 				};
+				Clothing: Shirt;
+				Face: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						face: Decal;
+						Mesh: SpecialMesh;
+						FaceCenterAttachment: Attachment;
+					};
+				};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Left Sleeve"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						LeftShoulderAttachment: Attachment;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Pants: Pants;
+				Pendant: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						NeckAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
 				Head: Part & {
 					HatAttachment: Attachment;
-					HairAttachment: Attachment;
 					FaceFrontAttachment: Attachment;
-					face: Decal;
+					HairAttachment: Attachment;
 					Mesh: SpecialMesh;
 					FaceCenterAttachment: Attachment;
+				};
+				Suit: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraTarget: ObjectValue;
+						ThumbnailCameraValue: CFrameValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						BodyBackAttachment: Attachment;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
 				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
@@ -1993,23 +1929,20 @@ interface Workspace extends Model {
 					WaistFrontAttachment: Attachment;
 					NeckAttachment: Attachment;
 				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				LongHairr: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				TopHat: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
+					Handle: Part & {
+						HatAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
 				};
+				Highlight: Highlight;
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
 					RightGripAttachment: Attachment;
@@ -2018,33 +1951,48 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				["Witch Wizard Hat Orange"]: Accessory & {
-					Handle: Part & {
-						HatAttachment: Attachment;
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				["Body Colors"]: BodyColors;
+				Belt: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				ReallyBlackBeltAccessory: Accessory & {
 					Handle: Part & {
 						WaistCenterAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
+						Highlight: Highlight;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				["Right Sleeve"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						RightShoulderAttachment: Attachment;
+						AvatarPartScaleType: StringValue;
+					};
 				};
-				["Blocky Girl Torso"]: CharacterMesh;
+				Hair: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						HairAttachment: Attachment;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
 			};
 			Cleric: Model & {
 				["Left Leg"]: Part & {
@@ -2054,9 +2002,18 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
+				["Accessory (Necro Book 2)"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						WaistCenterAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
 				};
 				Head: Part & {
 					HatAttachment: Attachment;
@@ -2094,16 +2051,16 @@ interface Workspace extends Model {
 					};
 				};
 				["Meshes/final_waistAccessory"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						WaistCenterAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				["Right Arm"]: Part & {
@@ -2115,6 +2072,10 @@ interface Workspace extends Model {
 					LeftShoulderAttachment: Attachment;
 				};
 				["You Go Gurl"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						HairAttachment: Attachment;
@@ -2122,31 +2083,14 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
-				["Accessory (Necro Book 2)"]: Accessory & {
-					Handle: Part & {
-						WaistCenterAttachment: Attachment;
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
 				};
 				["Blocky Girl Torso"]: CharacterMesh;
 			};
-			Handle: Part & {
-				Trail: Trail;
-				Mesh: SpecialMesh;
-			};
-			["fake male backup"]: Model & {
+			ShopDude: Model & {
 				["Left Leg"]: Part & {
 					Snap: Snap;
 					LeftFootAttachment: Attachment;
@@ -2154,8 +2098,22 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				Highlight: Highlight;
-				Clothing: Shirt;
+				["Right Arm"]: Part & {
+					RightShoulderAttachment: Attachment;
+					RightGripAttachment: Attachment;
+				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
+				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
 					WaistCenterAttachment: Attachment;
@@ -2175,7 +2133,56 @@ interface Workspace extends Model {
 					RootJoint: Motor6D;
 					RootAttachment: Attachment;
 				};
+				["Left Arm"]: Part & {
+					LeftGripAttachment: Attachment;
+					LeftShoulderAttachment: Attachment;
+				};
+			};
+			["fake male backup"]: Model & {
+				["Left Leg"]: Part & {
+					Snap: Snap;
+					LeftFootAttachment: Attachment;
+				};
+				Humanoid: Humanoid & {
+					HumanoidDescription: HumanoidDescription;
+				};
+				Highlight: Highlight;
+				AnimSaves: Model & {
+					IDLEDONTCRASH: KeyframeSequence;
+				};
+				Face: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						face: Decal;
+						Mesh: SpecialMesh;
+						FaceCenterAttachment: Attachment;
+					};
+				};
+				Belt: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						WaistCenterAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
 				["Left Sleeve"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						LeftShoulderAttachment: Attachment;
@@ -2184,23 +2191,19 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Pants: Pants;
+				Pendant: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Pants: Pants;
-				Pendant: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						NeckAttachment: Attachment;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				Head: Part & {
@@ -2210,8 +2213,20 @@ interface Workspace extends Model {
 					Mesh: SpecialMesh;
 					FaceCenterAttachment: Attachment;
 				};
-				AnimSaves: Model & {
-					IDLEDONTCRASH: KeyframeSequence;
+				Torso: Part & {
+					RightCollarAttachment: Attachment;
+					WaistCenterAttachment: Attachment;
+					BodyBackAttachment: Attachment;
+					Neck: Motor6D;
+					LeftCollarAttachment: Attachment;
+					["Left Shoulder"]: Motor6D;
+					["Left Hip"]: Motor6D;
+					["Right Hip"]: Motor6D;
+					["Right Shoulder"]: Motor6D;
+					BodyFrontAttachment: Attachment;
+					WaistBackAttachment: Attachment;
+					WaistFrontAttachment: Attachment;
+					NeckAttachment: Attachment;
 				};
 				Suit: Accessory & {
 					ThumbnailConfiguration: Configuration & {
@@ -2227,31 +2242,18 @@ interface Workspace extends Model {
 						AvatarPartScaleType: StringValue;
 					};
 				};
-				Face: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						face: Decal;
-						Mesh: SpecialMesh;
-						FaceCenterAttachment: Attachment;
-					};
+				Clothing: Shirt;
+				TopHat: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				TopHat: Accessory & {
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				["Right Leg"]: Part & {
@@ -2266,22 +2268,16 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				Belt: Accessory & {
-					Handle: Part & {
-						WaistCenterAttachment: Attachment;
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Body Colors"]: BodyColors;
+				["Right Sleeve"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Body Colors"]: BodyColors;
-				["Right Sleeve"]: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
@@ -2290,12 +2286,12 @@ interface Workspace extends Model {
 						RightShoulderAttachment: Attachment;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Hair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Hair: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						HairAttachment: Attachment;
@@ -2303,22 +2299,17 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
 			};
-			["gao gao3"]: Model & {
+			["male protag23213213"]: Model & {
 				["Left Leg"]: Part & {
+					Snap: Snap;
 					LeftFootAttachment: Attachment;
 				};
-				Humanoid: Humanoid;
-				["Right Arm"]: Part & {
-					Handle: Motor6D;
-					RightGripAttachment: Attachment;
-					RightShoulderAttachment: Attachment;
+				Humanoid: Humanoid & {
+					HumanoidDescription: HumanoidDescription;
 				};
+				Highlight: Highlight;
 				Head: Part & {
 					HatAttachment: Attachment;
 					HairAttachment: Attachment;
@@ -2327,8 +2318,58 @@ interface Workspace extends Model {
 					Mesh: SpecialMesh;
 					FaceCenterAttachment: Attachment;
 				};
+				["Body Colors"]: BodyColors;
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				TopHat: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						AccessoryWeld: Weld;
+						HatAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				["Right Arm"]: Part & {
+					RightShoulderAttachment: Attachment;
+					RightGripAttachment: Attachment;
+				};
+				["Accessory (Takaba Slick Hair)"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						HairAttachment: Attachment;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
 				["Right Leg"]: Part & {
+					Snap: Snap;
 					RightFootAttachment: Attachment;
+				};
+				["Left Arm"]: Part & {
+					LeftGripAttachment: Attachment;
+					LeftShoulderAttachment: Attachment;
+				};
+				["Miau Pendant Medallion Silver"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						AccessoryWeld: Weld;
+						NeckAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
 				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
@@ -2336,22 +2377,14 @@ interface Workspace extends Model {
 					BodyBackAttachment: Attachment;
 					Neck: Motor6D;
 					LeftCollarAttachment: Attachment;
+					["Left Shoulder"]: Motor6D;
 					["Left Hip"]: Motor6D;
 					["Right Hip"]: Motor6D;
-					["Left Shoulder"]: Motor6D;
 					["Right Shoulder"]: Motor6D;
 					BodyFrontAttachment: Attachment;
 					WaistBackAttachment: Attachment;
 					WaistFrontAttachment: Attachment;
 					NeckAttachment: Attachment;
-				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				["Left Arm"]: Part & {
-					LeftGripAttachment: Attachment;
-					LeftShoulderAttachment: Attachment;
 				};
 			};
 			min: Part;
@@ -2403,8 +2436,50 @@ interface Workspace extends Model {
 					LeftShoulderAttachment: Attachment;
 				};
 			};
-			SpawnLocation: SpawnLocation & {
-				Decal: Decal;
+			["gao gao3"]: Model & {
+				["Left Leg"]: Part & {
+					LeftFootAttachment: Attachment;
+				};
+				Humanoid: Humanoid;
+				["Right Arm"]: Part & {
+					Handle: Motor6D;
+					RightGripAttachment: Attachment;
+					RightShoulderAttachment: Attachment;
+				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
+				["Right Leg"]: Part & {
+					RightFootAttachment: Attachment;
+				};
+				Torso: Part & {
+					RightCollarAttachment: Attachment;
+					WaistCenterAttachment: Attachment;
+					BodyBackAttachment: Attachment;
+					Neck: Motor6D;
+					LeftCollarAttachment: Attachment;
+					["Left Hip"]: Motor6D;
+					["Right Hip"]: Motor6D;
+					["Left Shoulder"]: Motor6D;
+					["Right Shoulder"]: Motor6D;
+					BodyFrontAttachment: Attachment;
+					WaistBackAttachment: Attachment;
+					WaistFrontAttachment: Attachment;
+					NeckAttachment: Attachment;
+				};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Left Arm"]: Part & {
+					LeftGripAttachment: Attachment;
+					LeftShoulderAttachment: Attachment;
+				};
 			};
 			["fake male"]: Model & {
 				["Left Leg"]: Part & {
@@ -2415,7 +2490,74 @@ interface Workspace extends Model {
 					HumanoidDescription: HumanoidDescription;
 				};
 				Highlight: Highlight;
-				Clothing: Shirt;
+				AnimSaves: Model & {
+					IDLEDONTCRASH: KeyframeSequence;
+					HURTDONTCRASH: KeyframeSequence;
+					BASICDONTCRASH: KeyframeSequence;
+				};
+				Face: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						face: Decal;
+						Mesh: SpecialMesh;
+						FaceCenterAttachment: Attachment;
+					};
+				};
+				Belt: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						WaistCenterAttachment: Attachment;
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				["Left Sleeve"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						LeftShoulderAttachment: Attachment;
+						AccessoryWeld: Weld;
+						Highlight: Highlight;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Pants: Pants;
+				Pendant: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						AccessoryWeld: Weld;
+						NeckAttachment: Attachment;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				Head: Part & {
+					HatAttachment: Attachment;
+					FaceFrontAttachment: Attachment;
+					HairAttachment: Attachment;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
 					WaistCenterAttachment: Attachment;
@@ -2431,50 +2573,6 @@ interface Workspace extends Model {
 					WaistFrontAttachment: Attachment;
 					NeckAttachment: Attachment;
 				};
-				HumanoidRootPart: Part & {
-					RootJoint: Motor6D;
-					RootAttachment: Attachment;
-				};
-				["Left Sleeve"]: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						LeftShoulderAttachment: Attachment;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Pants: Pants;
-				Pendant: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						NeckAttachment: Attachment;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
-				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					FaceFrontAttachment: Attachment;
-					HairAttachment: Attachment;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				AnimSaves: Model & {
-					IDLEDONTCRASH: KeyframeSequence;
-					BASICDONTCRASH: KeyframeSequence;
-					HURTDONTCRASH: KeyframeSequence;
-				};
 				Suit: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraTarget: ObjectValue;
@@ -2489,31 +2587,18 @@ interface Workspace extends Model {
 						AvatarPartScaleType: StringValue;
 					};
 				};
-				Face: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						face: Decal;
-						Mesh: SpecialMesh;
-						FaceCenterAttachment: Attachment;
-					};
+				Clothing: Shirt;
+				TopHat: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				TopHat: Accessory & {
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				["Right Leg"]: Part & {
@@ -2528,22 +2613,16 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
-				Belt: Accessory & {
-					Handle: Part & {
-						WaistCenterAttachment: Attachment;
-						OriginalSize: Vector3Value;
-						AccessoryWeld: Weld;
-						Highlight: Highlight;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
+				HumanoidRootPart: Part & {
+					RootJoint: Motor6D;
+					RootAttachment: Attachment;
+				};
+				["Body Colors"]: BodyColors;
+				["Right Sleeve"]: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Body Colors"]: BodyColors;
-				["Right Sleeve"]: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						AccessoryWeld: Weld;
@@ -2552,22 +2631,18 @@ interface Workspace extends Model {
 						RightShoulderAttachment: Attachment;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				Hair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				Hair: Accessory & {
 					Handle: Part & {
 						OriginalSize: Vector3Value;
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 			};
@@ -2580,9 +2655,18 @@ interface Workspace extends Model {
 					Humanoid: Humanoid & {
 						HumanoidDescription: HumanoidDescription;
 					};
-					["Right Leg"]: Part & {
-						Snap: Snap;
-						RightFootAttachment: Attachment;
+					["Accessory (Necro Book 2)"]: Accessory & {
+						ThumbnailConfiguration: Configuration & {
+							ThumbnailCameraValue: CFrameValue;
+							ThumbnailCameraTarget: ObjectValue;
+						};
+						Handle: Part & {
+							WaistCenterAttachment: Attachment;
+							OriginalSize: Vector3Value;
+							AccessoryWeld: Weld;
+							SpecialMesh: SpecialMesh;
+							AvatarPartScaleType: StringValue;
+						};
 					};
 					Head: Part & {
 						HatAttachment: Attachment;
@@ -2620,16 +2704,16 @@ interface Workspace extends Model {
 						};
 					};
 					["Meshes/final_waistAccessory"]: Accessory & {
+						ThumbnailConfiguration: Configuration & {
+							ThumbnailCameraValue: CFrameValue;
+							ThumbnailCameraTarget: ObjectValue;
+						};
 						Handle: Part & {
 							WaistCenterAttachment: Attachment;
 							OriginalSize: Vector3Value;
 							AccessoryWeld: Weld;
 							SpecialMesh: SpecialMesh;
 							AvatarPartScaleType: StringValue;
-						};
-						ThumbnailConfiguration: Configuration & {
-							ThumbnailCameraValue: CFrameValue;
-							ThumbnailCameraTarget: ObjectValue;
 						};
 					};
 					["Right Arm"]: Part & {
@@ -2641,6 +2725,10 @@ interface Workspace extends Model {
 						LeftShoulderAttachment: Attachment;
 					};
 					["You Go Gurl"]: Accessory & {
+						ThumbnailConfiguration: Configuration & {
+							ThumbnailCameraValue: CFrameValue;
+							ThumbnailCameraTarget: ObjectValue;
+						};
 						Handle: Part & {
 							OriginalSize: Vector3Value;
 							HairAttachment: Attachment;
@@ -2648,23 +2736,10 @@ interface Workspace extends Model {
 							SpecialMesh: SpecialMesh;
 							AvatarPartScaleType: StringValue;
 						};
-						ThumbnailConfiguration: Configuration & {
-							ThumbnailCameraValue: CFrameValue;
-							ThumbnailCameraTarget: ObjectValue;
-						};
 					};
-					["Accessory (Necro Book 2)"]: Accessory & {
-						Handle: Part & {
-							WaistCenterAttachment: Attachment;
-							OriginalSize: Vector3Value;
-							AccessoryWeld: Weld;
-							SpecialMesh: SpecialMesh;
-							AvatarPartScaleType: StringValue;
-						};
-						ThumbnailConfiguration: Configuration & {
-							ThumbnailCameraValue: CFrameValue;
-							ThumbnailCameraTarget: ObjectValue;
-						};
+					["Right Leg"]: Part & {
+						Snap: Snap;
+						RightFootAttachment: Attachment;
 					};
 				};
 				Base_Bestiatest: Model & {
@@ -2675,10 +2750,7 @@ interface Workspace extends Model {
 					Humanoid: Humanoid & {
 						HumanoidDescription: HumanoidDescription;
 					};
-					["Right Leg"]: Part & {
-						Snap: Snap;
-						RightFootAttachment: Attachment;
-					};
+					Highlight: Highlight;
 					Head: Part & {
 						HatAttachment: Attachment;
 						HairAttachment: Attachment;
@@ -2715,17 +2787,20 @@ interface Workspace extends Model {
 						LeftGripAttachment: Attachment;
 						LeftShoulderAttachment: Attachment;
 					};
-					Highlight: Highlight;
+					["Right Leg"]: Part & {
+						Snap: Snap;
+						RightFootAttachment: Attachment;
+					};
 					EyeCoveringBlackHair: Accessory & {
+						ThumbnailConfiguration: Configuration & {
+							ThumbnailCameraValue: CFrameValue;
+							ThumbnailCameraTarget: ObjectValue;
+						};
 						Handle: Part & {
 							HairAttachment: Attachment;
 							AccessoryWeld: Weld;
 							SpecialMesh: SpecialMesh;
 							AvatarPartScaleType: StringValue;
-						};
-						ThumbnailConfiguration: Configuration & {
-							ThumbnailCameraValue: CFrameValue;
-							ThumbnailCameraTarget: ObjectValue;
 						};
 					};
 				};
@@ -2738,12 +2813,15 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
-				AnimSaves: Model & {
-					Untitled: KeyframeSequence;
+				Highlight: Highlight;
+				Head: Part & {
+					HatAttachment: Attachment;
+					HairAttachment: Attachment;
+					angryface: Decal;
+					FaceFrontAttachment: Attachment;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
 				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
@@ -2764,18 +2842,9 @@ interface Workspace extends Model {
 					RootJoint: Motor6D;
 					RootAttachment: Attachment;
 				};
-				EyeCoveringBlackHair: Accessory & {
-					Handle: Part & {
-						OriginalSize: Vector3Value;
-						HairAttachment: Attachment;
-						AccessoryWeld: Weld;
-						SpecialMesh: SpecialMesh;
-						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
 				};
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
@@ -2785,7 +2854,27 @@ interface Workspace extends Model {
 					LeftGripAttachment: Attachment;
 					LeftShoulderAttachment: Attachment;
 				};
+				EyeCoveringBlackHair: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
+					Handle: Part & {
+						OriginalSize: Vector3Value;
+						HairAttachment: Attachment;
+						AccessoryWeld: Weld;
+						SpecialMesh: SpecialMesh;
+						AvatarPartScaleType: StringValue;
+					};
+				};
+				AnimSaves: Model & {
+					Untitled: KeyframeSequence;
+				};
 				["Meshes/untitled_catAccessory"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
@@ -2793,21 +2882,7 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
-					};
 				};
-				Head: Part & {
-					HatAttachment: Attachment;
-					HairAttachment: Attachment;
-					angryface: Decal;
-					FaceFrontAttachment: Attachment;
-					face: Decal;
-					Mesh: SpecialMesh;
-					FaceCenterAttachment: Attachment;
-				};
-				Highlight: Highlight;
 				["Blocky Girl Torso"]: CharacterMesh;
 			};
 			Bed: Model;
@@ -2819,7 +2894,10 @@ interface Workspace extends Model {
 				Humanoid: Humanoid & {
 					HumanoidDescription: HumanoidDescription;
 				};
-				Highlight: Highlight;
+				["Right Leg"]: Part & {
+					Snap: Snap;
+					RightFootAttachment: Attachment;
+				};
 				Torso: Part & {
 					RightCollarAttachment: Attachment;
 					WaistCenterAttachment: Attachment;
@@ -2841,6 +2919,10 @@ interface Workspace extends Model {
 				};
 				TorsoCover: Part;
 				["Meshes/untitled_catAccessory"]: Accessory & {
+					ThumbnailConfiguration: Configuration & {
+						ThumbnailCameraValue: CFrameValue;
+						ThumbnailCameraTarget: ObjectValue;
+					};
 					Handle: Part & {
 						HatAttachment: Attachment;
 						OriginalSize: Vector3Value;
@@ -2848,22 +2930,18 @@ interface Workspace extends Model {
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
 					};
+				};
+				["Right Leg Cover"]: Part;
+				EyeCoveringBlackHair: Accessory & {
 					ThumbnailConfiguration: Configuration & {
 						ThumbnailCameraValue: CFrameValue;
 						ThumbnailCameraTarget: ObjectValue;
 					};
-				};
-				["Right Leg Cover"]: Part;
-				EyeCoveringBlackHair: Accessory & {
 					Handle: Part & {
 						HairAttachment: Attachment;
 						AccessoryWeld: Weld;
 						SpecialMesh: SpecialMesh;
 						AvatarPartScaleType: StringValue;
-					};
-					ThumbnailConfiguration: Configuration & {
-						ThumbnailCameraValue: CFrameValue;
-						ThumbnailCameraTarget: ObjectValue;
 					};
 				};
 				Head: Part & {
@@ -2885,10 +2963,7 @@ interface Workspace extends Model {
 					};
 				};
 				Left_ArmCover: Part;
-				["Right Leg"]: Part & {
-					Snap: Snap;
-					RightFootAttachment: Attachment;
-				};
+				Highlight: Highlight;
 				["Right Arm"]: Part & {
 					RightShoulderAttachment: Attachment;
 					RightGripAttachment: Attachment;
@@ -2906,11 +2981,11 @@ interface Workspace extends Model {
 			};
 		};
 	};
-	Camera: Camera;
-	combatants: Folder;
-	fx: Folder;
-	trestet: Model & {
-		test: Model & {
+	FakeMaleAnimations: Model & {
+		Camera: Part & {
+			Decal: Decal;
+		};
+		["fake male test"]: Model & {
 			["Left Leg"]: Part & {
 				Snap: Snap;
 				LeftFootAttachment: Attachment;
@@ -2918,15 +2993,87 @@ interface Workspace extends Model {
 			Humanoid: Humanoid & {
 				HumanoidDescription: HumanoidDescription;
 			};
-			["Right Leg"]: Part & {
-				Snap: Snap;
-				RightFootAttachment: Attachment;
+			Highlight: Highlight;
+			AnimSaves: Model & {
+				IDLEDONTCRASH: KeyframeSequence;
+				HURTDONTCRASH: KeyframeSequence;
+				["IDLEDONTCRASH w/ Lam"]: KeyframeSequence;
+				BrazenLight: KeyframeSequence;
+				["BASICDONTCRASH w/lam"]: KeyframeSequence;
+				BASICDONTCRASH: KeyframeSequence;
+				Attack: KeyframeSequence;
+			};
+			Lantern: Model & {
+				Handle: UnionOperation & {
+					Mainframe: Motor6D;
+				};
+				Mainframe: UnionOperation & {
+					Light: Weld;
+				};
+				Light: Part & {
+					PointLight: PointLight;
+				};
+			};
+			Face: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					Highlight: Highlight;
+					face: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
+			};
+			Belt: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					WaistCenterAttachment: Attachment;
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			["Left Sleeve"]: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					LeftShoulderAttachment: Attachment;
+					AccessoryWeld: Weld;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			Pants: Pants;
+			Pendant: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					NeckAttachment: Attachment;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
 			};
 			Head: Part & {
 				HatAttachment: Attachment;
-				HairAttachment: Attachment;
 				FaceFrontAttachment: Attachment;
-				face: Decal;
+				HairAttachment: Attachment;
 				Mesh: SpecialMesh;
 				FaceCenterAttachment: Attachment;
 			};
@@ -2945,9 +3092,189 @@ interface Workspace extends Model {
 				WaistFrontAttachment: Attachment;
 				NeckAttachment: Attachment;
 			};
+			Suit: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraTarget: ObjectValue;
+					ThumbnailCameraValue: CFrameValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					BodyBackAttachment: Attachment;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
 			HumanoidRootPart: Part & {
 				RootJoint: Motor6D;
 				RootAttachment: Attachment;
+			};
+			TopHat: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					HatAttachment: Attachment;
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			["Right Leg"]: Part & {
+				Snap: Snap;
+				RightFootAttachment: Attachment;
+			};
+			["Right Arm"]: Part & {
+				Handle: Motor6D;
+				RightGripAttachment: Attachment;
+				RightShoulderAttachment: Attachment;
+			};
+			["Left Arm"]: Part & {
+				LeftGripAttachment: Attachment;
+				LeftShoulderAttachment: Attachment;
+			};
+			Clothing: Shirt;
+			["Body Colors"]: BodyColors;
+			["Right Sleeve"]: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					Highlight: Highlight;
+					SpecialMesh: SpecialMesh;
+					RightShoulderAttachment: Attachment;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			Hair: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					HairAttachment: Attachment;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+		};
+	};
+	combatants: Folder;
+	Union: UnionOperation;
+	["A/Door"]: Model & {
+		Model: Model;
+	};
+	["NA/Door"]: Model & {
+		Model: Model;
+	};
+	fgw: Model & {
+		["Paladin's Shield"]: UnionOperation;
+		["Magic Dagger"]: UnionOperation;
+		["🐠⚔"]: Model & {
+			["Left Leg"]: Part & {
+				LeftFootAttachment: Attachment;
+			};
+			Humanoid: Humanoid & {
+				Animator: Animator;
+				HumanoidDescription: HumanoidDescription;
+			};
+			["Right Leg"]: Part & {
+				RightFootAttachment: Attachment;
+			};
+			CrestCircle: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					FaceFrontAttachment: Attachment;
+					AccessoryWeld: Weld;
+					Mesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			Torso: Part & {
+				RightCollarAttachment: Attachment;
+				WaistCenterAttachment: Attachment;
+				BodyBackAttachment: Attachment;
+				Neck: Motor6D;
+				LeftCollarAttachment: Attachment;
+				["Left Hip"]: Motor6D;
+				roblox: Decal;
+				["Right Hip"]: Motor6D;
+				["Left Shoulder"]: Motor6D;
+				["Right Shoulder"]: Motor6D;
+				BodyFrontAttachment: Attachment;
+				WaistBackAttachment: Attachment;
+				WaistFrontAttachment: Attachment;
+				NeckAttachment: Attachment;
+			};
+			HumanoidRootPart: Part & {
+				RootJoint: Motor6D;
+				RootAttachment: Attachment;
+			};
+			CharacterMesh: CharacterMesh;
+			Pants: Pants;
+			PauldronR: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					RightShoulderAttachment: Attachment;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			Head: Part & {
+				HatAttachment: Attachment;
+				FaceFrontAttachment: Attachment;
+				HairAttachment: Attachment;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+			["Body Colors"]: BodyColors;
+			Face: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					["Blush Lines"]: Decal;
+					Scar: Decal;
+					AccessoryWeld: Weld;
+					Eyes: Decal;
+					Eyebrows: Decal;
+					Blush: Decal;
+					OriginalSize: Vector3Value;
+					Mouth: Decal;
+					Mesh: SpecialMesh;
+					FaceCenterAttachment: Attachment;
+				};
+			};
+			Helmet: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					HatAttachment: Attachment;
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
 			};
 			["Right Arm"]: Part & {
 				RightShoulderAttachment: Attachment;
@@ -2957,74 +3284,1125 @@ interface Workspace extends Model {
 				LeftGripAttachment: Attachment;
 				LeftShoulderAttachment: Attachment;
 			};
-			AnimSaves: Model & {
-				Untitled: KeyframeSequence & {
-					Keyframe: Keyframe & {
-						HumanoidRootPart: Pose & {
-							Null: IntValue;
-							Torso: Pose;
-						};
+			Crest: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					HatAttachment: Attachment;
+					OriginalSize: Vector3Value;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			PauldronL: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					LeftShoulderAttachment: Attachment;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+			Shirt: Shirt;
+			Hair: Accessory & {
+				ThumbnailConfiguration: Configuration & {
+					ThumbnailCameraValue: CFrameValue;
+					ThumbnailCameraTarget: ObjectValue;
+				};
+				Handle: Part & {
+					OriginalSize: Vector3Value;
+					HairAttachment: Attachment;
+					AccessoryWeld: Weld;
+					SpecialMesh: SpecialMesh;
+					AvatarPartScaleType: StringValue;
+				};
+			};
+		};
+	};
+	Neatwyy: Model & {
+		["Left Leg"]: Part & {
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			Animator: Animator;
+			HumanoidDescription: HumanoidDescription;
+		};
+		["Right Leg"]: Part & {
+			RightFootAttachment: Attachment;
+		};
+		["Body Colors"]: BodyColors;
+		HumanoidRootPart: Part & {
+			RootAttachment: Attachment;
+		};
+		["Grunge Boy Hair in White"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				HairAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Shirt: Shirt;
+		["New SophisticatedAccessory"]: Accessory & {
+			Handle: Part & {
+				HatAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		CuteBackpack: Accessory & {
+			Handle: Part & {
+				BodyBackAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				AccessoryWeld: Weld;
+				OriginalSize: Vector3Value;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Pastel Blue Plaid ScarfAccessory"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				NeckAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			HairAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			face: Decal;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		["Accessory (MLM Pride Armband)"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				LeftShoulderAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Accessory (Happy Light Blue Kemono Fox (Colored Eyes))"]: Accessory & {
+			Handle: Part & {
+				HatAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Cute Pink Circle Glasses (Fits Kemono Heads)"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				FaceFrontAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		["Right Arm"]: Part & {
+			RightGripAttachment: Attachment;
+			RightShoulderAttachment: Attachment;
+		};
+		["Fox Tail"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				WaistBackAttachment: Attachment & {
+					OriginalPosition: Vector3Value;
+				};
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			LeftCollarAttachment: Attachment;
+			roblox: Decal;
+			WaistFrontAttachment: Attachment;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		Pants: Pants;
+	};
+	battlegrounds: Folder & {
+		baseplate: Model & {
+			["1"]: Part & {
+				Decal: Decal;
+			};
+			camera: Model & {
+				AnimationController: AnimationController;
+				camera: Part & {
+					Decal: Decal;
+				};
+			};
+			origin: Part & {
+				Decal: Decal;
+			};
+			["0"]: Part & {
+				Decal: Decal;
+			};
+			Starfish: Model & {
+				Torso: MeshPart & {
+					Eyes: Model;
+					Mouth: Model;
+				};
+			};
+			["hatsune miku but she has JEANS"]: Model & {
+				["Legs With Shorts"]: Model & {
+					MeshPart: MeshPart & {
+						Weld: Weld;
 					};
 				};
 			};
 		};
-		quizzicle: Model & {
-			["Left Leg"]: Part & {
-				Snap: Snap;
-				LeftFootAttachment: Attachment;
+	};
+	["Town Hall im keeping this bald"]: Model;
+	Cleric: Model & {
+		["Left Leg"]: Part & {
+			Highlight: Highlight;
+			Snap: Snap;
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			HumanoidDescription: HumanoidDescription;
+		};
+		Highlight: Highlight;
+		["Body Colors"]: BodyColors;
+		Robe: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
-			Humanoid: Humanoid & {
-				HumanoidDescription: HumanoidDescription;
+			Handle: Part & {
+				BodyBackAttachment: Attachment;
+				AccessoryWeld: Weld;
+				OriginalSize: Vector3Value;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
 			};
-			["Right Leg"]: Part & {
-				Snap: Snap;
-				RightFootAttachment: Attachment;
+		};
+		Shirt: Shirt;
+		Pants: Pants;
+		Pendant: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
-			Head: Part & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				NeckAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Book (invisible unless animated in)"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				WaistCenterAttachment: Attachment;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hat: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
 				HatAttachment: Attachment;
-				HairAttachment: Attachment;
-				FaceFrontAttachment: Attachment;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			HairAttachment: Attachment;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		Collar: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				NeckAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			Highlight: Highlight;
+			RootAttachment: Attachment;
+		};
+		["Right Leg"]: Part & {
+			RightFootAttachment: Attachment;
+			Snap: Snap;
+			Highlight: Highlight;
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			Highlight: Highlight;
+			["Left Shoulder"]: Motor6D;
+			["Left Hip"]: Motor6D;
+			["Right Hip"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		Face: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
 				face: Decal;
 				Mesh: SpecialMesh;
 				FaceCenterAttachment: Attachment;
 			};
-			Torso: Part & {
-				RightCollarAttachment: Attachment;
-				WaistCenterAttachment: Attachment;
+		};
+		["Right Arm"]: Part & {
+			Highlight: Highlight;
+			RightGripAttachment: Attachment;
+			RightShoulderAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			Highlight: Highlight;
+			LeftShoulderAttachment: Attachment;
+		};
+		Hair: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				HairAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Left Sleeve"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				LeftShoulderAttachment: Attachment;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				Mesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Sleeve"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				Mesh: SpecialMesh;
+				RightShoulderAttachment: Attachment;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Blocky Girl Torso"]: CharacterMesh;
+	};
+	["Map Change Point Test 2"]: Part;
+	SpawnLocation: SpawnLocation & {
+		Decal: Decal;
+	};
+	["Map Change Point  Test 1"]: Part;
+	["female protag"]: Model & {
+		["Left Leg"]: Part & {
+			Snap: Snap;
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			HumanoidDescription: HumanoidDescription;
+		};
+		Highlight: Highlight;
+		Clothing: Pants;
+		Face: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Face: Decal;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		Scarf: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
 				BodyBackAttachment: Attachment;
-				Neck: Motor6D;
-				LeftCollarAttachment: Attachment;
-				["Left Shoulder"]: Motor6D;
-				["Left Hip"]: Motor6D;
-				["Right Hip"]: Motor6D;
-				["Right Shoulder"]: Motor6D;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Shirt: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
 				BodyFrontAttachment: Attachment;
-				WaistBackAttachment: Attachment;
-				WaistFrontAttachment: Attachment;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Jacket: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				BodyFrontAttachment: Attachment;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hat: Accessory & {
+			Handle: Part & {
+				HatAttachment: Attachment;
+				Highlight: Highlight;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			HairAttachment: Attachment;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		["Pearl Necklace"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				NeckAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Leg"]: Part & {
+			Snap: Snap;
+			RightFootAttachment: Attachment;
+		};
+		["Blocky Girl Torso"]: CharacterMesh;
+		["Right Arm"]: Part & {
+			RightShoulderAttachment: Attachment;
+			RightGripAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			["Left Shoulder"]: Motor6D;
+			["Left Hip"]: Motor6D;
+			["Right Hip"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		["Left Sleeve"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				LeftShoulderAttachment: Attachment;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Sleeve"]: Accessory & {
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				RightShoulderAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hair: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				Highlight: Highlight;
+				HairAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+	};
+	Camera: Camera;
+	["fake male test1"]: Model & {
+		["Left Leg"]: Part & {
+			Snap: Snap;
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			HumanoidDescription: HumanoidDescription;
+		};
+		Highlight: Highlight;
+		AnimSaves: Model & {
+			IDLEDONTCRASH: KeyframeSequence;
+			HURTDONTCRASH: KeyframeSequence;
+			["IDLEDONTCRASH w/ Lam"]: KeyframeSequence;
+			["BASICDONTCRASH w/lam"]: KeyframeSequence;
+			BASICDONTCRASH: KeyframeSequence;
+			Attack: KeyframeSequence;
+		};
+		Lantern: Model & {
+			Handle: UnionOperation & {
+				Mainframe: Motor6D;
+			};
+			Mainframe: UnionOperation & {
+				Light: Weld;
+			};
+			Light: Part & {
+				PointLight: PointLight;
+			};
+		};
+		Face: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				face: Decal;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+		};
+		Belt: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				WaistCenterAttachment: Attachment;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Left Sleeve"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				LeftShoulderAttachment: Attachment;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Pants: Pants;
+		Pendant: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				NeckAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			HairAttachment: Attachment;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			["Left Shoulder"]: Motor6D;
+			["Left Hip"]: Motor6D;
+			["Right Hip"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		Suit: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraTarget: ObjectValue;
+				ThumbnailCameraValue: CFrameValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				BodyBackAttachment: Attachment;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		TopHat: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				HatAttachment: Attachment;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Leg"]: Part & {
+			Snap: Snap;
+			RightFootAttachment: Attachment;
+		};
+		["Right Arm"]: Part & {
+			Handle: Motor6D;
+			RightGripAttachment: Attachment;
+			RightShoulderAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		Clothing: Shirt;
+		["Body Colors"]: BodyColors;
+		["Right Sleeve"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				RightShoulderAttachment: Attachment;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hair: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				HairAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+	};
+	fx: Folder;
+	MaleMC: Model & {
+		["Left Leg"]: Part & {
+			Snap: Snap;
+			LeftFootAttachment: Attachment;
+		};
+		anims: Folder & {
+			hurt: Animation;
+			idle: Animation;
+			basic: Animation;
+		};
+		Highlight: Highlight;
+		Clothing: Shirt;
+		Face: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				face: Decal;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+		};
+		Belt: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				WaistCenterAttachment: Attachment;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Left Sleeve"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				LeftShoulderAttachment: Attachment;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Pants: Pants;
+		Pendant: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				NeckAttachment: Attachment;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Head: Part & {
+			HatAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			HairAttachment: Attachment;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			["Left Shoulder"]: Motor6D;
+			["Left Hip"]: Motor6D;
+			["Right Hip"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		Suit: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraTarget: ObjectValue;
+				ThumbnailCameraValue: CFrameValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				BodyBackAttachment: Attachment;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Humanoid: Humanoid & {
+			HumanoidDescription: HumanoidDescription;
+			Animator: Animator;
+		};
+		TopHat: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				HatAttachment: Attachment;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		["Right Leg"]: Part & {
+			Snap: Snap;
+			RightFootAttachment: Attachment;
+		};
+		["Right Arm"]: Part & {
+			RightShoulderAttachment: Attachment;
+			RightGripAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		["Body Colors"]: BodyColors;
+		["Right Sleeve"]: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Highlight: Highlight;
+				SpecialMesh: SpecialMesh;
+				RightShoulderAttachment: Attachment;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Hair: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				HairAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+	};
+	BackupModels: Folder;
+	["Barista NPC"]: Model & {
+		["Left Leg"]: Part & {
+			LeftFootAttachment: Attachment;
+		};
+		Humanoid: Humanoid & {
+			Animator: Animator;
+			HumanoidDescription: HumanoidDescription;
+		};
+		["Right Leg"]: Part & {
+			RightFootAttachment: Attachment;
+		};
+		["Body Colors"]: BodyColors;
+		HumanoidRootPart: Part & {
+			RootJoint: Motor6D;
+			RootAttachment: Attachment;
+		};
+		Tie: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				BodyFrontAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+		Shirt: Shirt;
+		Pants: Pants;
+		Head: Part & {
+			HatAttachment: Attachment;
+			FaceFrontAttachment: Attachment;
+			HairAttachment: Attachment;
+			Mesh: SpecialMesh;
+			FaceCenterAttachment: Attachment;
+		};
+		Collar: Accessory & {
+			Handle: Part & {
+				AccessoryWeld: Weld;
+				OriginalSize: Vector3Value;
+				Mesh: SpecialMesh;
 				NeckAttachment: Attachment;
 			};
-			HumanoidRootPart: Part & {
-				RootJoint: Motor6D;
-				RootAttachment: Attachment;
+		};
+		Apron: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
-			["Right Arm"]: Part & {
-				RightShoulderAttachment: Attachment;
-				RightGripAttachment: Attachment;
+			Handle: Part & {
+				BodyBackAttachment: Attachment;
+				AccessoryWeld: Weld;
+				OriginalSize: Vector3Value;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
 			};
-			["Left Arm"]: Part & {
-				LeftGripAttachment: Attachment;
-				LeftShoulderAttachment: Attachment;
+		};
+		["Straw Hat"]: Accessory & {
+			Handle: Part & {
+				AccessoryWeld: Weld;
+				HatAttachment: Attachment;
+				Mesh: SpecialMesh;
+				OriginalSize: Vector3Value;
 			};
-			AnimSaves: Model & {
-				Untitled: KeyframeSequence & {
-					Keyframe: Keyframe & {
-						HumanoidRootPart: Pose & {
-							Null: IntValue;
-							Torso: Pose;
-						};
-					};
-				};
+		};
+		["Right Arm"]: Part & {
+			RightShoulderAttachment: Attachment;
+			RightGripAttachment: Attachment;
+		};
+		["Left Arm"]: Part & {
+			LeftGripAttachment: Attachment;
+			LeftShoulderAttachment: Attachment;
+		};
+		Face: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
 			};
+			Handle: Part & {
+				Eyebrows: Decal;
+				OriginalSize: Vector3Value;
+				AccessoryWeld: Weld;
+				Eyes: Decal;
+				Blush: Decal;
+				["Blush Lines"]: Decal;
+				Mouth: Decal;
+				Mesh: SpecialMesh;
+				FaceCenterAttachment: Attachment;
+			};
+		};
+		Torso: Part & {
+			RightCollarAttachment: Attachment;
+			WaistCenterAttachment: Attachment;
+			BodyBackAttachment: Attachment;
+			Neck: Motor6D;
+			LeftCollarAttachment: Attachment;
+			["Left Hip"]: Motor6D;
+			roblox: Decal;
+			["Right Hip"]: Motor6D;
+			["Left Shoulder"]: Motor6D;
+			["Right Shoulder"]: Motor6D;
+			BodyFrontAttachment: Attachment;
+			WaistBackAttachment: Attachment;
+			WaistFrontAttachment: Attachment;
+			NeckAttachment: Attachment;
+		};
+		CharacterMesh: CharacterMesh;
+		Hair: Accessory & {
+			ThumbnailConfiguration: Configuration & {
+				ThumbnailCameraValue: CFrameValue;
+				ThumbnailCameraTarget: ObjectValue;
+			};
+			Handle: Part & {
+				OriginalSize: Vector3Value;
+				HairAttachment: Attachment;
+				AccessoryWeld: Weld;
+				SpecialMesh: SpecialMesh;
+				AvatarPartScaleType: StringValue;
+			};
+		};
+	};
+	Myrkr_Skirmisher: Model & {
+		LeftFinger4: Part & {
+			Mesh: SpecialMesh;
+		};
+		Humanoid: Humanoid;
+		RightFinger1: Part & {
+			Mesh: SpecialMesh;
+		};
+		AnimSaves: Model & {
+			Idle_Skyrmr: KeyframeSequence;
+		};
+		Neck: Part & {
+			Mesh: SpecialMesh;
+			Head: Motor6D;
+		};
+		HumanoidRootPart: UnionOperation & {
+			LowerTorso: Motor6D;
+		};
+		LeftFinger1: Part & {
+			Mesh: SpecialMesh;
+		};
+		LeftFinger3: Part & {
+			Mesh: SpecialMesh;
+		};
+		RightShoulder: Part & {
+			Mesh: SpecialMesh;
+			RightBicep: Motor6D;
+		};
+		MidSection: Part & {
+			Mesh: SpecialMesh;
+			UpperTorso: Motor6D;
+		};
+		RightLowerLeg: UnionOperation & {
+			RightFoot: Motor6D;
+		};
+		LeftUpperLeg: UnionOperation & {
+			LeftLowerLeg: Motor6D;
+		};
+		LeftLowerLeg: UnionOperation & {
+			LeftFoot: Motor6D;
+		};
+		RightBicep: Part & {
+			Mesh: SpecialMesh;
+			RightForeArm: Motor6D;
+		};
+		LeftForeArm: Part & {
+			LeftFinger4: Motor6D;
+			LeftFinger3: Motor6D;
+			LeftFinger1: Motor6D;
+			RightFinger2: Motor6D;
+			Mesh: SpecialMesh;
+		};
+		LowerTorso: UnionOperation & {
+			MidSection: Motor6D;
+			LeftUpperLeg: Motor6D;
+			RightUpperLeg: Motor6D;
+		};
+		Head: UnionOperation;
+		LeftFoot: UnionOperation;
+		UpperTorso: UnionOperation & {
+			Neck: Motor6D;
+			LeftShoulder: Motor6D;
+			RightShoulder: Motor6D;
+		};
+		RightFoot: UnionOperation;
+		Eyes: Model & {
+			Left: Model;
+			Right: Model;
+		};
+		LeftBicep: Part & {
+			Mesh: SpecialMesh;
+			LeftForeArm: Motor6D;
+		};
+		LeftShoulder: Part & {
+			Mesh: SpecialMesh;
+			LeftBicep: Motor6D;
+		};
+		RightUpperLeg: UnionOperation & {
+			RightLowerLeg: Motor6D;
+		};
+		RightForeArm: Part & {
+			RightFinger1: Motor6D;
+			RightFinger2: Motor6D;
+			RightFinger3: Motor6D;
+			Mesh: SpecialMesh;
+			RightFinger4: Motor6D;
+		};
+		Highlight: Highlight;
+		RightFinger3: Part & {
+			Mesh: SpecialMesh;
+		};
+		RightFinger4: Part & {
+			Mesh: SpecialMesh;
 		};
 	};
 }

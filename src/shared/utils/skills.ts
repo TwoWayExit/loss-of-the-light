@@ -1,5 +1,5 @@
 import { CombatantList } from "server/models/combatant";
-import { LotlPlayer } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 
 type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
 
@@ -38,7 +38,7 @@ export abstract class Skill {
 	 * @returns A success status boolean
 	 * @virtual
 	 */
-	public cast(caster: LotlPlayer, target: LotlPlayer, combatant: keyof CombatantList) {
+	public cast(caster: BasePlayer, target: BasePlayer, combatant: keyof CombatantList) {
 		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}, combatant ${combatant}`);
 
 		return false;

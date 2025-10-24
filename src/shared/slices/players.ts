@@ -1,18 +1,22 @@
-import Object from "@rbxts/object-utils";
+import { clear, insert, produce, remove } from "@rbxts/better-immut";
 import { createProducer } from "@rbxts/reflex";
 import type { CombatantInfo, CombatantList } from "server/models/combatant";
 import { Region } from "shared/modules/globals";
+
+export const enum LotlPlayerStatus {
+	IDLE,
+	IN_BATTLE,
+}
 
 export interface PlayerInfo {
 	readonly battleId?: string;
 
 	readonly skillsCasted: Map<keyof CombatantList, string>;
-
 	readonly combatants: CombatantInfo[];
-
 	readonly selectedCombatant: number;
 
 	readonly region: Region;
+	readonly status: LotlPlayerStatus;
 }
 
 interface PlayersState {
@@ -22,139 +26,103 @@ interface PlayersState {
 const initialState: PlayersState = {};
 
 export const playersSlice = createProducer(initialState, {
-	addPlayer: (state, id: string) => ({
-		...state,
-		[id]: { skillsCasted: new Map(), combatants: [], selectedCombatant: -1, region: "baseplate" },
-	}),
+	addPlayer: (state, id: string) =>
+		produce(state, (draft) => {
+			draft[id] = {
+				skillsCasted: new Map(),
+				combatants: [],
+				selectedCombatant: -1,
+				region: "baseplate",
+				status: LotlPlayerStatus.IDLE,
+			};
+		}),
 
-	removePlayer: (state, id: string) => {
-		const players = { ...state };
+	removePlayer: (state, id: string) =>
+		produce(state, (draft) => {
+			delete draft[id];
+		}),
 
-		delete players[id];
+	addPlayerCombatant: (state, id: string, info: CombatantInfo) =>
+		produce(state, (draft) => {
+			insert(draft[id].combatants, info);
+		}),
 
-		return players;
-	},
+	setCombatantHealth: (state, id: string, combatant: keyof CombatantList, health: number) =>
+		produce(state, (draft) => {
+			const index = state[id].combatants.findIndex((c) => c.character.Name === combatant);
 
-	addPlayerCombatant: (state, id: string, info: CombatantInfo) => {
-		const { combatants } = state[id];
+			assert(state[id].combatants[index], `Combatant ${combatant} not found in player ${id}`);
 
-		return {
-			...state,
-			[id]: { ...state[id], combatants: [...combatants, info] },
-		};
-	},
+			draft[id].combatants[index].health = health;
+		}),
 
-	setCombatantHealth: (state, id: string, combatant: keyof CombatantList, health: number) => {
-		const combatants = [...state[id].combatants];
-		const index = combatants.findIndex((c) => c.character.Name === combatant);
-		const info = combatants[index];
+	takeCombatantDamage: (state, id: string, combatant: keyof CombatantList, damage: number) =>
+		produce(state, (draft) => {
+			const index = state[id].combatants.findIndex((c) => c.character.Name === combatant);
 
-		assert(info, `Combatant ${combatant} not found in player ${id}`);
+			assert(state[id].combatants[index], `Combatant ${combatant} not found in player ${id}`);
 
-		combatants[index] = { ...info, health };
+			draft[id].combatants[index].health -= damage;
+		}),
 
-		return {
-			...state,
-			[id]: { ...state[id], combatants },
-		};
-	},
+	setPlayerBattleId: (state, id: string, battleId?: string) =>
+		produce(state, (draft) => {
+			draft[id].battleId = battleId;
+		}),
 
-	takeCombatantDamage: (state, id: string, combatant: keyof CombatantList, damage: number) => {
-		const combatants = [...state[id].combatants];
-		const index = combatants.findIndex((c) => c.character.Name === combatant);
-		const info = combatants[index];
+	castSkill: (state, id: string, combatant: keyof CombatantList, skill: string) =>
+		produce(state, (draft) => {
+			draft[id].skillsCasted.set(combatant, skill);
+		}),
 
-		assert(info, `Combatant ${combatant} not found in player ${id}`);
+	clearSkillsCasted: (state, id: string) =>
+		produce(state, (draft) => {
+			clear(draft[id].skillsCasted);
+		}),
 
-		combatants[index] = { ...info, health: info.health - damage };
-
-		return {
-			...state,
-			[id]: {
-				...state[id],
+	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, orderIndex: number) =>
+		produce(state, (draft) => {
+			const { combatants } = draft[id];
+			const info = remove(
 				combatants,
-			},
-		};
-	},
+				combatants.findIndex((c) => c.character.Name === combatant),
+			);
 
-	setPlayerBattleId: (state, id: string, battleId?: string) => ({
-		...state,
-		[id]: {
-			...state[id],
-			battleId,
-		},
-	}),
+			assert(info, `Combatant ${combatant} not found in player ${id}`);
 
-	castSkill: (state, id: string, combatant: keyof CombatantList, skill: string) => {
-		const skillsCasted = Object.assign(new Map(), state[id].skillsCasted);
+			insert(combatants, orderIndex, info);
+		}),
 
-		skillsCasted.set(combatant, skill);
+	removePlayerCombatant: (state, id: string, combatant: keyof CombatantList) =>
+		produce(state, (draft) => {
+			const { combatants } = draft[id];
+			const index = combatants.findIndex((c) => c.character.Name === combatant);
 
-		return {
-			...state,
-			[id]: {
-				...state[id],
-				skillsCasted,
-			},
-		};
-	},
+			delete combatants[index];
+		}),
 
-	clearSkillsCasted: (state, id: string) => ({
-		...state,
-		[id]: {
-			...state[id],
-			skillsCasted: new Map(),
-		},
-	}),
+	setSelectedCombatant: (state, id: string, index: number) =>
+		produce(state, (draft) => {
+			assert(
+				index < state[id].combatants.size() && index >= 0,
+				"Attempt to select combatant would be out of bounds",
+			);
 
-	reorderPlayerCombatant: (state, id: string, combatant: keyof CombatantList, orderIndex: number) => {
-		const { combatants } = state[id];
-		const info = combatants.remove(combatants.findIndex((c) => c.character.Name === combatant));
+			draft[id].selectedCombatant = index;
+		}),
 
-		assert(info, `Combatant ${combatant} not found in player ${id}`);
+	clearSelectedCombatant: (state, id: string) =>
+		produce(state, (draft) => {
+			draft[id].selectedCombatant = -1;
+		}),
 
-		combatants.insert(orderIndex, info);
+	setRegion: (state, id: string, region: Region) =>
+		produce(state, (draft) => {
+			draft[id].region = region;
+		}),
 
-		return {
-			...state,
-			[id]: { ...state[id], combatants },
-		};
-	},
-
-	removePlayerCombatant: (state, id: string, combatant: keyof CombatantList) => {
-		const combatants = [...state[id].combatants];
-		const index = combatants.findIndex((c) => c.character.Name === combatant);
-
-		delete combatants[index];
-
-		return { ...state, [id]: { ...state[id], combatants } };
-	},
-
-	setSelectedCombatant: (state, id: string, index: number) => {
-		assert(index < state[id].combatants.size() && index >= 0, "Attempt to select combatant would be out of bounds");
-
-		return {
-			...state,
-			[id]: {
-				...state[id],
-				selectedCombatant: index,
-			},
-		};
-	},
-
-	clearSelectedCombatant: (state, id: string) => ({
-		...state,
-		[id]: {
-			...state[id],
-			selectedCombatant: -1,
-		},
-	}),
-
-	setRegion: (state, id: string, region: Region) => ({
-		...state,
-		[id]: {
-			...state[id],
-			region,
-		},
-	}),
+	setStatus: (state, id: string, status: LotlPlayerStatus) =>
+		produce(state, (draft) => {
+			draft[id].status = status;
+		}),
 });

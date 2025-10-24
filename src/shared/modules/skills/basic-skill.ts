@@ -1,6 +1,6 @@
 import { RunService } from "@rbxts/services";
 import { CombatantList } from "server/models/combatant";
-import { LotlPlayer } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 import { Skill } from "shared/utils/skills";
 
 export class BasicSkill extends Skill {
@@ -10,7 +10,7 @@ export class BasicSkill extends Skill {
 		});
 	}
 
-	public override cast(caster: LotlPlayer, target: LotlPlayer, combatant: keyof CombatantList) {
+	public override cast(caster: BasePlayer, target: BasePlayer, combatant: keyof CombatantList) {
 		if (caster === target) {
 			return false;
 		}

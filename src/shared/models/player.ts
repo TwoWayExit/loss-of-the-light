@@ -16,7 +16,7 @@ export class PlayerData {
 	public allowAutoMovement = true;
 }
 
-export abstract class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
+export class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
 	/** @virtual */
 	public static readonly playerAdded = new Signal<BasePlayer>();
 

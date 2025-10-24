@@ -1,6 +1,6 @@
 import { Component } from "@flamework/components";
 import { UuidComponent } from "./uuid-component";
-import { LotlPlayer } from "shared/models/lotl_player";
+import { BasePlayer } from "shared/models/player";
 import { CharacterRigR6 } from "@rbxts/promise-character";
 
 interface Attributes {
@@ -14,7 +14,7 @@ export class Enemy<A extends Attributes = Attributes, I extends CharacterRigR6 =
 	A,
 	I
 > {
-	protected player = new LotlPlayer(this.instance, undefined, this.id);
+	protected player = new BasePlayer(this.instance, undefined, this.id);
 
 	public constructor() {
 		super();

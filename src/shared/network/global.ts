@@ -29,9 +29,7 @@ interface ServerFunctions {
 	devCon: DevConServerFunctions;
 }
 
-interface ClientFunctions {
-	response: (key: string) => string;
-}
+interface ClientFunctions {}
 
 export const GlobalEvents = Networking.createEvent<ServerEvents, ClientEvents>();
 export const GlobalFunctions = Networking.createFunction<ServerFunctions, ClientFunctions>();
