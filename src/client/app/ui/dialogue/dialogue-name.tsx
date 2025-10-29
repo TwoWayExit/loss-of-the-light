@@ -2,7 +2,7 @@ import { useSelector } from "@rbxts/react-reflex";
 import { RootState } from "../../../producer";
 import React from "@rbxts/react";
 
-export function DialogueName() {
+export default function DialogueName() {
 	const name = useSelector(({ dialogue }: RootState) => dialogue.name);
 
 	return (

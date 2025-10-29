@@ -4,7 +4,7 @@ import { producer, RootState } from "client/producer";
 import { ClientBattle } from "client/models/client-battle";
 import { ViewVectors } from "shared/modules/view-vectors";
 import { LotlClient } from "shared/models/lotl_client";
-import { TweenService, Workspace } from "@rbxts/services";
+import { Players, TweenService, Workspace } from "@rbxts/services";
 
 @Controller({})
 export class BattleController implements OnInit {
@@ -20,7 +20,7 @@ export class BattleController implements OnInit {
 
 		if (active) {
 			const { selectedCombatant, combatants, region } = producer.getState(
-				(state: RootState) => state.players[LotlClient.getLocalClient()!.id],
+				(state: RootState) => state.players[tostring(Players.LocalPlayer.UserId)],
 			);
 			const combatant = combatants[selectedCombatant];
 			const position = combatant.character.GetPivot().Position;
@@ -33,7 +33,7 @@ export class BattleController implements OnInit {
 
 	private onCombatantSwitch(selected: number) {
 		const { combatants, region } = producer.getState(
-			(state: RootState) => state.players[LotlClient.getLocalClient()!.id],
+			(state: RootState) => state.players[tostring(Players.LocalPlayer.UserId)],
 		);
 		const character = combatants[selected].character;
 
@@ -96,7 +96,7 @@ export class BattleController implements OnInit {
 			)
 			.then(() => {
 				producer.subscribe(
-					(state) => state.players[LotlClient.getLocalClient()!.id].selectedCombatant,
+					(state) => state.players[tostring(Players.LocalPlayer.UserId)].selectedCombatant,
 					(current) => current !== -1,
 					(selected) => this.onCombatantSwitch(selected),
 				);

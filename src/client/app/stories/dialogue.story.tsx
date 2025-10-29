@@ -1,5 +1,5 @@
 import { ReflexProvider } from "@rbxts/react-reflex";
-import { DialogueFrame } from "../ui/dialogue/dialogue-frame";
+import DialogueFrame from "../ui/dialogue/dialogue-frame";
 import { RootState, producer } from "../../producer";
 import React from "@rbxts/react";
 import ReactRoblox from "@rbxts/react-roblox";

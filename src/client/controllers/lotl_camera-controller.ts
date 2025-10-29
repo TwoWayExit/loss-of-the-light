@@ -87,7 +87,7 @@ export class LotlCameraController implements OnStart, OnRender {
 			return;
 		}
 
-		this.rayParams.FilterDescendantsInstances = CollectionService.GetTagged("Obstruction");
+		this.rayParams.FilterDescendantsInstances = CollectionService.GetTagged("obstruction");
 
 		const direction = character.HumanoidRootPart.Position.sub(camera.CFrame.Position);
 		const result = Workspace.Raycast(camera.CFrame.Position, direction, this.rayParams);

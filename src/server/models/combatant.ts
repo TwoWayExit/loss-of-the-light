@@ -10,8 +10,8 @@ export interface AnimatedCharacter extends CharacterRigR6 {
 	};
 }
 
-// Immutability they said, it'd be great they said (it isn't)
 export interface CombatantInfo {
+	/** A clone of the original character rig for this combatant, used in battle */
 	readonly character: AnimatedCharacter;
 
 	readonly health: number;
