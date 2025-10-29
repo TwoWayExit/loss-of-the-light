@@ -1,0 +1,51 @@
+import React from "@rbxts/react";
+import SideButton from "./side-button";
+import { usePx } from "client/app/hooks/use-px";
+
+export default function SideButtonList() {
+	const px = usePx();
+
+	return (
+		<frame
+			key="Buttons"
+			BorderSizePixel={0}
+			Position={new UDim2(1, px(-122), 1, px(-141))}
+			BackgroundTransparency={1}
+			Size={UDim2.fromOffset(px(93), px(103))}
+		>
+			<uilistlayout
+				key="UIListLayout"
+				HorizontalAlignment={Enum.HorizontalAlignment.Right}
+				VerticalAlignment={Enum.VerticalAlignment.Bottom}
+				SortOrder={Enum.SortOrder.LayoutOrder}
+				Padding={new UDim(0.1, 0)}
+			/>
+
+			<SideButton
+				text="finish turn"
+				icon="rbxassetid://12690727184"
+				color={Color3.fromRGB(49, 131, 44)}
+				onClick={() => {}}
+				height={102}
+			/>
+			<SideButton
+				text="attack"
+				icon="rbxassetid://9695653110"
+				color={Color3.fromRGB(108, 67, 67)}
+				onClick={() => {}}
+			/>
+			<SideButton
+				text="defend"
+				icon="rbxassetid://79951232517290"
+				color={Color3.fromRGB(53, 65, 108)}
+				onClick={() => {}}
+			/>
+			<SideButton
+				text="wait"
+				icon="rbxassetid://7072707248"
+				color={Color3.fromRGB(107, 108, 49)}
+				onClick={() => {}}
+			/>
+		</frame>
+	);
+}

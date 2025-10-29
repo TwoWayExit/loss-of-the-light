@@ -1,9 +1,8 @@
-import { Workspace } from "@rbxts/services";
+import { Players, Workspace } from "@rbxts/services";
 import { RootState } from "client/producer";
 import type { AnimatedCharacter } from "server/models/combatant";
 import { producer } from "client/producer";
 import { Battle } from "shared/models/battle";
-import { LotlClient } from "shared/models/lotl_client";
 
 export class ClientBattle extends Battle {
 	private combatants: Map<string, AnimatedCharacter[]> = new Map();
@@ -37,7 +36,7 @@ export class ClientBattle extends Battle {
 
 	private hideCombatants() {
 		// Hide the player's combatants
-		for (const character of this.combatants.get(LotlClient.getLocalClient()!.id)!) {
+		for (const character of this.combatants.get(tostring(Players.LocalPlayer.UserId))!) {
 			for (const child of character.GetDescendants()) {
 				if (child.IsA("BasePart")) {
 					child.LocalTransparencyModifier = 1;
@@ -45,7 +44,7 @@ export class ClientBattle extends Battle {
 			}
 		}
 
-		// Hide other people's combatants
+		// Hide combatants of those outside the current battle to avoid conflicting character models
 		for (const combatant of Workspace.combatants.GetChildren()) {
 			if (!combatant.HasTag(this.id)) {
 				for (const child of combatant.GetDescendants()) {

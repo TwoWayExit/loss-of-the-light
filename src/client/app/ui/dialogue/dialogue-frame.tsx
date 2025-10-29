@@ -3,12 +3,12 @@ import { useProducer, useSelector } from "@rbxts/react-reflex";
 import { tween } from "@rbxts/ripple";
 import { RootProducer, RootState } from "client/producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
-import { DialogueName } from "./dialogue-name";
-import { DialogueText } from "./dialogue-text";
-import { DialogueBlinker } from "./dialogue-blinker";
+import DialogueName from "./dialogue-name";
+import DialogueText from "./dialogue-text";
+import DialogueBlinker from "./dialogue-blinker";
 import React, { useEffect } from "@rbxts/react";
 
-export function DialogueFrame() {
+export default function DialogueFrame() {
 	const [scale, motion] = useMotion(1);
 
 	const isActive = useSelector((state: RootState) => state.dialogue.isActive);

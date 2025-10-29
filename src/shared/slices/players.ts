@@ -14,6 +14,7 @@ export interface PlayerInfo {
 	readonly skillsCasted: Map<keyof CombatantList, string>;
 	readonly combatants: CombatantInfo[];
 	readonly selectedCombatant: number;
+	readonly energy: Map<keyof CombatantList, number>;
 
 	readonly region: Region;
 	readonly status: LotlPlayerStatus;
@@ -32,6 +33,7 @@ export const playersSlice = createProducer(initialState, {
 				skillsCasted: new Map(),
 				combatants: [],
 				selectedCombatant: -1,
+				energy: new Map(),
 				region: "baseplate",
 				status: LotlPlayerStatus.IDLE,
 			};

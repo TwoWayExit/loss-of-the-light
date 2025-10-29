@@ -6,7 +6,7 @@ import React from "@rbxts/react";
 
 const BLINK_INTERVAL = 0.35;
 
-export function DialogueBlinker() {
+export default function DialogueBlinker() {
 	const [alpha, motion] = useMotion(0);
 
 	const isActive = useSelector((state: RootState) => state.dialogue.isActive);
