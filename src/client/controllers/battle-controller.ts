@@ -1,10 +1,11 @@
 import { Controller, OnInit } from "@flamework/core";
 import { LotlCameraController } from "client/controllers/lotl_camera-controller";
-import { producer, RootState } from "client/producer";
 import { ClientBattle } from "client/models/client-battle";
 import { ViewVectors } from "shared/modules/view-vectors";
-import { LotlClient } from "shared/models/lotl_client";
 import { Players, TweenService, Workspace } from "@rbxts/services";
+import { observe, subscribe } from "@rbxts/charm";
+import { battlesAtom } from "shared/atoms/battles";
+import { playersAtom } from "shared/atoms/players";
 
 @Controller({})
 export class BattleController implements OnInit {
@@ -19,9 +20,7 @@ export class BattleController implements OnInit {
 		this.cameraController.useFixedPosition(active);
 
 		if (active) {
-			const { selectedCombatant, combatants, region } = producer.getState(
-				(state: RootState) => state.players[tostring(Players.LocalPlayer.UserId)],
-			);
+			const { selectedCombatant, combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
 			const combatant = combatants[selectedCombatant];
 			const position = combatant.character.GetPivot().Position;
 
@@ -32,9 +31,12 @@ export class BattleController implements OnInit {
 	}
 
 	private onCombatantSwitch(selected: number) {
-		const { combatants, region } = producer.getState(
-			(state: RootState) => state.players[tostring(Players.LocalPlayer.UserId)],
-		);
+		const { combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+
+		if (selected < 0 || selected >= combatants.size()) {
+			return;
+		}
+
 		const character = combatants[selected].character;
 
 		for (const { character } of combatants) {
@@ -71,35 +73,25 @@ export class BattleController implements OnInit {
 	}
 
 	onInit() {
-		producer.observe(
-			(state) => state.battles,
-			(_, id) => id,
-			(_, battleId) => {
-				const battle = new ClientBattle(battleId as string);
+		observe(battlesAtom, (_, battleId) => {
+			const battle = new ClientBattle(battleId as string);
 
-				battle.startBattle();
+			battle.startBattle();
 
-				this.setCameraActive(true);
+			this.setCameraActive(true);
 
-				return () => {
-					battle.stopBattle();
+			return () => {
+				battle.stopBattle();
 
-					this.setCameraActive(false);
-				};
+				this.setCameraActive(false);
+			};
+		});
+
+		subscribe(
+			() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.selectedCombatant,
+			(selected) => {
+				this.onCombatantSwitch(selected);
 			},
 		);
-
-		producer
-			.wait(
-				(state) => state.players,
-				(state) => LotlClient.getLocalClient()!.id in state,
-			)
-			.then(() => {
-				producer.subscribe(
-					(state) => state.players[tostring(Players.LocalPlayer.UserId)].selectedCombatant,
-					(current) => current !== -1,
-					(selected) => this.onCombatantSwitch(selected),
-				);
-			});
 	}
 }

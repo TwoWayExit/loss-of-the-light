@@ -1,14 +1,12 @@
 import React from "@rbxts/react";
-import { useSelector } from "@rbxts/react-reflex";
 import { Players } from "@rbxts/services";
 import { usePx } from "client/app/hooks/use-px";
-import { RootState } from "server/producer";
 import Combatant from "./combatant";
+import { useAtom } from "@rbxts/react-charm";
+import { playersAtom } from "shared/atoms/players";
 
 export default function CombatantList() {
-	const combatants = useSelector(
-		(state: RootState) => state.players[tostring(Players.LocalPlayer.UserId)]?.combatants,
-	);
+	const combatants = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.combatants);
 
 	const px = usePx();
 

@@ -1,22 +1,20 @@
 import { useEventListener, useMotion } from "@rbxts/pretty-react-hooks";
-import { useProducer, useSelector } from "@rbxts/react-reflex";
 import { tween } from "@rbxts/ripple";
-import { RootProducer, RootState } from "client/producer";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import DialogueName from "./dialogue-name";
 import DialogueText from "./dialogue-text";
 import DialogueBlinker from "./dialogue-blinker";
 import React, { useEffect } from "@rbxts/react";
+import { dialogueIsActive } from "client/app/atoms/dialogue";
+import { useAtom } from "@rbxts/react-charm";
 
 export default function DialogueFrame() {
 	const [scale, motion] = useMotion(1);
 
-	const isActive = useSelector((state: RootState) => state.dialogue.isActive);
+	const isActive = useAtom(dialogueIsActive);
 
-	const producer = useProducer<RootProducer>();
-
-	useEventListener(DialogueBuilder.dialogueStarted, () => producer.setDialogueActive(true));
-	useEventListener(DialogueBuilder.dialogueEnded, () => producer.setDialogueActive(false));
+	// useEventListener(DialogueBuilder.dialogueStarted, () => dialogueIsActive(true));
+	// useEventListener(DialogueBuilder.dialogueEnded, () => dialogueIsActive(false));
 
 	useEffect(() => {
 		if (isActive) {

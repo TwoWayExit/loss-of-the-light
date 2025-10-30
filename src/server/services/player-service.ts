@@ -4,7 +4,7 @@ import { Events } from "server/network";
 import { config } from "shared/config";
 import { Replicas } from "server/replicas";
 import { BasePlayer } from "shared/models/player";
-import { producer } from "server/producer";
+import { createPlayer, playersAtom } from "shared/atoms/players";
 import "shared/models/lotl_client";
 
 @Service({})
@@ -20,6 +20,6 @@ export class PlayerService implements OnInit {
 			Replicas.movement.SetValue(player, Replicas.movement.GetValue(player)); // Update vars on join
 		});
 
-		BasePlayer.playerAdded.Connect((player) => producer.addPlayer(player.id));
+		BasePlayer.playerAdded.Connect((player) => playersAtom((state) => createPlayer(state, player.id)));
 	}
 }

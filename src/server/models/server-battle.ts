@@ -1,10 +1,11 @@
 import { HttpService, Workspace } from "@rbxts/services";
-import { producer } from "server/producer";
 import { Battle, Teams } from "shared/models/battle";
 import { Combatant } from "server/models/combatant";
 import { BasePlayer } from "shared/models/player";
 import { Globals, Region } from "shared/modules/globals";
-import { LotlPlayerStatus } from "shared/slices/players";
+import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
+import { createBattle, battlesAtom, removeBattle } from "shared/atoms/battles";
+import { clear, produce } from "@rbxts/better-immut";
 
 export type BattleTeam = Map<BasePlayer, Combatant[]>;
 
@@ -37,7 +38,7 @@ export class ServerBattle extends Battle {
 	}
 
 	public override startBattle() {
-		producer.addBattle(this.id, this.region);
+		battlesAtom((state) => createBattle(state, this.id, this.region));
 
 		this.setupPlayers(true);
 
@@ -50,7 +51,11 @@ export class ServerBattle extends Battle {
 				players.add(player.id);
 			}
 
-			producer.addBattleTeam(this.id, name, players);
+			battlesAtom((state) =>
+				produce(state, (draft) => {
+					draft[this.id].teams[name] = players;
+				}),
+			);
 		}
 
 		super.startBattle();
@@ -61,7 +66,7 @@ export class ServerBattle extends Battle {
 
 		this.startMovementOfTeams();
 
-		producer.removeBattle(this.id);
+		battlesAtom((state) => removeBattle(state, this.id));
 
 		super.stopBattle();
 	}
@@ -87,11 +92,19 @@ export class ServerBattle extends Battle {
 	}
 
 	public nextTurn() {
-		producer.nextBattleTurn(this.id);
+		battlesAtom((state) =>
+			produce(state, (draft) => {
+				draft[this.id].turn++;
+			}),
+		);
 
 		for (const [, team] of this.teams) {
 			for (const [player] of team) {
-				producer.clearSkillsCasted(player.id);
+				playersAtom((state) =>
+					produce(state, (draft) => {
+						clear(draft[player.id].skillsCasted);
+					}),
+				);
 			}
 		}
 	}
@@ -99,21 +112,30 @@ export class ServerBattle extends Battle {
 	protected setupPlayers(inBattle: boolean) {
 		for (const [teamName, team] of this.teams) {
 			for (const [player] of team) {
-				const { combatants } = producer.getState((state) => state.players[player.id]);
+				const { combatants } = playersAtom()[player.id];
 
 				if (inBattle) {
-					producer.setStatus(player.id, LotlPlayerStatus.IN_BATTLE);
-					producer.setSelectedCombatant(player.id, 0);
-					producer.setPlayerBattleId(player.id, this.id);
+					playersAtom((state) =>
+						produce(state, (draft) => {
+							draft[player.id].status = LotlPlayerStatus.IN_BATTLE;
+							draft[player.id].selectedCombatant = 0;
+							draft[player.id].battleId = this.id;
+						}),
+					);
 
 					combatants.forEach((combatant, index) => {
 						combatant.character.PivotTo(this.getCombatantPosition(teamName, player, index));
 						combatant.character.AddTag(this.id);
 					});
 				} else {
-					producer.setStatus(player.id, LotlPlayerStatus.IDLE);
-					producer.setPlayerBattleId(player.id, undefined);
-					producer.clearSelectedCombatant(player.id);
+					playersAtom((state) =>
+						produce(state, (draft) => {
+							draft[player.id].status = LotlPlayerStatus.IDLE;
+							draft[player.id].selectedCombatant = -1;
+
+							delete draft[player.id].battleId;
+						}),
+					);
 				}
 			}
 		}

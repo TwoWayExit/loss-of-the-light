@@ -2,6 +2,7 @@ import { RunService } from "@rbxts/services";
 import { CombatantList } from "server/models/combatant";
 import { BasePlayer } from "shared/models/player";
 import { Skill } from "shared/utils/skills";
+import { playersAtom, takeCombatantDamage } from "shared/atoms/players";
 
 export class BasicSkill extends Skill {
 	public constructor(protected readonly caster: keyof CombatantList) {
@@ -16,9 +17,7 @@ export class BasicSkill extends Skill {
 		}
 
 		if (RunService.IsServer()) {
-			import("server/producer").now().then(({ producer }) => {
-				producer.takeCombatantDamage(target.id, combatant, this.properties.damage);
-			});
+			playersAtom((state) => takeCombatantDamage(state, target.id, combatant, this.properties.damage));
 		} else {
 			// VFX here
 		}

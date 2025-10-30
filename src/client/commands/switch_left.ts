@@ -1,13 +1,11 @@
+import { produce } from "@rbxts/better-immut";
+import { Players } from "@rbxts/services";
 import { Command } from "@twowayexit/dev-con";
-import { RootState } from "client/producer";
-import { producer } from "client/producer";
-import { LotlClient } from "shared/models/lotl_client";
+import { playersAtom } from "shared/atoms/players";
 
 export const switch_left: Command = {
 	execute: () => {
-		const { battleId, selectedCombatant } = producer.getState(
-			(state: RootState) => state.players[LotlClient.getLocalClient()!.id],
-		);
+		const { battleId, selectedCombatant } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
 
 		if (battleId === undefined) {
 			return;
@@ -17,6 +15,10 @@ export const switch_left: Command = {
 			return;
 		}
 
-		producer.setSelectedCombatant(LotlClient.getLocalClient()!.id, selectedCombatant - 1);
+		playersAtom((state) =>
+			produce(state, (draft) => {
+				draft[tostring(Players.LocalPlayer.UserId)].selectedCombatant = selectedCombatant - 1;
+			}),
+		);
 	},
 };

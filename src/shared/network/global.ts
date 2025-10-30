@@ -3,12 +3,11 @@ import { config } from "../config";
 import { globalReplicas } from "../replicas";
 import { DevConServerEvents, DevConServerFunctions } from "./dev-con";
 import { LotlClientEvents, LotlServerEvents } from "./lotl";
-import { BroadcastAction } from "@rbxts/reflex";
 
 type MovementVar = keyof ReturnType<typeof globalReplicas.client.movement.GetValue>;
 
 interface ServerEvents {
-	start: () => void;
+	requestState: () => void;
 
 	devCon: DevConServerEvents;
 	lotl: LotlServerEvents;
@@ -18,7 +17,8 @@ interface ClientEvents {
 	updateSharedConfig: (update: Partial<typeof config>) => void;
 	receiveNetVar: (uuid: string, value: unknown, client?: string) => void;
 
-	dispatch: (actions: BroadcastAction[]) => void;
+	// Flamework's type guard middlware messes up the SyncPayload type and is prone to failing, so pass unknown instead
+	syncState: (payload: unknown) => void;
 
 	lotl: LotlClientEvents;
 }

@@ -1,30 +1,33 @@
 import { OnStart, Service } from "@flamework/core";
-import { ReplicatedStorage, Workspace } from "@rbxts/services";
-import { producer } from "server/producer";
-import { BasePlayer } from "shared/models/player";
+import { batch, observe } from "@rbxts/charm";
+import { Players, ReplicatedStorage, Workspace } from "@rbxts/services";
+import { addCombatant, playersAtom } from "shared/atoms/players";
 
 @Service({})
 export class PlaceholderService implements OnStart {
 	onStart() {
-		BasePlayer.playerAdded.Connect(async (player) => {
-			if (!(player.id in producer.getState((state) => state.players))) {
-				await producer.wait(
-					(state) => state.players,
-					(state) => player.id in state,
-				);
+		observe(playersAtom, (player, playerId) => {
+			const numId = tonumber(playerId);
+
+			if (!numId || !Players.GetPlayerByUserId(numId) || player.combatants.size() > 0) {
+				return;
 			}
 
-			for (let i = 0; i < 3; i++) {
-				const character = ReplicatedStorage.combatants.MaleMC.Clone();
+			batch(() => {
+				for (let i = 0; i < 3; i++) {
+					const character = ReplicatedStorage.combatants.MaleMC.Clone();
 
-				// We need to parent this to something that isn't nil to be able to replicate it to the client
-				character.Parent = Workspace.combatants;
+					// We need to parent this to something that isn't nil to be able to replicate it to the client
+					character.Parent = Workspace.combatants;
 
-				producer.addPlayerCombatant(player.id, {
-					character,
-					health: 100,
-				});
-			}
+					playersAtom((state) =>
+						addCombatant(state, playerId as string, {
+							character,
+							health: 100,
+						}),
+					);
+				}
+			});
 		});
 	}
 }

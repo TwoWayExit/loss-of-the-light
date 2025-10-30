@@ -1,9 +1,9 @@
-import { useSelector } from "@rbxts/react-reflex";
-import { RootState } from "../../../producer";
 import React from "@rbxts/react";
+import { useAtom } from "@rbxts/react-charm";
+import { currentDialogue } from "client/app/atoms/dialogue";
 
 export default function DialogueName() {
-	const name = useSelector(({ dialogue }: RootState) => dialogue.name);
+	const name = useAtom(() => currentDialogue()?.name);
 
 	return (
 		<imagelabel

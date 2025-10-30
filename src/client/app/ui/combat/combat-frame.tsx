@@ -1,6 +1,3 @@
-import { useSelector } from "@rbxts/react-reflex";
-import { createSelector } from "@rbxts/reflex";
-import { RootState } from "client/producer";
 import React from "@rbxts/react";
 import { usePx } from "client/app/hooks/use-px";
 import SideButtonList from "./side-button-list";
@@ -8,13 +5,14 @@ import EnergyList from "./energy-list";
 import Turns from "./turns";
 import MenuButton from "./menu-button";
 import CombatantList from "./combatant-list";
+import { useAtom } from "@rbxts/react-charm";
+import { playersAtom } from "shared/atoms/players";
 import { Players } from "@rbxts/services";
 
 export default function CombatFrame() {
-	const selectPlayer = (state: RootState) => state.players[tostring(Players.LocalPlayer.UserId)];
-	const selectInBattle = createSelector(selectPlayer, (player) => player?.battleId !== undefined);
-
-	const inBattle = useSelector(selectInBattle);
+	const inBattle = useAtom(() => {
+		return playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId !== undefined;
+	});
 
 	const px = usePx();
 

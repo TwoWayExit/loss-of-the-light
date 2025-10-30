@@ -1,7 +1,7 @@
 import { Players, Workspace } from "@rbxts/services";
-import { RootState } from "client/producer";
 import type { AnimatedCharacter } from "server/models/combatant";
-import { producer } from "client/producer";
+import { battlesAtom } from "shared/atoms/battles";
+import { playersAtom } from "shared/atoms/players";
 import { Battle } from "shared/models/battle";
 
 export class ClientBattle extends Battle {
@@ -10,14 +10,14 @@ export class ClientBattle extends Battle {
 	public constructor(id: string) {
 		super(id);
 
-		for (const [, team] of pairs(producer.getState((state: RootState) => state.battles[id].teams))) {
+		for (const [, team] of pairs(battlesAtom()[id].teams)) {
 			for (const playerId of team) {
 				const list: AnimatedCharacter[] = [];
 
 				this.combatants.set(playerId, list);
 
-				producer
-					.getState((state: RootState) => state.players[playerId].combatants.map((c) => c.character))
+				playersAtom()
+					[playerId].combatants.map((c) => c.character)
 					.forEach((c) => list.push(c));
 			}
 		}

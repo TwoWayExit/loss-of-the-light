@@ -3,13 +3,12 @@ import { Component, Components } from "@flamework/components";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { Character } from "shared/models/character";
 import { BasePlayer } from "shared/models/player";
-import { Combatant, CombatantList } from "server/models/combatant";
+import { CombatantList } from "server/models/combatant";
 import { DisposableComponent } from "shared/components/disposable-component";
 import { Enemy } from "shared/components/enemy";
 import { BattleService } from "server/services/battle-service";
 import { LotlClient } from "shared/models/lotl_client";
-import { LotlPlayerStatus } from "shared/slices/players";
-import { producer } from "server/producer";
+import { addCombatant, LotlPlayerStatus, playersAtom } from "shared/atoms/players";
 
 interface Attributes {
 	triggerDistance: number;
@@ -60,10 +59,12 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 
 			clone.Parent = Workspace.combatants;
 
-			Combatant.addCombatant(this.player, {
-				character: clone,
-				health: 100,
-			});
+			playersAtom((state) =>
+				addCombatant(state, this.player.id, {
+					character: clone,
+					health: 100,
+				}),
+			);
 		}
 	}
 
@@ -82,7 +83,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 	}
 
 	onTick() {
-		if (producer.getState((state) => state.players[this.player.id].status) === LotlPlayerStatus.IN_BATTLE) {
+		if (playersAtom()[this.player.id].status === LotlPlayerStatus.IN_BATTLE) {
 			return;
 		}
 

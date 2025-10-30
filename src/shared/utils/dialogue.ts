@@ -1,10 +1,15 @@
 import { Signal } from "@rbxts/beacon";
 
+export const enum DialogueTextAction {
+	RESPONSE,
+}
+
 export class Dialogue {
 	public constructor(
 		public readonly name: string,
-		protected texts: string[],
-		protected responses: Map<string, DialogueBuilder>,
+		protected texts: (string | DialogueTextAction)[],
+		protected responses: Map<number, string[]>,
+		protected responsesDialogues: Map<number, DialogueBuilder[]>,
 	) {}
 
 	/** A signal that fires when the dialogue ends */
@@ -14,16 +19,12 @@ export class Dialogue {
 
 	protected isFinished = false;
 
-	public getFinished() {
+	public getIsFinished() {
 		return this.isFinished;
 	}
 
-	/**
-	 * Gets any available responses
-	 * @returns Returns all available responses for the current context, always returns `undefined` if this dialogue is not finished
-	 */
 	public getResponses() {
-		return this.isFinished ? this.responses : undefined;
+		return this.responses;
 	}
 
 	/**
@@ -51,6 +52,7 @@ export class Dialogue {
 	}
 }
 
+// TODO: Add support for continuing/repeating dialogue after a response is picked and its texts are finished
 export class DialogueBuilder {
 	/** A signal that fires when a new dialogue starts */
 	public static readonly dialogueStarted = new Signal<Dialogue>();
@@ -59,15 +61,16 @@ export class DialogueBuilder {
 	public static readonly dialogueEnded = new Signal<Dialogue>();
 
 	protected name = "";
-	protected texts: string[] = [];
-	protected responses = new Map<string, DialogueBuilder>();
+	protected texts: (string | DialogueTextAction)[] = [];
+	protected responses = new Map<number, string[]>();
+	protected responsesDialogues = new Map<number, DialogueBuilder[]>();
 
 	/**
 	 * Starts a new dialogue
 	 * @returns A {@link Dialogue} instance
 	 */
 	public start() {
-		const dialogue = new Dialogue(this.name, this.texts, this.responses);
+		const dialogue = new Dialogue(this.name, this.texts, this.responses, this.responsesDialogues);
 
 		DialogueBuilder.dialogueStarted.Fire(dialogue);
 
@@ -89,10 +92,6 @@ export class DialogueBuilder {
 		return this;
 	}
 
-	public getTexts() {
-		return this.texts;
-	}
-
 	/**
 	 * Sets the texts for the dialogue
 	 * @param texts - An array of the texts
@@ -104,8 +103,15 @@ export class DialogueBuilder {
 		return this;
 	}
 
-	public getResponses() {
-		return this.responses;
+	/**
+	 * Sets the responses for the dialogue
+	 * @param responses - A map of string arrays, with the index representing any position within `texts` set as `DialogueTextAction.RESPONSE`
+	 * @returns This instance, for chaining purposes
+	 */
+	public setResponses(responses: typeof this.responses) {
+		this.responses = responses;
+
+		return this;
 	}
 
 	/**
@@ -113,8 +119,8 @@ export class DialogueBuilder {
 	 * @param responses - An array of {@link DialogueBuilder}s for responses
 	 * @returns This instance, for chaining purposes
 	 */
-	public setResponses(responses: typeof this.responses) {
-		this.responses = responses;
+	public setResponsesDialogues(responsesDialogues: typeof this.responsesDialogues) {
+		this.responsesDialogues = responsesDialogues;
 
 		return this;
 	}

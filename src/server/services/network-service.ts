@@ -1,26 +1,27 @@
 import { Service, OnInit } from "@flamework/core";
 import { Events } from "server/network";
-import { createBroadcaster } from "@rbxts/reflex";
-import { slices } from "shared/slices";
-import { producer } from "server/producer";
+import CharmSync from "@rbxts/charm-sync";
+import { playersAtom } from "shared/atoms/players";
+import { battlesAtom } from "shared/atoms/battles";
 
 @Service()
 export class NetworkService implements OnInit {
-	private setupBroadcaster() {
-		const broadcaster = createBroadcaster({
-			producers: slices,
-
-			dispatch: (player, actions) => {
-				Events.dispatch(player, actions);
+	private setupSyncer() {
+		const syncer = CharmSync.server({
+			atoms: {
+				playersAtom,
+				battlesAtom,
 			},
 		});
 
-		Events.start.connect((player) => broadcaster.start(player));
+		syncer.connect((player, payload) => {
+			Events.syncState(player, payload);
+		});
 
-		producer.applyMiddleware(broadcaster.middleware);
+		Events.requestState.connect((player) => syncer.hydrate(player));
 	}
 
 	onInit() {
-		this.setupBroadcaster();
+		this.setupSyncer();
 	}
 }

@@ -2,7 +2,7 @@ import { CharacterRigR6 } from "@rbxts/promise-character";
 import { Skillset } from "shared/utils/skills";
 import { BaseCharacter } from "shared/models/character";
 import { BasePlayer } from "shared/models/player";
-import { producer } from "server/producer";
+import { playersAtom } from "shared/atoms/players";
 
 export interface AnimatedCharacter extends CharacterRigR6 {
 	anims: Folder & {
@@ -33,7 +33,7 @@ export class Combatant extends BaseCharacter<undefined> {
 
 		let hasCombatants = false;
 
-		for (const info of this.getCombatantInfos(player)) {
+		for (const info of playersAtom()[player.id].combatants) {
 			const combatant = new Combatant(info.character);
 
 			combatants.push(combatant);
@@ -44,17 +44,5 @@ export class Combatant extends BaseCharacter<undefined> {
 		assert(hasCombatants, `Player ${player.getNickname()} does not have any combatants`);
 
 		return combatants;
-	}
-
-	public static getCombatantInfos(player: BasePlayer) {
-		return producer.getState((state) => state.players[player.id].combatants);
-	}
-
-	public static addCombatant(player: BasePlayer, info: CombatantInfo) {
-		producer.addPlayerCombatant(player.id, info);
-	}
-
-	public static removeCombatant(player: BasePlayer, combatant: keyof CombatantList) {
-		producer.removePlayerCombatant(player.id, combatant);
 	}
 }

@@ -1,21 +1,25 @@
 import { Controller, OnInit } from "@flamework/core";
-import { createBroadcastReceiver } from "@rbxts/reflex";
+import CharmSync, { SyncPayload } from "@rbxts/charm-sync";
 import { Events } from "client/network";
-import { producer } from "client/producer";
+import { AtomsList } from "shared/atoms/atoms-list";
+import { battlesAtom } from "shared/atoms/battles";
+import { playersAtom } from "shared/atoms/players";
 
 @Controller({})
 export class NetworkController implements OnInit {
-	private setupBroadcasterReceiver() {
-		const receiver = createBroadcastReceiver({
-			start: () => Events.start(),
+	private setupSyncer() {
+		const syncer = CharmSync.client({
+			atoms: {
+				playersAtom,
+				battlesAtom,
+			},
 		});
 
-		Events.dispatch.connect((actions) => receiver.dispatch(actions));
-
-		producer.applyMiddleware(receiver.middleware);
+		Events.syncState.connect((payload) => syncer.sync(payload as SyncPayload<AtomsList, true>));
+		Events.requestState();
 	}
 
 	onInit() {
-		this.setupBroadcasterReceiver();
+		this.setupSyncer();
 	}
 }
