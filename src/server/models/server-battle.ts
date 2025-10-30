@@ -144,9 +144,9 @@ export class ServerBattle extends Battle {
 	protected stopMovementOfTeams() {
 		for (const [, team] of this.teams) {
 			for (const [player] of team) {
-				const localPlayer = player.getLocalPlayer();
+				const rbxPlayer = player.getRbxPlayer();
 
-				if (localPlayer) {
+				if (rbxPlayer) {
 					player.getCharacter()?.RemoveTag("lotl_movement");
 				}
 			}
@@ -156,9 +156,9 @@ export class ServerBattle extends Battle {
 	protected startMovementOfTeams() {
 		for (const [, team] of this.teams) {
 			for (const [player] of team) {
-				const localPlayer = player.getLocalPlayer();
+				const rbxPlayer = player.getRbxPlayer();
 
-				if (localPlayer) {
+				if (rbxPlayer) {
 					player.getCharacter()?.AddTag("lotl_movement");
 				}
 			}

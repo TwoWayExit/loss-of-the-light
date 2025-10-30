@@ -39,7 +39,7 @@ export class LotlClient extends PlayerNetworked {
 
 	/**
 	 * Gets the main {@link LotlClient} of the client running the game if there is one, returning `undefined` on the server
-	 * @remarks This method is more performant than calling `getPlayerFromLocalPlayer()` with the local player
+	 * @remarks This method is more performant than calling `getPlayerFromRbxPlayer()` with the local player
 	 * @returns The {@link LotlClient} of the client running the game
 	 * @client
 	 */
@@ -66,11 +66,11 @@ export class LotlClient extends PlayerNetworked {
 
 	/**
 	 * Gets the {@link LotlClient} object from a {@link Player}
-	 * @param localPlayer - The {@link Player}
+	 * @param rbxPlayer - The {@link Player}
 	 * @returns The {@link LotlClient} object if it exists, otherwise `undefined`
 	 */
-	public static override getPlayerFromLocalPlayer(localPlayer: Player) {
-		return super.getPlayerFromLocalPlayer(localPlayer) as LotlClient | undefined;
+	public static override getPlayerFromRbxPlayer(rbxPlayer: Player) {
+		return super.getPlayerFromRbxPlayer(rbxPlayer) as LotlClient | undefined;
 	}
 
 	protected override onPlayerCreated() {

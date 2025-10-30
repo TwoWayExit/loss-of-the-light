@@ -11,7 +11,7 @@ export const enum PlayerStatus {
 	IN_GAME,
 }
 
-// This Networked decorator may be safely modified if PlayerNetworked is extended to avoid duplicate localPlayer error
+// This Networked decorator may be safely modified if PlayerNetworked is extended to avoid duplicate rbxPlayer error
 @Networked({ server: false, client: false })
 export class PlayerNetworked extends PlayerCollidable<Player> {
 	// Override with a new separate signal
@@ -34,21 +34,21 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 	protected status = networkVar<PlayerStatus>(PlayerStatus.IN_MENUS);
 	protected ping = networkVar<number>(0);
 
-	public constructor(localPlayer: NetworkPlayer) {
-		const character = localPlayer.Character;
+	public constructor(rbxPlayer: NetworkPlayer) {
+		const character = rbxPlayer.Character;
 
-		super(character, localPlayer);
+		super(character, rbxPlayer);
 
 		if (!character) {
 			this.janitor
-				.AddPromise(Promise.fromEvent(localPlayer.CharacterAdded))
+				.AddPromise(Promise.fromEvent(rbxPlayer.CharacterAdded))
 				.then((character) =>
 					this.getLoadedCharacter(character).then((character) => this.initializeCharacter(character)),
 				);
 		}
 
-		this.status.network(tostring(localPlayer.UserId));
-		this.ping.network(tostring(localPlayer.UserId));
+		this.status.network(tostring(rbxPlayer.UserId));
+		this.ping.network(tostring(rbxPlayer.UserId));
 
 		if (this.isLocalClient()) {
 			PlayerNetworked.clPlayer = this;
@@ -58,12 +58,12 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 			});
 		}
 
-		Reflect.defineMetadata(localPlayer, "player-networked", this);
+		Reflect.defineMetadata(rbxPlayer, "player-networked", this);
 	}
 
 	/**
 	 * Gets the main {@link PlayerNetworked} of the client running the game if there is one, returning `undefined` on the server
-	 * @remarks This method is more performant than calling `getPlayerFromLocalPlayer()` with the local player
+	 * @remarks This method is more performant than calling `getPlayerFromRbxPlayer()` with the local player
 	 * @returns The {@link PlayerNetworked} of the client running the game
 	 * @client
 	 */
@@ -90,11 +90,11 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 
 	/**
 	 * Gets the {@link PlayerNetworked} object from a {@link Player}
-	 * @param localPlayer - The {@link Player}
+	 * @param rbxPlayer - The {@link Player}
 	 * @returns The {@link PlayerNetworked} object if it exists, otherwise `undefined`
 	 */
-	public static override getPlayerFromLocalPlayer(localPlayer: Player) {
-		return super.getPlayerFromLocalPlayer(localPlayer) as PlayerNetworked | undefined;
+	public static override getPlayerFromRbxPlayer(rbxPlayer: Player) {
+		return super.getPlayerFromRbxPlayer(rbxPlayer) as PlayerNetworked | undefined;
 	}
 
 	/**
@@ -107,12 +107,12 @@ export class PlayerNetworked extends PlayerCollidable<Player> {
 	}
 
 	/**
-	 * Checks whether the player's localPlayer is the client running the game
+	 * Checks whether the player's rbxPlayer is the client running the game
 	 * @remarks This always returns false on NPCs and on the server
 	 * @returns If the player is the main {@link PlayerNetworked} running on the client
 	 */
 	public isLocalClient(): this is PlayerNetworked {
-		return this.getLocalPlayer() && RunService.IsClient() && this.getLocalPlayer() === Players.LocalPlayer;
+		return this.getRbxPlayer() && RunService.IsClient() && this.getRbxPlayer() === Players.LocalPlayer;
 	}
 
 	/**

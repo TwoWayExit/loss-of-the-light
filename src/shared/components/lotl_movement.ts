@@ -365,7 +365,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 
 	protected startGravity() {
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		if (this.groundEntity) {
 			this.velocity.VectorVelocity = new Vector3(this.getVelocity().X, 0, this.getVelocity().Z);
@@ -380,7 +380,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 
 	protected finishGravity() {
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		if (this.groundEntity) {
 			this.velocity.VectorVelocity = new Vector3(this.getVelocity().X, 0, this.getVelocity().Z);
@@ -395,7 +395,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 
 	protected checkVelocity() {
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		const vecVelocity = [this.getVelocity().X, this.getVelocity().Y, this.getVelocity().Z];
 
@@ -423,7 +423,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		}
 
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		const control =
 			speed < Replicas.movement.GetValue(player).sv_stopspeed
@@ -562,7 +562,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		}
 
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate);
 
@@ -738,7 +738,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		}
 
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate * 10);
 		this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
@@ -758,7 +758,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		this.categorizePosition();
 
 		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getLocalPlayer() ?? Players.GetPlayers()[0];
+		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
 
 		if (this.groundEntity) {
 			this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
@@ -788,19 +788,19 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		// Wait for the Humanoid to load first, else GetPlayerFromCharacter will always return undefined
 		await promiseChildOfClass(this.instance, "Humanoid");
 
-		const localPlayer = Players.GetPlayerFromCharacter(this.instance);
+		const rbxPlayer = Players.GetPlayerFromCharacter(this.instance);
 
 		let player;
 
 		// If the player is not an NPC
-		if (localPlayer) {
+		if (rbxPlayer) {
 			// We don't want this component to attach to another player
-			if (RunService.IsClient() && localPlayer !== Players.LocalPlayer) {
+			if (RunService.IsClient() && rbxPlayer !== Players.LocalPlayer) {
 				this.instance.RemoveTag("lotl_movement");
 				return;
 			}
 
-			player = PlayerCollidable.getPlayerFromLocalPlayer(localPlayer);
+			player = PlayerCollidable.getPlayerFromRbxPlayer(rbxPlayer);
 		} else {
 			if ($env.boolean("SINGLE_PLAYER_TESTING")) {
 				// Exclude this check

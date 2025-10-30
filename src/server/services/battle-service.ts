@@ -18,11 +18,11 @@ export class BattleService implements OnStart, OnInit {
 		return await Promise.all(
 			players.map((player) =>
 				Promise.try(() => {
-					const localPlayer = player.getLocalPlayer();
+					const rbxPlayer = player.getRbxPlayer();
 
-					if (localPlayer) {
-						localPlayer.RequestStreamAroundAsync(Workspace.battlegrounds[battle.region].origin.Position);
-						localPlayer.ReplicationFocus = Workspace.battlegrounds[battle.region].origin;
+					if (rbxPlayer) {
+						rbxPlayer.RequestStreamAroundAsync(Workspace.battlegrounds[battle.region].origin.Position);
+						rbxPlayer.ReplicationFocus = Workspace.battlegrounds[battle.region].origin;
 					}
 				}),
 			),

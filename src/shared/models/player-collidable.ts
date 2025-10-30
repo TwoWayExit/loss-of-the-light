@@ -22,19 +22,19 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 
 	protected boundingBox?: BoundingBox;
 
-	public constructor(character?: Model, localPlayer?: P);
+	public constructor(character?: Model, rbxPlayer?: P);
 
-	public constructor(character?: Model, localPlayer?: P, id?: string);
+	public constructor(character?: Model, rbxPlayer?: P, id?: string);
 
-	public constructor(character?: Model, localPlayer?: P, id?: string) {
-		super(character, localPlayer, id);
+	public constructor(character?: Model, rbxPlayer?: P, id?: string) {
+		super(character, rbxPlayer, id);
 
 		this.janitor.Add(this.boundingBoxLoaded, "Destroy");
 
 		if ($env.boolean("SINGLE_PLAYER_TESTING")) {
 			// Exclude this check
 		} else {
-			if (RunService.IsClient() && Players.MaxPlayers > 1 && this.getLocalPlayer() !== Players.LocalPlayer) {
+			if (RunService.IsClient() && Players.MaxPlayers > 1 && this.getRbxPlayer() !== Players.LocalPlayer) {
 				return;
 			}
 		}
@@ -74,11 +74,11 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 
 	/**
 	 * Gets the {@link PlayerCollidable} object from a {@link Player}
-	 * @param localPlayer - The {@link Player}
+	 * @param rbxPlayer - The {@link Player}
 	 * @returns The {@link PlayerCollidable} object if it exists, otherwise `undefined`
 	 */
-	public static override getPlayerFromLocalPlayer(localPlayer: Player) {
-		return super.getPlayerFromLocalPlayer(localPlayer) as PlayerCollidable | undefined;
+	public static override getPlayerFromRbxPlayer(rbxPlayer: Player) {
+		return super.getPlayerFromRbxPlayer(rbxPlayer) as PlayerCollidable | undefined;
 	}
 
 	public getBoundingBox() {

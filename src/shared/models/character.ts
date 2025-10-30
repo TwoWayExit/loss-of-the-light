@@ -23,8 +23,8 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	/** A signal which fires right before this {@link BaseCharacter} gets destroyed */
 	public readonly destroying = new Signal<void>();
 
-	/** The {@link Player} instance linked with this {@link BaseCharacter} if provided one */
-	protected localPlayer: P;
+	/** The Roblox {@link Player} instance linked with this {@link BaseCharacter} if provided one */
+	protected rbxPlayer: P;
 
 	protected viewCFrame = CFrame.identity;
 
@@ -43,8 +43,8 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	private activeAnimations = new Map<Animation, AnimationTrack>();
 
 	// We're not using a parameter property here to avoid P | undefined
-	public constructor(character?: Model, localPlayer?: P) {
-		this.localPlayer = localPlayer!;
+	public constructor(character?: Model, rbxPlayer?: P) {
+		this.rbxPlayer = rbxPlayer!;
 
 		this.janitor.Add(this.characterLoaded, "Destroy");
 		this.janitor.Add(this.characterDestroyed, "Destroy");
@@ -63,11 +63,11 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	}
 
 	/**
-	 * Gets the {@link Player} instance linked with this {@link BaseCharacter} if provided one
+	 * Gets the Roblox {@link Player} instance linked with this {@link BaseCharacter} if provided one
 	 * @returns The {@link Player}
 	 */
-	public getLocalPlayer() {
-		return this.localPlayer;
+	public getRbxPlayer() {
+		return this.rbxPlayer;
 	}
 
 	/**
@@ -299,12 +299,12 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 
 		character.Humanoid.SetStateEnabled(Enum.HumanoidStateType.Dead, false);
 
-		if (!this.localPlayer) {
+		if (!this.rbxPlayer) {
 			return;
 		}
 
 		this.janitor.Add(
-			this.localPlayer.CharacterAdded.Connect((newCharacter) => this.onCharacterAdded(newCharacter)),
+			this.rbxPlayer.CharacterAdded.Connect((newCharacter) => this.onCharacterAdded(newCharacter)),
 			"Disconnect",
 		);
 	}

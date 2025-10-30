@@ -52,27 +52,27 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 		}
 	}
 
-	public constructor(character?: Model, localPlayer?: P);
+	public constructor(character?: Model, rbxPlayer?: P);
 
-	public constructor(character?: Model, localPlayer?: P, id?: string);
+	public constructor(character?: Model, rbxPlayer?: P, id?: string);
 
-	public constructor(character?: Model, localPlayer?: P, id = localPlayer && tostring(localPlayer.UserId)) {
+	public constructor(character?: Model, rbxPlayer?: P, id = rbxPlayer && tostring(rbxPlayer.UserId)) {
 		assert(id, "No player id associated");
 
 		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
 			// Exclude this check
 		} else {
-			if (localPlayer) {
+			if (rbxPlayer) {
 				assert(
-					!BasePlayer.getPlayerFromLocalPlayer(localPlayer),
-					"Attempt to duplicate BasePlayer from existing localPlayer",
+					!BasePlayer.getPlayerFromRbxPlayer(rbxPlayer),
+					"Attempt to duplicate BasePlayer from existing rbxPlayer",
 				);
 			}
 
 			assert(!BasePlayer.getPlayerFromId(id), "Attempt to create BasePlayer from existing id");
 		}
 
-		super(character, localPlayer);
+		super(character, rbxPlayer);
 
 		this.id = id;
 
@@ -106,11 +106,11 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 
 	/**
 	 * Gets the {@link BasePlayer} object from a {@link Player}
-	 * @param localPlayer - The {@link Player}
+	 * @param rbxPlayer - The {@link Player}
 	 * @returns The {@link BasePlayer} object if it exists, otherwise `undefined`
 	 */
-	public static getPlayerFromLocalPlayer(localPlayer: Player) {
-		return this.players.find((player) => player.getLocalPlayer() === localPlayer);
+	public static getPlayerFromRbxPlayer(rbxPlayer: Player) {
+		return this.players.find((player) => player.getRbxPlayer() === rbxPlayer);
 	}
 
 	/**
@@ -148,7 +148,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 */
 	public getStepSize() {
 		const replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player: Player = this.getLocalPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
+		const player: Player = this.getRbxPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
 
 		return replicas.movement.GetValue(player).sv_stepsize;
 	}
@@ -159,7 +159,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 */
 	public getMaxSpeed() {
 		const replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player: Player = this.getLocalPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
+		const player: Player = this.getRbxPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
 
 		let maxSpeed = replicas.movement.GetValue(player).sv_maxspeed;
 
@@ -265,10 +265,10 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 
 	/**
 	 * Gets the player's nickname, helpful for debugging
-	 * @returns Returns the player's `Name` if they have a `localPlayer`, else their `id`
+	 * @returns Returns the player's `Name` if they have a `rbxPlayer`, else their `id`
 	 */
 	public getNickname() {
-		return this.getLocalPlayer()?.Name ?? this.id;
+		return this.getRbxPlayer()?.Name ?? this.id;
 	}
 
 	/**

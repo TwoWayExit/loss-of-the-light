@@ -98,20 +98,20 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 		// Wait for the Humanoid to load first, else GetPlayerFromCharacter will always return undefined
 		await promiseChildOfClass(this.instance, "Humanoid");
 
-		const localPlayer = Players.GetPlayerFromCharacter(this.instance);
+		const rbxPlayer = Players.GetPlayerFromCharacter(this.instance);
 
 		let player;
 
 		// If the player is not an NPC
-		if (localPlayer) {
+		if (rbxPlayer) {
 			// Animations should be played on the client in lieu of the server as a network player
 			// We also don't want this component to attach to another player if we are on the client
-			if (RunService.IsServer() || (RunService.IsClient() && localPlayer !== Players.LocalPlayer)) {
+			if (RunService.IsServer() || (RunService.IsClient() && rbxPlayer !== Players.LocalPlayer)) {
 				this.instance.RemoveTag("player-animate");
 				return;
 			}
 
-			player = PlayerCollidable.getPlayerFromLocalPlayer(localPlayer);
+			player = PlayerCollidable.getPlayerFromRbxPlayer(rbxPlayer);
 		} else {
 			if ($env.boolean("SINGLE_PLAYER_TESTING")) {
 				// Exclude this check

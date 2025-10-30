@@ -9,8 +9,8 @@ import { produce } from "@rbxts/better-immut";
 @Service({})
 export class CastSkill implements OnInit {
 	onInit() {
-		Events.lotl.castSkill.connect(async (localPlayer, skill, targetId, casterCombatant, targetCombatant) => {
-			const player = LotlClient.getPlayerFromLocalPlayer(localPlayer)!;
+		Events.lotl.castSkill.connect(async (rbxPlayer, skill, targetId, casterCombatant, targetCombatant) => {
+			const player = LotlClient.getPlayerFromRbxPlayer(rbxPlayer)!;
 
 			const battleId = playersAtom()[player.id].battleId;
 
