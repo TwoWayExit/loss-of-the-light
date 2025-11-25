@@ -1,8 +1,26 @@
-import React from "@rbxts/react";
+import React, { useRef } from "@rbxts/react";
 import SideButton from "./side-button";
 import { usePx } from "client/app/hooks/use-px";
+import { Events } from "client/network";
+import { useAtom } from "@rbxts/react-charm";
+import { computed } from "@rbxts/charm";
+import { playersAtom } from "shared/atoms/players";
+import { Players } from "@rbxts/services";
+import { battlesAtom } from "shared/atoms/battles";
 
 export default function SideButtonList() {
+	const visibleAtom = useRef(
+		computed(() => {
+			const battleId = playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId;
+
+			if (!battleId) {
+				return false;
+			}
+
+			return !battlesAtom()[battleId].playerInfo[tostring(Players.LocalPlayer.UserId)].turnFinished;
+		}),
+	);
+	const isVisible = useAtom(visibleAtom.current);
 	const px = usePx();
 
 	return (
@@ -12,6 +30,7 @@ export default function SideButtonList() {
 			Position={new UDim2(1, px(-122), 1, px(-141))}
 			BackgroundTransparency={1}
 			Size={UDim2.fromOffset(px(93), px(103))}
+			Visible={isVisible}
 		>
 			<uilistlayout
 				key="UIListLayout"
@@ -25,7 +44,9 @@ export default function SideButtonList() {
 				text="finish turn"
 				icon="rbxassetid://12690727184"
 				color={Color3.fromRGB(49, 131, 44)}
-				onClick={() => {}}
+				onClick={() => {
+					Events.lotl.finishTurn();
+				}}
 				height={102}
 			/>
 			<SideButton

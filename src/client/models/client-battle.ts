@@ -2,13 +2,14 @@ import { Players, Workspace } from "@rbxts/services";
 import type { AnimatedCharacter } from "server/models/combatant";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
-import { Battle } from "shared/models/battle";
+import { Battle, Teams } from "shared/models/battle";
+import { Action, ActionPlan } from "shared/modules/battle-types";
 
 export class ClientBattle extends Battle {
 	private combatants: Map<string, AnimatedCharacter[]> = new Map();
 
-	public constructor(id: string) {
-		super(id);
+	public constructor(id: string, first: Teams) {
+		super(id, first);
 
 		for (const [, team] of pairs(battlesAtom()[id].teams)) {
 			for (const playerId of team) {
@@ -32,6 +33,10 @@ export class ClientBattle extends Battle {
 
 	public override stopBattle() {
 		super.stopBattle();
+	}
+
+	public async startAction(actionPlan: ActionPlan) {
+		// TODO: Implement animation playing and clashes
 	}
 
 	private hideCombatants() {

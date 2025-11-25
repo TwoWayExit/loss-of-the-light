@@ -7,11 +7,17 @@ import { batch } from "@rbxts/charm";
 import { addCombatant, createPlayer, playersAtom } from "shared/atoms/players";
 import { produce } from "@rbxts/better-immut";
 import { battlesAtom, createBattle } from "shared/atoms/battles";
+import { Teams } from "shared/models/battle";
+import { ClientBattle } from "client/models/client-battle";
+
+interface Controls {}
 
 export = {
 	react: React,
 	reactRoblox: ReactRoblox,
-	story: () => {
+	controls: identity<Controls>({}),
+
+	story: ({ controls }: { controls: Controls }) => {
 		batch(() => {
 			playersAtom((state) => createPlayer(state, tostring(Players.LocalPlayer.UserId)));
 			playersAtom((state) =>
@@ -19,7 +25,12 @@ export = {
 					draft[tostring(Players.LocalPlayer.UserId)].battleId = "test";
 				}),
 			);
-			battlesAtom((state) => createBattle(state, "test", "baseplate"));
+			battlesAtom((state) => createBattle(state, "test", "baseplate", Teams.TEAM1));
+			battlesAtom((state) =>
+				produce(state, (draft) => {
+					draft["test"].teams[Teams.TEAM1] = new Set([tostring(Players.LocalPlayer.UserId)]);
+				}),
+			);
 
 			for (let i = 0; i < 4; i++) {
 				playersAtom((state) =>
@@ -30,6 +41,8 @@ export = {
 				);
 			}
 		});
+
+		new ClientBattle("test", Teams.TEAM1);
 
 		return <CombatFrame />;
 	},

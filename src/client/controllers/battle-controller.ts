@@ -6,6 +6,8 @@ import { Players, TweenService, Workspace } from "@rbxts/services";
 import { observe, subscribe } from "@rbxts/charm";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
+import { clientSelectedCombatant } from "client/app/atoms/client-info";
+import { Events } from "client/network";
 
 @Controller({})
 export class BattleController implements OnInit {
@@ -20,8 +22,8 @@ export class BattleController implements OnInit {
 		this.cameraController.useFixedPosition(active);
 
 		if (active) {
-			const { selectedCombatant, combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
-			const combatant = combatants[selectedCombatant];
+			const { combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+			const combatant = combatants[clientSelectedCombatant()];
 			const position = combatant.character.GetPivot().Position;
 
 			this.cameraController.setFixedPosition(
@@ -70,25 +72,31 @@ export class BattleController implements OnInit {
 		});
 
 		tween.Play();
+
+		Events.lotl.selectCombatant(selected);
 	}
 
 	onInit() {
-		observe(battlesAtom, (_, battleId) => {
-			const battle = new ClientBattle(battleId as string);
+		observe(battlesAtom, (battleInfo, battleId) => {
+			const battle = new ClientBattle(battleId as string, battleInfo.first);
 
 			battle.startBattle();
+
+			clientSelectedCombatant(0);
 
 			this.setCameraActive(true);
 
 			return () => {
 				battle.stopBattle();
 
+				clientSelectedCombatant(-1);
+
 				this.setCameraActive(false);
 			};
 		});
 
 		subscribe(
-			() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.selectedCombatant,
+			() => clientSelectedCombatant(),
 			(selected) => {
 				this.onCombatantSwitch(selected);
 			},

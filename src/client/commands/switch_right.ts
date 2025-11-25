@@ -1,11 +1,13 @@
 import { produce } from "@rbxts/better-immut";
 import { Players } from "@rbxts/services";
 import { Command } from "@twowayexit/dev-con";
+import { clientSelectedCombatant } from "client/app/atoms/client-info";
 import { playersAtom } from "shared/atoms/players";
 
 export const switch_right: Command = {
 	execute: () => {
-		const { battleId, selectedCombatant, combatants } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+		const { battleId, combatants } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+		const selectedCombatant = clientSelectedCombatant();
 
 		if (battleId === undefined) {
 			return;
@@ -15,10 +17,6 @@ export const switch_right: Command = {
 			return;
 		}
 
-		playersAtom((state) =>
-			produce(state, (draft) => {
-				draft[tostring(Players.LocalPlayer.UserId)].selectedCombatant = selectedCombatant + 1;
-			}),
-		);
+		clientSelectedCombatant(selectedCombatant + 1);
 	},
 };

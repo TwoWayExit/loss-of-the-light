@@ -1,7 +1,7 @@
 import { insert, produce, remove } from "@rbxts/better-immut";
 import { atom } from "@rbxts/charm";
 import type { CombatantInfo, CombatantList } from "server/models/combatant";
-import { Region } from "shared/modules/globals";
+import { Region } from "shared/modules/global-types";
 
 export const enum LotlPlayerStatus {
 	IDLE,
@@ -11,11 +11,7 @@ export const enum LotlPlayerStatus {
 export interface PlayerInfo {
 	readonly battleId?: string;
 
-	readonly skillsCasted: Map<keyof CombatantList, string>;
 	readonly combatants: CombatantInfo[];
-	/** -1 if no combatant is selected */
-	readonly selectedCombatant: number;
-	readonly energy: Map<keyof CombatantList, number>;
 
 	readonly region: Region;
 	readonly status: LotlPlayerStatus;
@@ -32,10 +28,7 @@ export const playersAtom = atom(initialState);
 export const createPlayer = (state: PlayersState, playerId: string) =>
 	produce(state, (draft) => {
 		draft[playerId] = {
-			skillsCasted: new Map(),
 			combatants: [],
-			selectedCombatant: -1,
-			energy: new Map(),
 			region: "baseplate",
 			status: LotlPlayerStatus.IDLE,
 		};
@@ -46,17 +39,8 @@ export const addCombatant = (state: PlayersState, playerId: string, info: Combat
 		insert(draft[playerId].combatants, info);
 	});
 
-export const takeCombatantDamage = (
-	state: PlayersState,
-	playerId: string,
-	combatant: keyof CombatantList,
-	damage: number,
-) =>
+export const takeCombatantDamage = (state: PlayersState, playerId: string, index: number, damage: number) =>
 	produce(state, (draft) => {
-		const index = state[playerId].combatants.findIndex((c) => c.character.Name === combatant);
-
-		assert(state[playerId].combatants[index], `Combatant ${combatant} not found in player ${playerId}`);
-
 		draft[playerId].combatants[index].health -= damage;
 	});
 

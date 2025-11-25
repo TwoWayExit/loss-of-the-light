@@ -14,7 +14,10 @@ export abstract class Battle {
 
 	protected janitor = new Janitor();
 
-	public constructor(public readonly id: string) {
+	public constructor(
+		public readonly id: string,
+		public readonly first: Teams,
+	) {
 		Battle.battles.set(id, this);
 	}
 

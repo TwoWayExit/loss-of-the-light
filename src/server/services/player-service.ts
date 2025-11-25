@@ -24,22 +24,24 @@ export class PlayerService implements OnInit {
 		BasePlayer.playerAdded.Connect((player) => {
 			playersAtom((state) => createPlayer(state, player.id));
 
-			// TODO: Remove this when data loading is implemented
-			batch(() => {
-				for (let i = 0; i < 3; i++) {
-					const character = ReplicatedStorage.combatants.MaleMC.Clone();
+			// TODO: Remove this placeholder when data loading is implemented
+			if (player.getRbxPlayer()) {
+				batch(() => {
+					for (let i = 0; i < 3; i++) {
+						const character = ReplicatedStorage.combatants.MaleMC.Clone();
 
-					// We need to parent this to something that isn't nil to be able to replicate it to the client
-					character.Parent = Workspace.combatants;
+						// We need to parent this to something that isn't nil to be able to replicate it to the client
+						character.Parent = Workspace.combatants;
 
-					playersAtom((state) =>
-						addCombatant(state, player.id, {
-							character,
-							health: 100,
-						}),
-					);
-				}
-			});
+						playersAtom((state) =>
+							addCombatant(state, player.id, {
+								character,
+								health: 100,
+							}),
+						);
+					}
+				});
+			}
 		});
 	}
 }

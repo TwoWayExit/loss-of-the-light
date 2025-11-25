@@ -135,10 +135,10 @@ export class LotlCameraController implements OnStart, OnRender {
 
 		if (player) {
 			if (character) {
-				Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
+				Workspace.CurrentCamera!.CameraType = Enum.CameraType.Custom;
 			} else {
 				player.characterLoaded.Once(() => {
-					Workspace.CurrentCamera!.CameraType = Enum.CameraType.Scriptable;
+					Workspace.CurrentCamera!.CameraType = Enum.CameraType.Custom;
 
 					this.updateRayParams();
 				});
@@ -149,7 +149,7 @@ export class LotlCameraController implements OnStart, OnRender {
 	}
 
 	onRender() {
-		this.followCharacter();
+		// this.followCharacter();
 
 		this.fadeObstructions();
 	}

@@ -3,8 +3,9 @@ import { Events } from "server/network";
 import { playersAtom } from "shared/atoms/players";
 import { LotlClient } from "shared/models/lotl_client";
 import { BasePlayer } from "shared/models/player";
-import { Skillset } from "shared/utils/skills";
-import { produce } from "@rbxts/better-immut";
+import { Skillset } from "shared/models/skills";
+import { insert, produce } from "@rbxts/better-immut";
+import { battlesAtom } from "shared/atoms/battles";
 
 @Service({})
 export class CastSkill implements OnInit {
@@ -18,6 +19,10 @@ export class CastSkill implements OnInit {
 				return;
 			}
 
+			if (battlesAtom()[battleId].playerInfo[player.id].turnFinished) {
+				return;
+			}
+
 			const target = BasePlayer.getPlayerFromId(targetId);
 
 			if (!target) {
@@ -26,22 +31,26 @@ export class CastSkill implements OnInit {
 
 			const casterCombatants = playersAtom()[player.id].combatants;
 
-			if (!(casterCombatant in casterCombatants)) {
+			if (!casterCombatants[casterCombatant]) {
 				return;
 			}
 
 			const targetCombatants = playersAtom()[targetId].combatants;
 
-			if (!(targetCombatant in targetCombatants)) {
+			if (!targetCombatants[targetCombatant]) {
 				return;
 			}
 
 			// If the combatant already casted a skill
-			if (playersAtom()[player.id].skillsCasted.has(targetCombatant)) {
+			if (
+				battlesAtom()[battleId].skillsCasted.find(
+					(info) => info.casterCombatant === casterCombatant && info.casterPlayer === player.id,
+				)
+			) {
 				return;
 			}
 
-			const skillset = Skillset.getSkillset(casterCombatant);
+			const skillset = Skillset.getSkillset(casterCombatants[casterCombatant].character.Name);
 
 			if (!skillset.skills[skill]) {
 				return;
@@ -53,9 +62,15 @@ export class CastSkill implements OnInit {
 				return;
 			}
 
-			playersAtom((state) =>
+			battlesAtom((state) =>
 				produce(state, (draft) => {
-					draft[player.id].skillsCasted.set(casterCombatant, skill);
+					insert(draft[battleId].skillsCasted, {
+						skill,
+						casterPlayer: player.id,
+						targetPlayer: targetId,
+						casterCombatant,
+						targetCombatant,
+					});
 				}),
 			);
 		});

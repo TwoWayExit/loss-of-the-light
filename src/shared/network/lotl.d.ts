@@ -1,22 +1,14 @@
-import type { CombatantList } from "server/models/combatant";
+import { Action, ActionPlan } from "shared/modules/battle-types";
 
 export interface LotlServerEvents {
-	castSkill: (
-		skill: string,
-		targetId: string,
-		casterCombatant: keyof CombatantList,
-		targetCombatant: keyof CombatantList,
-	) => void;
+	// TODO: Use `SkillCast` instead
+	castSkill: (skill: string, targetId: string, casterCombatant: number, targetCombatant: number) => void;
+	selectCombatant: (selected: number) => void;
+	finishTurn: () => void;
 }
 
 export interface LotlClientEvents {
-	castSkillVFX: (
-		skill: string,
-		casterId: string,
-		targetId: string,
-		casterCombatant: keyof CombatantList,
-		targetCombatant: keyof CombatantList,
-	) => void;
+	startAction: (actionPlan: ActionPlan) => void;
 }
 
 export interface LotlServerFunctions {}

@@ -1,4 +1,3 @@
-import { CombatantList } from "server/models/combatant";
 import { BasePlayer } from "shared/models/player";
 
 type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
@@ -23,7 +22,10 @@ export class Skillset {
 }
 
 export interface SkillProperties {
-	readonly damage: number;
+	/** Damage/healing amount */
+	readonly quantifier: number;
+
+	readonly coins: number;
 }
 
 export abstract class Skill {
@@ -34,12 +36,13 @@ export abstract class Skill {
 	) {}
 
 	/**
-	 * This method must be overriden on the server for logic handling, and on the client for VFX
+	 * Overriden on the server for logic handling and animations; Overriden on the client for VFX/SFX excluding animations
+	 * @remarks Animations must be handled on the server in order to determine how long it will take for all animations involved in the skill to complete
 	 * @returns A success status boolean
 	 * @virtual
 	 */
-	public cast(caster: BasePlayer, target: BasePlayer, combatant: keyof CombatantList) {
-		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}, combatant ${combatant}`);
+	public cast(caster: BasePlayer, target: BasePlayer, combatant: number) {
+		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}, combatant index ${combatant}`);
 
 		return false;
 	}

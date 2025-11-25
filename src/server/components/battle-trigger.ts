@@ -9,9 +9,11 @@ import { Enemy } from "shared/components/enemy";
 import { BattleService } from "server/services/battle-service";
 import { LotlClient } from "shared/models/lotl_client";
 import { addCombatant, LotlPlayerStatus, playersAtom } from "shared/atoms/players";
+import { Teams } from "shared/models/battle";
 
 interface Attributes {
 	triggerDistance: number;
+	isFirst: boolean;
 }
 
 /** @remarks Do not manually add this component via studio, use the `enemy` component tag instead */
@@ -19,6 +21,7 @@ interface Attributes {
 	tag: "battle-trigger",
 	defaults: {
 		triggerDistance: 5,
+		isFirst: false,
 	},
 	ancestorWhitelist: [Workspace],
 })
@@ -78,7 +81,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 		const distance = character.HumanoidRootPart.Position.sub(this.instance.HumanoidRootPart.Position).Magnitude;
 
 		if (distance <= this.attributes.triggerDistance) {
-			this.battleService.startBattle(player, this.player);
+			this.battleService.startBattle(this.attributes.isFirst ? Teams.TEAM2 : Teams.TEAM1, player, this.player);
 		}
 	}
 

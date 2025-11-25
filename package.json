@@ -56,7 +56,7 @@
     "@rbxts/t": "^3.1.1",
     "@rbxts/ui-labs": "^2.4.1",
     "@rbxts/validate-tree": "^2.0.2",
-    "@twowayexit/dev-con": "^2.3.0-beta.0"
+    "@twowayexit/dev-con": "^2.3.0-beta.1"
   },
   "overrides": {
     "@rbxts/promise-character": {

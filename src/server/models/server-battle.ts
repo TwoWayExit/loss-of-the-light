@@ -1,11 +1,14 @@
 import { HttpService, Workspace } from "@rbxts/services";
 import { Battle, Teams } from "shared/models/battle";
-import { Combatant } from "server/models/combatant";
+import { Combatant, CombatantList } from "server/models/combatant";
 import { BasePlayer } from "shared/models/player";
-import { Globals, Region } from "shared/modules/globals";
+import { Globals, Region } from "shared/modules/global-types";
 import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
 import { createBattle, battlesAtom, removeBattle } from "shared/atoms/battles";
 import { clear, produce } from "@rbxts/better-immut";
+import { subscribe } from "@rbxts/charm";
+import { Events } from "server/network";
+import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/battle-types";
 
 export type BattleTeam = Map<BasePlayer, Combatant[]>;
 
@@ -13,8 +16,9 @@ export class ServerBattle extends Battle {
 	private constructor(
 		protected teams: Map<Teams, BattleTeam>,
 		public readonly region: Region,
+		first: Teams,
 	) {
-		super(HttpService.GenerateGUID(false));
+		super(HttpService.GenerateGUID(false), first);
 
 		// Add combatants for cleanup
 		for (const [, team] of this.teams) {
@@ -27,18 +31,19 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	public static createBattle(player1: BasePlayer, player2: BasePlayer, region: Region) {
+	public static createBattle(player1: BasePlayer, player2: BasePlayer, region: Region, first: Teams) {
 		return new ServerBattle(
 			new Map([
 				[Teams.TEAM1, new Map([[player1, Combatant.createCombatants(player1)]])],
 				[Teams.TEAM2, new Map([[player2, Combatant.createCombatants(player2)]])],
 			]),
 			region,
+			first,
 		);
 	}
 
 	public override startBattle() {
-		battlesAtom((state) => createBattle(state, this.id, this.region));
+		battlesAtom((state) => createBattle(state, this.id, this.region, this.first));
 
 		this.setupPlayers(true);
 
@@ -58,6 +63,8 @@ export class ServerBattle extends Battle {
 			);
 		}
 
+		this.subscribeAtoms();
+
 		super.startBattle();
 	}
 
@@ -71,16 +78,29 @@ export class ServerBattle extends Battle {
 		super.stopBattle();
 	}
 
+	public async startAction() {
+		const plan = this.getActionPlan();
+
+		// Send action plan to clients
+		for (const [, team] of this.teams) {
+			for (const [player] of team) {
+				const rbxPlayer = player.getRbxPlayer();
+
+				if (!rbxPlayer) {
+					continue;
+				}
+
+				Events.lotl.startAction(rbxPlayer, plan);
+			}
+		}
+
+		// TODO: Implement appropriate skill cast timing based on animation and clash durations
+		// Perhaps using recursion to create a chain of promises iterating through the action plan?
+		print(plan);
+	}
+
 	public getTeam(teamName: Teams) {
 		return this.teams.get(teamName);
-	}
-
-	public addTeam(teamName: Teams, team: BattleTeam) {
-		this.teams.set(teamName, team);
-	}
-
-	public removeTeam(teamName: Teams) {
-		this.teams.delete(teamName);
 	}
 
 	public getCombatantPosition(team: Teams, player: BasePlayer, index: number) {
@@ -95,18 +115,71 @@ export class ServerBattle extends Battle {
 		battlesAtom((state) =>
 			produce(state, (draft) => {
 				draft[this.id].turn++;
+				draft[this.id].phase = BattlePhase.DECIDE;
+
+				clear(draft[this.id].skillsCasted);
+
+				// Let's index manually instead of using the value element of the iterator, just to ensure that immut does its job as intended
+				for (const [playerId] of pairs(draft[this.id].playerInfo)) {
+					draft[this.id].playerInfo[playerId].turnFinished = false;
+				}
+			}),
+		);
+	}
+
+	public nextPhase() {
+		battlesAtom((state) =>
+			produce(state, (draft) => {
+				draft[this.id].phase++;
+				draft[this.id].phase %= 2;
 			}),
 		);
 
-		for (const [, team] of this.teams) {
-			for (const [player] of team) {
-				playersAtom((state) =>
-					produce(state, (draft) => {
-						clear(draft[player.id].skillsCasted);
+		if (battlesAtom()[this.id].phase === BattlePhase.ACTION) {
+			this.startAction();
+		} else {
+			this.nextTurn();
+		}
+	}
+
+	protected getActionPlan() {
+		const casted = [...battlesAtom()[this.id].skillsCasted];
+		const plan: ActionPlan = [];
+
+		for (let i = 0; i < casted.size(); i++) {
+			let corresponding: number | undefined;
+
+			for (let j = i + 1; casted.size(); j++) {
+				if (
+					casted[i].targetPlayer === casted[j].casterPlayer &&
+					casted[i].targetCombatant === casted[j].casterCombatant &&
+					casted[j].targetPlayer === casted[i].casterPlayer &&
+					casted[j].targetCombatant === casted[i].casterCombatant
+				) {
+					corresponding = j;
+					break;
+				}
+			}
+
+			if (corresponding) {
+				plan.push(
+					identity<Action<ActionType.CLASH>>({
+						type: ActionType.CLASH,
+						cast: [casted[i], casted[corresponding]],
+					}),
+				);
+				casted.remove(corresponding);
+			} else {
+				plan.push(
+					identity<Action<ActionType.SINGLE>>({
+						type: ActionType.SINGLE,
+						cast: casted[i],
 					}),
 				);
 			}
 		}
+
+		return plan;
 	}
 
 	protected setupPlayers(inBattle: boolean) {
@@ -118,8 +191,19 @@ export class ServerBattle extends Battle {
 					playersAtom((state) =>
 						produce(state, (draft) => {
 							draft[player.id].status = LotlPlayerStatus.IN_BATTLE;
-							draft[player.id].selectedCombatant = 0;
 							draft[player.id].battleId = this.id;
+						}),
+					);
+
+					battlesAtom((state) =>
+						produce(state, (draft) => {
+							draft[this.id].playerInfo[player.id] = {
+								selectedCombatant: -1,
+								energy: new Map(
+									combatants.map((info) => [info.character.Name as keyof CombatantList, 5]),
+								),
+								turnFinished: false,
+							};
 						}),
 					);
 
@@ -131,7 +215,6 @@ export class ServerBattle extends Battle {
 					playersAtom((state) =>
 						produce(state, (draft) => {
 							draft[player.id].status = LotlPlayerStatus.IDLE;
-							draft[player.id].selectedCombatant = -1;
 
 							delete draft[player.id].battleId;
 						}),
@@ -163,5 +246,25 @@ export class ServerBattle extends Battle {
 				}
 			}
 		}
+	}
+
+	protected subscribeAtoms() {
+		// Next phase when all players have finished their turns
+		subscribe(
+			() => battlesAtom()[this.id].playerInfo,
+			(players) => {
+				if (battlesAtom()[this.id].phase !== BattlePhase.DECIDE) {
+					return;
+				}
+
+				for (const [, player] of pairs(players)) {
+					if (!player.turnFinished) {
+						return;
+					}
+				}
+
+				this.nextPhase();
+			},
+		);
 	}
 }

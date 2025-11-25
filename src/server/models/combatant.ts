@@ -1,5 +1,5 @@
 import { CharacterRigR6 } from "@rbxts/promise-character";
-import { Skillset } from "shared/utils/skills";
+import { Skillset } from "shared/models/skills";
 import { BaseCharacter } from "shared/models/character";
 import { BasePlayer } from "shared/models/player";
 import { playersAtom } from "shared/atoms/players";
@@ -10,6 +10,7 @@ export interface AnimatedCharacter extends CharacterRigR6 {
 	};
 }
 
+/** Name can be accessed through `character.Name` */
 export interface CombatantInfo {
 	/** A clone of the original character rig for this combatant, used in battle */
 	readonly character: AnimatedCharacter;

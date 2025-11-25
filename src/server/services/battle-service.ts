@@ -3,11 +3,12 @@ import { BasePlayer } from "shared/models/player";
 import { ServerBattle } from "../models/server-battle";
 import { Workspace } from "@rbxts/services";
 import { playersAtom } from "shared/atoms/players";
+import { Teams } from "shared/models/battle";
 
 @Service({})
 export class BattleService implements OnStart, OnInit {
-	public async startBattle(player1: BasePlayer, player2: BasePlayer) {
-		const battle = ServerBattle.createBattle(player1, player2, playersAtom()[player1.id].region);
+	public async startBattle(first: Teams, player1: BasePlayer, player2: BasePlayer) {
+		const battle = ServerBattle.createBattle(player1, player2, playersAtom()[player1.id].region, first);
 
 		await this.streamBattleground(battle, [player1, player2]);
 

@@ -1,6 +1,6 @@
 import { OnStart, Service } from "@flamework/core";
 import { Workspace } from "@rbxts/services";
-import { Region } from "shared/modules/globals";
+import { Region } from "shared/modules/global-types";
 
 @Service({})
 export class RegionService implements OnStart {
