@@ -1,6 +1,6 @@
 import { HttpService, Workspace } from "@rbxts/services";
 import { Battle, Teams } from "shared/models/battle";
-import { Combatant, CombatantList } from "server/models/combatant";
+import { Combatant } from "server/models/combatant";
 import { BasePlayer } from "shared/models/player";
 import { Globals, Region } from "shared/modules/global-types";
 import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
@@ -199,9 +199,7 @@ export class ServerBattle extends Battle {
 						produce(state, (draft) => {
 							draft[this.id].playerInfo[player.id] = {
 								selectedCombatant: -1,
-								energy: new Map(
-									combatants.map((info) => [info.character.Name as keyof CombatantList, 5]),
-								),
+								energy: new Map(combatants.map((_, index) => [index, 5])),
 								turnFinished: false,
 							};
 						}),

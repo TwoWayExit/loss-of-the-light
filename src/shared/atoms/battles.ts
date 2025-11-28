@@ -2,13 +2,13 @@ import { Teams } from "shared/models/battle";
 import { Region } from "shared/modules/global-types";
 import { produce } from "@rbxts/better-immut";
 import { atom } from "@rbxts/charm";
-import { CombatantList } from "server/models/combatant";
 import { BattlePhase, SkillCast, SkillCastQueue } from "shared/modules/battle-types";
 
 interface PlayerInfo {
 	/** -1 if no combatant is selected */
 	readonly selectedCombatant: number;
-	readonly energy: Map<keyof CombatantList, number>;
+	// NOTE: The assumption is made that the order of combatants will never change in battle, so we can safely use indices instead of combatant names
+	readonly energy: Map<number, number>;
 	readonly turnFinished: boolean;
 }
 

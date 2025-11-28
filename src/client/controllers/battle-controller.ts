@@ -6,7 +6,7 @@ import { Players, TweenService, Workspace } from "@rbxts/services";
 import { observe, subscribe } from "@rbxts/charm";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
-import { clientSelectedCombatant } from "client/app/atoms/client-info";
+import { clSelectedCombatant } from "client/app/atoms/client-info";
 import { Events } from "client/network";
 
 @Controller({})
@@ -23,7 +23,7 @@ export class BattleController implements OnInit {
 
 		if (active) {
 			const { combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
-			const combatant = combatants[clientSelectedCombatant()];
+			const combatant = combatants[clSelectedCombatant()];
 			const position = combatant.character.GetPivot().Position;
 
 			this.cameraController.setFixedPosition(
@@ -82,21 +82,21 @@ export class BattleController implements OnInit {
 
 			battle.startBattle();
 
-			clientSelectedCombatant(0);
+			clSelectedCombatant(0);
 
 			this.setCameraActive(true);
 
 			return () => {
 				battle.stopBattle();
 
-				clientSelectedCombatant(-1);
+				clSelectedCombatant(-1);
 
 				this.setCameraActive(false);
 			};
 		});
 
 		subscribe(
-			() => clientSelectedCombatant(),
+			() => clSelectedCombatant(),
 			(selected) => {
 				this.onCombatantSwitch(selected);
 			},

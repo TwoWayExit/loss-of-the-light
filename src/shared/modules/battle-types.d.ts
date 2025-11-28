@@ -20,7 +20,7 @@ export const enum BattlePhase {
 }
 
 export interface SkillCast {
-	skill: string;
+	skill: number;
 	casterPlayer: string;
 	targetPlayer: string;
 	casterCombatant: number;

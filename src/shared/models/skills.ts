@@ -7,7 +7,7 @@ export class Skillset {
 
 	public constructor(
 		public readonly name: string,
-		public readonly skills: ReadonlyRecord<string, Skill>,
+		public readonly skills: Skill[],
 	) {
 		Skillset.skillsets.set(name, this);
 	}
@@ -26,6 +26,8 @@ export interface SkillProperties {
 	readonly quantifier: number;
 
 	readonly coins: number;
+
+	readonly description: string;
 }
 
 export abstract class Skill {

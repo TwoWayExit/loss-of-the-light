@@ -10,6 +10,7 @@ export class BasicSkill extends Skill {
 		super("Basic", {
 			quantifier: 10,
 			coins: 1,
+			description: "placeholder",
 		});
 	}
 
