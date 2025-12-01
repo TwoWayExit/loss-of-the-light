@@ -3,10 +3,19 @@ import SideButton from "./side-button";
 import { usePx } from "client/app/hooks/use-px";
 import { Events } from "client/network";
 import { useAtom } from "@rbxts/react-charm";
-import { computed } from "@rbxts/charm";
+import { atom, computed } from "@rbxts/charm";
 import { playersAtom } from "shared/atoms/players";
 import { Players } from "@rbxts/services";
 import { battlesAtom } from "shared/atoms/battles";
+
+export namespace Combat {
+	export const enum Menu {
+		MAIN,
+		ATTACK,
+	}
+
+	export const currentMenu = atom<Menu>(Menu.MAIN);
+}
 
 export default function SideButtonList() {
 	const visibleAtom = useRef(
@@ -53,7 +62,9 @@ export default function SideButtonList() {
 				text="attack"
 				icon="rbxassetid://9695653110"
 				color={Color3.fromRGB(108, 67, 67)}
-				onClick={() => {}}
+				onClick={() => {
+					Combat.currentMenu(Combat.Menu.ATTACK);
+				}}
 			/>
 			<SideButton
 				text="defend"

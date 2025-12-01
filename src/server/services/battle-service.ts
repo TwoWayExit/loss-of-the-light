@@ -4,6 +4,7 @@ import { ServerBattle } from "../models/server-battle";
 import { Workspace } from "@rbxts/services";
 import { playersAtom } from "shared/atoms/players";
 import { Teams } from "shared/models/battle";
+import "shared/modules/skillsets";
 
 @Service({})
 export class BattleService implements OnStart, OnInit {

@@ -3,17 +3,20 @@ import { Players } from "@rbxts/services";
 import { clSelectedCombatant } from "client/app/atoms/client-info";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
-import AbilityButton from "./ability-button";
+import SkillButton from "./skill-button";
 import { Skillset } from "shared/models/skills";
 import { useAtom } from "@rbxts/react-charm";
+import { usePx } from "client/app/hooks/use-px";
+import { Combat } from "./side-button-list";
 
-function EnergyUnit({ key, energy }: { key: number; energy: number }) {
+function EnergyUnit({ index, energy }: { index: number; energy: number }) {
+	const px = usePx();
+
 	return (
 		<frame
-			key={key}
 			BorderSizePixel={0}
-			BackgroundColor3={energy > key ? Color3.fromRGB(195, 195, 195) : Color3.fromRGB(47, 47, 47)}
-			Size={UDim2.fromOffset(70, 10)}
+			BackgroundColor3={energy > index ? Color3.fromRGB(195, 195, 195) : Color3.fromRGB(47, 47, 47)}
+			Size={UDim2.fromOffset(px(70), px(10))}
 		>
 			<uistroke key="UIStroke" Color={Color3.fromRGB(76, 76, 76)} ApplyStrokeMode={Enum.ApplyStrokeMode.Border} />
 		</frame>
@@ -28,29 +31,20 @@ const buttonPositions = [
 ] as const satisfies [anchorPoint: Vector2, position: UDim2][];
 
 export default function AttackFrame() {
-	const battleId = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)].battleId);
+	const px = usePx();
 
-	if (!battleId) {
-		return;
-	}
-
-	const energy = useAtom(() =>
-		battlesAtom()[battleId].playerInfo[tostring(Players.LocalPlayer.UserId)]?.energy.get(clSelectedCombatant()),
+	const isVisible = useAtom(() => Combat.currentMenu() === Combat.Menu.ATTACK);
+	const battleId = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId) ?? "";
+	const energy = useAtom(
+		() =>
+			battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.energy[clSelectedCombatant()] ??
+			0,
 	);
-
-	if (energy === undefined) {
-		return;
-	}
-
 	const combatantName = useAtom(
 		() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.combatants[clSelectedCombatant()].character.Name,
 	);
 
 	const skillset = Skillset.getSkillset(combatantName);
-
-	if (!skillset) {
-		return;
-	}
 
 	return (
 		<frame
@@ -60,6 +54,7 @@ export default function AttackFrame() {
 			Position={UDim2.fromScale(0.5, 0.5)}
 			BackgroundTransparency={1}
 			Size={UDim2.fromScale(1, 1)}
+			Visible={isVisible}
 		>
 			<frame
 				key="Energy"
@@ -67,7 +62,7 @@ export default function AttackFrame() {
 				AnchorPoint={new Vector2(0.5, 0)}
 				Position={new UDim2(0.5, 0, 1, -25)}
 				BackgroundTransparency={1}
-				Size={UDim2.fromOffset(93, 10)}
+				Size={UDim2.fromOffset(px(93), px(10))}
 			>
 				<uilistlayout
 					key="UIListLayout"
@@ -79,8 +74,8 @@ export default function AttackFrame() {
 					Padding={new UDim(0.1, 0)}
 				/>
 
-				{[0, 1, 2, 3].map((key) => (
-					<EnergyUnit key={key} energy={energy} />
+				{[0, 1, 2, 3].map((index) => (
+					<EnergyUnit key={index} index={index} energy={energy} />
 				))}
 			</frame>
 			<textlabel
@@ -98,14 +93,14 @@ export default function AttackFrame() {
 				TextStrokeColor3={Color3.fromRGB(52, 52, 52)}
 				AnchorPoint={new Vector2(0.5, 0)}
 				Position={new UDim2(0.5, 0, 1, -69)}
-				TextSize={14}
-				Size={UDim2.fromOffset(16, 35)}
+				TextSize={px(14)}
+				Size={UDim2.fromOffset(px(16), px(35))}
 				TextTransparency={0.01}
 			/>
 			<textbutton
 				key="Return"
 				BorderSizePixel={0}
-				Size={UDim2.fromOffset(65, 65)}
+				Size={UDim2.fromOffset(px(65), px(65))}
 				Position={UDim2.fromOffset(1166, 686)}
 				FontFace={
 					new Font(
@@ -114,7 +109,7 @@ export default function AttackFrame() {
 						Enum.FontStyle.Normal,
 					)
 				}
-				TextSize={14}
+				TextSize={px(14)}
 				BackgroundTransparency={1}
 				TextColor3={Color3.fromRGB(0, 0, 0)}
 				Text={""}
@@ -134,7 +129,7 @@ export default function AttackFrame() {
 					AnchorPoint={new Vector2(0.5, 0.5)}
 					Position={UDim2.fromOffset(32, 32)}
 					BackgroundTransparency={0.35}
-					Size={UDim2.fromOffset(58, 58)}
+					Size={UDim2.fromOffset(px(58), px(58))}
 				>
 					<uicorner key="UICorner" CornerRadius={new UDim(1, 0)} />
 					<uiaspectratioconstraint key="UIAspectRatioConstraint" />
@@ -146,7 +141,7 @@ export default function AttackFrame() {
 						AnchorPoint={new Vector2(0.5, 0.5)}
 						Image={"rbxassetid://3926307971"}
 						ImageRectSize={new Vector2(36, 36)}
-						Size={UDim2.fromOffset(34, 34)}
+						Size={UDim2.fromOffset(px(34), px(34))}
 						ImageRectOffset={new Vector2(564, 284)}
 					/>
 				</frame>
@@ -157,7 +152,7 @@ export default function AttackFrame() {
 				AnchorPoint={new Vector2(0.5, 0)}
 				Position={new UDim2(0.5, 0, 1, -337)}
 				BackgroundTransparency={1}
-				Size={UDim2.fromOffset(747, 292)}
+				Size={UDim2.fromOffset(px(747), px(292))}
 			>
 				<imagebutton
 					key="Ultimate"
@@ -195,7 +190,7 @@ export default function AttackFrame() {
 						return;
 					}
 
-					return <AbilityButton key={index} anchorPoint={anchorPoint} position={position} skill={skill} />;
+					return <SkillButton key={index} anchorPoint={anchorPoint} position={position} skill={skill} />;
 				})}
 			</frame>
 		</frame>

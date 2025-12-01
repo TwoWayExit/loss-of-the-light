@@ -1,7 +1,5 @@
 import { BasePlayer } from "shared/models/player";
 
-type ReadonlyRecord<K extends string | number | symbol, T> = { readonly [P in K]: T };
-
 export class Skillset {
 	protected static skillsets = new Map<string, Skillset>();
 

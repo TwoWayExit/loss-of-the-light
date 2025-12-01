@@ -1,10 +1,8 @@
-import { atom } from "@rbxts/charm";
 import React from "@rbxts/react";
+import { selectedSkill } from "client/app/atoms/client-info";
 import { Skill } from "shared/models/skills";
 
-export const selectedSkill = atom<string>();
-
-export default function AbilityButton({
+export default function SkillButton({
 	key,
 	anchorPoint,
 	position,

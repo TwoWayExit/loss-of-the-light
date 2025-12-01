@@ -199,7 +199,7 @@ export class ServerBattle extends Battle {
 						produce(state, (draft) => {
 							draft[this.id].playerInfo[player.id] = {
 								selectedCombatant: -1,
-								energy: new Map(combatants.map((_, index) => [index, 5])),
+								energy: combatants.map(() => 5),
 								turnFinished: false,
 							};
 						}),
@@ -247,7 +247,7 @@ export class ServerBattle extends Battle {
 	}
 
 	protected subscribeAtoms() {
-		// Next phase when all players have finished their turns
+		// Transition from DECIDE to ACTION when all players have finished their turns
 		subscribe(
 			() => battlesAtom()[this.id].playerInfo,
 			(players) => {

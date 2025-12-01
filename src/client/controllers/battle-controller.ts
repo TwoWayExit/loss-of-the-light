@@ -8,6 +8,7 @@ import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
 import { clSelectedCombatant } from "client/app/atoms/client-info";
 import { Events } from "client/network";
+import "shared/modules/skillsets";
 
 @Controller({})
 export class BattleController implements OnInit {

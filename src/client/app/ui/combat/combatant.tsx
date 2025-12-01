@@ -16,7 +16,7 @@ export default function Combatant({
 	const px = usePx();
 
 	return (
-		<frame key={index} BorderSizePixel={0} BackgroundTransparency={1} Size={UDim2.fromOffset(px(207), px(216))}>
+		<frame BorderSizePixel={0} BackgroundTransparency={1} Size={UDim2.fromOffset(px(207), px(216))}>
 			<uiscale Scale={scale} />
 			<imagelabel
 				key="UnitImage"
