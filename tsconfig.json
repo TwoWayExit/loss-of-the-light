@@ -30,14 +30,14 @@
 				"obfuscation": false
 			},
 			{
-				"transform": "rbxts-transformer-t-new",
+				"transform": "rbxts-transformer-t-new"
 			},
 			{
 				"transform": "rbxts-transform-debug"
 			},
 			{
-                "transform": "rbxts-transform-env",
-            }
+				"transform": "rbxts-transform-env"
+			}
 		]
 	}
 }
