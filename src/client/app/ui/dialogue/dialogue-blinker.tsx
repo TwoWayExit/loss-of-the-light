@@ -1,5 +1,4 @@
 import { useInterval, useMotion } from "@rbxts/pretty-react-hooks";
-import { linear } from "@rbxts/ripple";
 import React from "@rbxts/react";
 import { useAtom } from "@rbxts/react-charm";
 import { dialogueIsActive } from "client/app/atoms/dialogue";
@@ -12,7 +11,7 @@ export default function DialogueBlinker() {
 	const isActive = useAtom(dialogueIsActive);
 
 	useInterval(
-		() => motion.to(linear(alpha.getValue() === 1 ? 0 : 1, { speed: 5 })),
+		() => motion.linear(alpha.getValue() === 1 ? 0 : 1, { speed: 5 }),
 		isActive ? BLINK_INTERVAL : undefined,
 		{ immediate: true },
 	);

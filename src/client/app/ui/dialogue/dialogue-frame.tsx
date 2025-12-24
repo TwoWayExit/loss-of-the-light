@@ -1,5 +1,4 @@
 import { useEventListener, useMotion } from "@rbxts/pretty-react-hooks";
-import { tween } from "@rbxts/ripple";
 import { DialogueBuilder } from "shared/utils/dialogue";
 import DialogueName from "./dialogue-name";
 import DialogueText from "./dialogue-text";
@@ -18,9 +17,9 @@ export default function DialogueFrame() {
 
 	useEffect(() => {
 		if (isActive) {
-			motion.to(tween(0));
+			motion.tween(0);
 		} else {
-			motion.to(tween(1));
+			motion.tween(1);
 		}
 	}, [isActive]);
 
