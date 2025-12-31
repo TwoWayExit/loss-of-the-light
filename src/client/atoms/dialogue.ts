@@ -1,5 +1,5 @@
 import { atom } from "@rbxts/charm";
-import { Dialogue } from "shared/utils/dialogue";
+import { Dialogue } from "shared/lib/dialogue";
 
 export const dialogueIsActive = atom(false);
 export const dialogueText = atom("");

@@ -10,6 +10,7 @@ import { minusAttack1, plusAttack1 } from "client/commands/attack1";
 import { minusAttack2, plusAttack2 } from "client/commands/attack2";
 import { switch_left } from "client/commands/switch_left";
 import { switch_right } from "client/commands/switch_right";
+import { finish_turn } from "client/commands/finish_turn";
 
 const commandsList = {
 	ping,
@@ -20,6 +21,8 @@ const commandsList = {
 
 	switch_left,
 	switch_right,
+
+	finish_turn,
 
 	["+forwardmove"]: plusForwardMove,
 	["-forwardmove"]: minusForwardMove,

@@ -1,6 +1,6 @@
 import React from "@rbxts/react";
 import { useAtom } from "@rbxts/react-charm";
-import { currentDialogue } from "client/app/atoms/dialogue";
+import { currentDialogue } from "client/atoms/dialogue";
 
 export default function DialogueName() {
 	const name = useAtom(() => currentDialogue()?.name);

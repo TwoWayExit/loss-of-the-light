@@ -12,6 +12,7 @@ export abstract class Battle {
 
 	protected static battles = new Map<string, Battle>();
 
+	/** Destroyed on battle ended */
 	protected janitor = new Janitor();
 
 	public constructor(
@@ -37,5 +38,10 @@ export abstract class Battle {
 		this.janitor.Destroy();
 
 		this.battleEnded.Fire();
+	}
+
+	/** @virtual */
+	public async playoutBattle() {
+		throw "Function not implemented!";
 	}
 }

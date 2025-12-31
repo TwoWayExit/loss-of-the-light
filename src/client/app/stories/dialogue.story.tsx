@@ -1,8 +1,8 @@
 import DialogueFrame from "../ui/dialogue/dialogue-frame";
 import React from "@rbxts/react";
 import ReactRoblox from "@rbxts/react-roblox";
-import { DialogueBuilder } from "shared/utils/dialogue";
-import { currentDialogue, dialogueIsActive, dialogueText } from "../atoms/dialogue";
+import { DialogueBuilder } from "shared/lib/dialogue";
+import { currentDialogue, dialogueIsActive, dialogueText } from "client/atoms/dialogue";
 import { batch } from "@rbxts/charm";
 
 interface Controls {

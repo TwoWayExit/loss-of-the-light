@@ -4,7 +4,7 @@ import { globalReplicas } from "shared/replicas";
 import { BaseCharacter } from "shared/models/character";
 import { UserCommand } from "shared/modules/user-command";
 import { ViewVectors } from "shared/modules/view-vectors";
-import { networkVar } from "shared/utils/network";
+import { networkVar } from "shared/lib/network";
 import { $env } from "rbxts-transform-env";
 
 export class PlayerData {

@@ -2,7 +2,7 @@ import { CharacterRigR15, CharacterRigR6 } from "@rbxts/promise-character";
 import { CollectionService, Players, RunService } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
 import { BasePlayer } from "./player";
-import { LifecycleHook } from "shared/utils/lifecycle-hooks";
+import { LifecycleHook } from "shared/lib/lifecycle-hooks";
 import { $env } from "rbxts-transform-env";
 import { Tags } from "shared/modules/tags";
 import { States } from "shared/modules/states";
@@ -167,7 +167,7 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 		this.boundingBox.Weld.C0 = c0;
 	}
 
-	protected setCharacterCollidable(character: CharacterRigR6 | CharacterRigR15) {
+	protected setupCharacterProperties(character: CharacterRigR6 | CharacterRigR15) {
 		for (const v of character.GetDescendants()) {
 			// Make sure it isn't a bounding box, else the (potential) server box's CollisionGroup would've been changed to Characters
 			if (v.IsA("BasePart") && v.CollisionGroup !== "BoundingBoxes") {
@@ -213,7 +213,7 @@ export class PlayerCollidable<P extends Player | undefined = Player | undefined>
 	 * @virtual
 	 */
 	protected onCharacterLoaded(character: CharacterRigR6 | CharacterRigR15) {
-		this.setCharacterCollidable(character);
+		this.setupCharacterProperties(character);
 
 		this.boundingBox = this.addBoundingBox(character.HumanoidRootPart);
 

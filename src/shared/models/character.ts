@@ -4,7 +4,7 @@ import promiseR15, { CharacterRigR15, CharacterRigR6, promiseR6 } from "@rbxts/p
 import { Workspace } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
 import { stats } from "shared/modules/stats-defs";
-import { LifecycleHook } from "shared/utils/lifecycle-hooks";
+import { LifecycleHook } from "shared/lib/lifecycle-hooks";
 
 export interface Character extends Model {
 	Humanoid: Humanoid & {

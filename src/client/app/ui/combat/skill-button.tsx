@@ -1,21 +1,20 @@
 import React from "@rbxts/react";
-import { selectedSkill } from "client/app/atoms/client-info";
+import { selectedSkill } from "client/atoms/client-info";
 import { Skill } from "shared/models/skills";
 
 export default function SkillButton({
-	key,
+	index,
 	anchorPoint,
 	position,
 	skill,
 }: {
-	key: number;
+	index: number;
 	anchorPoint: Vector2;
 	position: UDim2;
 	skill: Skill;
 }) {
 	return (
 		<textbutton
-			key={key}
 			AnchorPoint={anchorPoint}
 			BorderSizePixel={0}
 			BackgroundColor3={Color3.fromRGB(20, 20, 20)}
@@ -30,7 +29,7 @@ export default function SkillButton({
 			Text={""}
 			Event={{
 				MouseButton1Click: () => {
-					selectedSkill(skill.name);
+					selectedSkill(index);
 				},
 			}}
 		>

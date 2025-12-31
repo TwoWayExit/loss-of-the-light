@@ -5,7 +5,7 @@ import { Character } from "shared/models/character";
 import { BasePlayer } from "shared/models/player";
 import { CombatantList } from "server/models/combatant";
 import { DisposableComponent } from "shared/components/disposable-component";
-import { Enemy } from "shared/components/enemy";
+import { Enemy } from "server/components/enemy";
 import { BattleService } from "server/services/battle-service";
 import { LotlClient } from "shared/models/lotl_client";
 import { addCombatant, LotlPlayerStatus, playersAtom } from "shared/atoms/players";

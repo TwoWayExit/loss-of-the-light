@@ -12,6 +12,7 @@ import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/batt
 
 export type BattleTeam = Map<BasePlayer, Combatant[]>;
 
+// NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
 	private constructor(
 		protected teams: Map<Teams, BattleTeam>,
@@ -31,6 +32,7 @@ export class ServerBattle extends Battle {
 		}
 	}
 
+	// TODO: Add support for multiple players
 	public static createBattle(player1: BasePlayer, player2: BasePlayer, region: Region, first: Teams) {
 		return new ServerBattle(
 			new Map([
@@ -50,10 +52,10 @@ export class ServerBattle extends Battle {
 		this.stopMovementOfTeams();
 
 		for (const [name, team] of this.teams) {
-			const players = new Set<string>();
+			const players = new Array<string>();
 
 			for (const [player] of team) {
-				players.add(player.id);
+				players.push(player.id);
 			}
 
 			battlesAtom((state) =>
@@ -149,7 +151,7 @@ export class ServerBattle extends Battle {
 		for (let i = 0; i < casted.size(); i++) {
 			let corresponding: number | undefined;
 
-			for (let j = i + 1; casted.size(); j++) {
+			for (let j = i + 1; j < casted.size(); j++) {
 				if (
 					casted[i].targetPlayer === casted[j].casterPlayer &&
 					casted[i].targetCombatant === casted[j].casterCombatant &&
@@ -161,7 +163,7 @@ export class ServerBattle extends Battle {
 				}
 			}
 
-			if (corresponding) {
+			if (corresponding !== undefined) {
 				plan.push(
 					identity<Action<ActionType.CLASH>>({
 						type: ActionType.CLASH,

@@ -1,6 +1,6 @@
 import { Component } from "@flamework/components";
 import { DisposableComponent } from "./disposable-component";
-import { Uuid } from "shared/utils/uuid";
+import { Uuid } from "shared/lib/uuid";
 import { Reflect } from "@flamework/core";
 
 interface Attributes {}

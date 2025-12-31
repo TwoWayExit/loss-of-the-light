@@ -1,8 +1,4 @@
-import { UserInputService } from "@rbxts/services";
-
-export function isMobile() {
-	return UserInputService.TouchEnabled;
-}
+import type { Teams } from "shared/models/battle";
 
 export function escapedRichText(text: string) {
 	text = text.gsub("&", "&amp;")[0];
@@ -61,4 +57,9 @@ export function deepClone<T extends object>(obj: T): T {
 	}
 
 	return newObj as T;
+}
+
+/** Returns the team opposite to what is provided as an argument */
+export function getOpposingTeam(friendlyTeam: Teams) {
+	return tostring((tonumber(friendlyTeam)! + 1) % 2) as Teams; // We're assuming that there will only ever be two teams
 }

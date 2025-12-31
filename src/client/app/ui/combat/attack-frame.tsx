@@ -1,6 +1,6 @@
 import React from "@rbxts/react";
 import { Players } from "@rbxts/services";
-import { clSelectedCombatant } from "client/app/atoms/client-info";
+import { clSelectedCombatant } from "client/atoms/client-info";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
 import SkillButton from "./skill-button";
@@ -190,7 +190,15 @@ export default function AttackFrame() {
 						return;
 					}
 
-					return <SkillButton key={index} anchorPoint={anchorPoint} position={position} skill={skill} />;
+					return (
+						<SkillButton
+							key={index}
+							index={index}
+							anchorPoint={anchorPoint}
+							position={position}
+							skill={skill}
+						/>
+					);
 				})}
 			</frame>
 		</frame>

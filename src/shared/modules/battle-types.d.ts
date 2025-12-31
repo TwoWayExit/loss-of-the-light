@@ -4,7 +4,7 @@ export const enum ActionType {
 }
 
 // TODO: Add coin flip results, generated on the server
-/** Represents a server constructed object of an action plan element */
+/** Represents a server constructed object of an action plan array element */
 export interface Action<T extends ActionType = ActionType> {
 	type: T;
 	cast: T extends ActionType.SINGLE ? SkillCast : [first: SkillCast, second: SkillCast];

@@ -8,7 +8,7 @@ import { stats } from "shared/modules/stats-defs";
 import { globalReplicas } from "shared/replicas";
 import { BasePlayer } from "shared/models/player";
 import { ViewVectors } from "shared/modules/view-vectors";
-import { Trace, TraceT, RayT } from "shared/utils/trace";
+import { Trace, TraceT, RayT } from "shared/lib/trace";
 import { PlayerCollidable } from "shared/models/player-collidable";
 import { $env } from "rbxts-transform-env";
 import { Tags } from "shared/modules/tags";

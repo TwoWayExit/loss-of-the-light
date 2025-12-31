@@ -1,6 +1,6 @@
 import { Component } from "@flamework/components";
-import { UuidComponent } from "./uuid-component";
 import { BasePlayer } from "shared/models/player";
+import { UuidComponent } from "shared/components/uuid-component";
 import { CharacterRigR6 } from "@rbxts/promise-character";
 
 interface Attributes {

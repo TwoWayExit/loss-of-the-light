@@ -1,6 +1,6 @@
 import React from "@rbxts/react";
 import { useAtom } from "@rbxts/react-charm";
-import { dialogueText } from "client/app/atoms/dialogue";
+import { dialogueText } from "client/atoms/dialogue";
 
 export default function DialogueText() {
 	const text = useAtom(dialogueText);

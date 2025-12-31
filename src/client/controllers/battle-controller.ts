@@ -4,18 +4,21 @@ import { ClientBattle } from "client/models/client-battle";
 import { ViewVectors } from "shared/modules/view-vectors";
 import { Players, TweenService, Workspace } from "@rbxts/services";
 import { observe, subscribe } from "@rbxts/charm";
-import { battlesAtom } from "shared/atoms/battles";
+import { battlesAtom, getEnemyCombatants } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
-import { clSelectedCombatant } from "client/app/atoms/client-info";
+import { clSelectedCombatant, selectedEnemy } from "client/atoms/client-info";
 import { Events } from "client/network";
 import "shared/modules/skillsets";
 
+// NOTE: The idea is that BattleController will handle user-prompted events (e.g. combatant switching, skill targeting), while logic in ClientBattle will respond to state changes (e.g. starting, next phase, ending)
 @Controller({})
 export class BattleController implements OnInit {
 	private tweenInfos = {
 		transparency: new TweenInfo(0.35, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, 0),
 		position: new TweenInfo(0.95, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out, 0, false, 0),
 	};
+
+	private currentBattle?: ClientBattle;
 
 	public constructor(protected readonly cameraController: LotlCameraController) {}
 
@@ -77,18 +80,30 @@ export class BattleController implements OnInit {
 		Events.lotl.selectCombatant(selected);
 	}
 
-	onInit() {
-		observe(battlesAtom, (battleInfo, battleId) => {
-			const battle = new ClientBattle(battleId as string, battleInfo.first);
+	private onEnemySwitch(enemyIndex: number, combatantIndex: number) {
+		const enemyCombatant = getEnemyCombatants(tostring(Players.LocalPlayer.UserId), enemyIndex)[combatantIndex];
+		const pivot = enemyCombatant.character.GetPivot();
+		const tween = TweenService.Create(Workspace.CurrentCamera!, this.tweenInfos.position, {
+			CFrame: pivot.mul(CFrame.fromEulerAngles(0, math.pi, 0)).mul(ViewVectors.VIEW_BATTLE),
+		});
 
-			battle.startBattle();
+		tween.Play();
+	}
+
+	private subscribeAtoms() {
+		observe(battlesAtom, (battleInfo, battleId) => {
+			this.currentBattle = new ClientBattle(battleId as string, battleInfo.first);
+			this.currentBattle.startBattle();
 
 			clSelectedCombatant(0);
 
+			this.onCombatantSwitch(0);
 			this.setCameraActive(true);
 
 			return () => {
-				battle.stopBattle();
+				this.currentBattle?.stopBattle();
+
+				delete this.currentBattle;
 
 				clSelectedCombatant(-1);
 
@@ -96,11 +111,16 @@ export class BattleController implements OnInit {
 			};
 		});
 
-		subscribe(
-			() => clSelectedCombatant(),
-			(selected) => {
-				this.onCombatantSwitch(selected);
-			},
-		);
+		subscribe(clSelectedCombatant, (selected) => {
+			this.onCombatantSwitch(selected);
+		});
+
+		subscribe(selectedEnemy, ([enemyIndex, combatantIndex]) => {
+			this.onEnemySwitch(enemyIndex, combatantIndex);
+		});
+	}
+
+	onInit() {
+		this.subscribeAtoms();
 	}
 }

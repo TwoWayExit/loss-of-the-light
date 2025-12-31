@@ -1,10 +1,10 @@
 import { useEventListener, useMotion } from "@rbxts/pretty-react-hooks";
-import { DialogueBuilder } from "shared/utils/dialogue";
+import { DialogueBuilder } from "shared/lib/dialogue";
 import DialogueName from "./dialogue-name";
 import DialogueText from "./dialogue-text";
 import DialogueBlinker from "./dialogue-blinker";
 import React, { useEffect } from "@rbxts/react";
-import { dialogueIsActive } from "client/app/atoms/dialogue";
+import { dialogueIsActive } from "client/atoms/dialogue";
 import { useAtom } from "@rbxts/react-charm";
 
 export default function DialogueFrame() {

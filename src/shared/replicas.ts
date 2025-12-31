@@ -1,5 +1,6 @@
 import { FastReplica } from "@rbxts/fast-replica";
 
+// TODO: Replace these with charm atoms
 export const globalReplicas = FastReplica.createReplicas({
 	authorized: false,
 	movement: {

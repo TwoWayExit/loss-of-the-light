@@ -1,21 +1,27 @@
 import { Players } from "@rbxts/services";
 import { Command } from "@twowayexit/dev-con";
-import { clSelectedCombatant } from "client/app/atoms/client-info";
+import { clSelectedCombatant, selectedEnemy, selectedSkill } from "client/atoms/client-info";
 import { playersAtom } from "shared/atoms/players";
 
 export const switch_left: Command = {
 	execute: () => {
 		const { battleId } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
-		const selectedCombatant = clSelectedCombatant();
+		let selectedCombatant = clSelectedCombatant();
 
 		if (battleId === undefined) {
 			return;
 		}
 
-		if (selectedCombatant - 1 < 0) {
-			return;
-		}
+		let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
 
-		clSelectedCombatant(selectedCombatant - 1);
+		if (selectedSkill() !== undefined) {
+			if (--selectedEnemyCombatant >= 0) {
+				selectedEnemy([enemyIndex, selectedEnemyCombatant]);
+			}
+		} else {
+			if (--selectedCombatant >= 0) {
+				clSelectedCombatant(selectedCombatant);
+			}
+		}
 	},
 };

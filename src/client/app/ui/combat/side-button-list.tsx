@@ -22,7 +22,7 @@ export default function SideButtonList() {
 		computed(() => {
 			const battleId = playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId;
 
-			if (!battleId) {
+			if (battleId === undefined) {
 				return false;
 			}
 

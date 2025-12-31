@@ -1,6 +1,6 @@
 import { Signal } from "@rbxts/beacon";
 import { Janitor } from "@rbxts/janitor";
-import { LifecycleHook } from "shared/utils/lifecycle-hooks";
+import { LifecycleHook } from "shared/lib/lifecycle-hooks";
 import { PlayerNetworked } from "shared/models/player-networked";
 
 export class Level<S extends {} = {}, M extends Model = Model, C extends Instance = Instance> {

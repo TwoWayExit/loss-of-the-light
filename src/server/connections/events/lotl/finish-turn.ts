@@ -10,7 +10,7 @@ export class FinishTurn implements OnInit {
 		Events.lotl.finishTurn.connect((player) => {
 			const battleId = playersAtom()[tostring(player.UserId)].battleId;
 
-			if (!battleId) {
+			if (battleId === undefined) {
 				return;
 			}
 

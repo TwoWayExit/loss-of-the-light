@@ -25,6 +25,7 @@ const initialState: PlayersState = {};
 
 export const playersAtom = atom(initialState);
 
+// TODO: Perhaps move these helper functions into a separate file
 export const createPlayer = (state: PlayersState, playerId: string) =>
 	produce(state, (draft) => {
 		draft[playerId] = {

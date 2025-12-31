@@ -1,7 +1,7 @@
 import React from "@rbxts/react";
 import { useAtom } from "@rbxts/react-charm";
 import { Players } from "@rbxts/services";
-import { clSelectedCombatant } from "client/app/atoms/client-info";
+import { clSelectedCombatant } from "client/atoms/client-info";
 import { usePx } from "client/app/hooks/use-px";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";

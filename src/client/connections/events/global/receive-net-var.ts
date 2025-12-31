@@ -1,6 +1,6 @@
 import { Controller, OnInit } from "@flamework/core";
 import { Events } from "client/network";
-import { NetworkVar } from "shared/utils/network";
+import { NetworkVar } from "shared/lib/network";
 
 @Controller({})
 export class ReceiveNetVar implements OnInit {

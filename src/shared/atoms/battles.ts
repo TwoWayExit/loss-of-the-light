@@ -3,11 +3,13 @@ import { Region } from "shared/modules/global-types";
 import { produce } from "@rbxts/better-immut";
 import { atom } from "@rbxts/charm";
 import { BattlePhase, SkillCast, SkillCastQueue } from "shared/modules/battle-types";
+import { playersAtom } from "./players";
+import { getOpposingTeam } from "shared/lib/util";
 
 interface PlayerInfo {
 	/** -1 if no combatant is selected */
 	readonly selectedCombatant: number;
-	// NOTE: The assumption is made that the order of combatants will never change in battle, so we can safely use indices instead of combatant names
+	// NOTE: The assumption is made that the order of combatants will never change in battle, so we can safely use combatant list (in the players atom) indices instead of combatant names
 	readonly energy: number[];
 	readonly turnFinished: boolean;
 }
@@ -19,7 +21,7 @@ interface BattleInfo {
 	readonly phase: BattlePhase;
 
 	readonly teams: {
-		readonly [teamName in Teams]: Set<string>;
+		readonly [teamName in Teams]: string[];
 	};
 	readonly spectators: Set<string>;
 
@@ -38,6 +40,44 @@ interface BattlesState {
 const initialState: BattlesState = {};
 
 export const battlesAtom = atom(initialState);
+
+// TODO: Perhaps move these helper functions into a separate file
+export function getPlayerTeam(playerId: string) {
+	const { battleId } = playersAtom()[playerId];
+
+	assert(battleId, `Player ${playerId} is not currently in battle`);
+
+	const battle = battlesAtom()[battleId];
+
+	for (const [teamName, team] of pairs(battle.teams)) {
+		if (team.includes(playerId)) {
+			return teamName;
+		}
+	}
+
+	throw `Could not find player's team (${playerId})`;
+}
+
+/**
+ * @returns The combatants of an enemy through a given index correspondent to an element in the enemy team array of player ids (as defined in battlesAtom)
+ * @remarks Throws an error if the battleId member in the client (as defined in playersAtom) is undefined
+ */
+export function getEnemyCombatants(playerId: string, enemyIndex: number) {
+	const { battleId } = playersAtom()[playerId];
+
+	if (battleId === undefined) {
+		throw "Not currently in battle";
+	}
+
+	const battle = battlesAtom()[battleId];
+
+	// Get our player's team, then inverse it to get the enemy team
+	const team = getPlayerTeam(playerId);
+	const enemyTeam = getOpposingTeam(team);
+	const enemyId = battle.teams[enemyTeam][enemyIndex];
+
+	return playersAtom()[enemyId].combatants;
+}
 
 export const createBattle = (state: BattlesState, id: string, region: BattleInfo["region"], first: Teams) =>
 	produce(state, (draft) => {

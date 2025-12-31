@@ -9,7 +9,7 @@ import { produce } from "@rbxts/better-immut";
 import { battlesAtom, createBattle } from "shared/atoms/battles";
 import { Teams } from "shared/models/battle";
 import { ClientBattle } from "client/models/client-battle";
-import { clSelectedCombatant } from "../atoms/client-info";
+import { clSelectedCombatant } from "client/atoms/client-info";
 import CombatPage from "../ui/combat/page";
 
 interface Controls {}
@@ -30,7 +30,7 @@ export = {
 			battlesAtom((state) => createBattle(state, "test", "baseplate", Teams.TEAM1));
 			battlesAtom((state) =>
 				produce(state, (draft) => {
-					draft["test"].teams[Teams.TEAM1] = new Set([tostring(Players.LocalPlayer.UserId)]);
+					draft["test"].teams[Teams.TEAM1] = [tostring(Players.LocalPlayer.UserId)];
 				}),
 			);
 

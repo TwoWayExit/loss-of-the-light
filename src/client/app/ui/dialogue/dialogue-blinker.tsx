@@ -1,7 +1,7 @@
 import { useInterval, useMotion } from "@rbxts/pretty-react-hooks";
 import React from "@rbxts/react";
 import { useAtom } from "@rbxts/react-charm";
-import { dialogueIsActive } from "client/app/atoms/dialogue";
+import { dialogueIsActive } from "client/atoms/dialogue";
 
 const BLINK_INTERVAL = 0.35;
 

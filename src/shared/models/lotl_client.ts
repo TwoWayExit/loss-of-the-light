@@ -2,7 +2,7 @@ import { Workspace } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
 import { PlayerNetworked } from "shared/models/player-networked";
 import { Janitor } from "@rbxts/janitor";
-import { NetworkPlayer, Networked } from "shared/utils/network";
+import { NetworkPlayer, Networked } from "shared/lib/network";
 
 /** Derivative of PlayerNetworked for handling network players */
 @Networked({ client: true })
@@ -15,7 +15,7 @@ export class LotlClient extends PlayerNetworked {
 
 	protected static override clPlayer?: LotlClient;
 
-	protected declare janitor: Janitor<{
+	declare protected janitor: Janitor<{
 		onCharacterDestroyed: RBXScriptConnection;
 		onChildRemoved: RBXScriptConnection;
 	}>;

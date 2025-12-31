@@ -1,22 +1,29 @@
-import { produce } from "@rbxts/better-immut";
 import { Players } from "@rbxts/services";
 import { Command } from "@twowayexit/dev-con";
-import { clSelectedCombatant } from "client/app/atoms/client-info";
+import { clSelectedCombatant, selectedEnemy, selectedSkill } from "client/atoms/client-info";
+import { getEnemyCombatants } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
 
 export const switch_right: Command = {
 	execute: () => {
 		const { battleId, combatants } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
-		const selectedCombatant = clSelectedCombatant();
+		let selectedCombatant = clSelectedCombatant();
 
 		if (battleId === undefined) {
 			return;
 		}
 
-		if (selectedCombatant + 1 >= combatants.size()) {
-			return;
-		}
+		let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
+		const enemyCombatants = getEnemyCombatants(tostring(Players.LocalPlayer.UserId), enemyIndex);
 
-		clSelectedCombatant(selectedCombatant + 1);
+		if (selectedSkill() !== undefined) {
+			if (++selectedEnemyCombatant < enemyCombatants.size()) {
+				selectedEnemy([enemyIndex, selectedEnemyCombatant]);
+			}
+		} else {
+			if (++selectedCombatant < combatants.size()) {
+				clSelectedCombatant(selectedCombatant);
+			}
+		}
 	},
 };

@@ -46,4 +46,10 @@ export class Combatant extends BaseCharacter<undefined> {
 
 		return combatants;
 	}
+
+	public override destroy() {
+		this.destroying.Fire();
+
+		this.janitor.Destroy();
+	}
 }

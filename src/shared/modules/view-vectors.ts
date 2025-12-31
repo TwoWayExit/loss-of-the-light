@@ -1,9 +1,8 @@
-export class ViewVectors {
-	public static readonly VIEW = new Vector3(0, 18.14, 18.14);
-	public static readonly VIEW_BATTLE = new CFrame(4, -1, 5);
+export namespace ViewVectors {
+	export const VIEW = new Vector3(0, 18.14, 18.14);
+	export const VIEW_BATTLE = new CFrame(4, -1, 5);
+	export const VIEW_ENEMY = new CFrame(0, 0, -8);
 
-	public static readonly HULL_MIN = new Vector3(-1, 0, -1);
-	public static readonly HULL_MAX = new Vector3(1, 3.5, 1);
-
-	private constructor() {}
+	export const HULL_MIN = new Vector3(-1, 0, -1);
+	export const HULL_MAX = new Vector3(1, 3.5, 1);
 }

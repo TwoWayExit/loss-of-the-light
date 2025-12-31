@@ -1,7 +1,7 @@
 import { Players, RunService } from "@rbxts/services";
 import { PlayerCollidable } from "./player-collidable";
 import { Signal } from "@rbxts/beacon";
-import { NetworkPlayer, Networked, networkVar } from "shared/utils/network";
+import { NetworkPlayer, Networked, networkVar } from "shared/lib/network";
 import { Reflect } from "@flamework/core";
 
 /** A const enum of possible player statuses */

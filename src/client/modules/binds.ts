@@ -7,4 +7,6 @@ export const binds = new BaseBinds({
 	D: "+rightmove",
 	E: "switch_right",
 	Q: "switch_left",
+	F: "finish_turn",
+	Space: "confirm",
 });
