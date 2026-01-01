@@ -25,7 +25,9 @@ export default function CombatantList() {
 				Padding={new UDim(0, px(40))}
 			/>
 
-			{combatants?.map((info, index) => <Combatant key={index} index={index} info={info} />)}
+			{combatants?.map((info, index) => (
+				<Combatant key={index} index={index} info={info} />
+			))}
 		</frame>
 	);
 }
