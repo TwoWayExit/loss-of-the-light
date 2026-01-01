@@ -22,10 +22,10 @@ export class Skillset {
 export interface SkillProperties {
 	/** Damage/healing amount */
 	readonly quantifier: number;
-
 	readonly coins: number;
-
 	readonly description: string;
+
+	readonly animation: Animation;
 }
 
 export abstract class Skill {

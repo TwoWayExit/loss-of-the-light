@@ -45,20 +45,6 @@ export function findAllStringOccurrences(text: string, target: string) {
 	return result;
 }
 
-export function deepClone<T extends object>(obj: T): T {
-	const newObj = {};
-
-	for (const [i, v] of pairs(obj)) {
-		if (typeIs(v, "table")) {
-			newObj[i as keyof {}] = deepClone<T>(v as T) as never;
-		} else {
-			newObj[i as keyof {}] = v as never;
-		}
-	}
-
-	return newObj as T;
-}
-
 /** Returns the team opposite to what is provided as an argument */
 export function getOpposingTeam(friendlyTeam: Teams) {
 	return tostring((tonumber(friendlyTeam)! + 1) % 2) as Teams; // We're assuming that there will only ever be two teams

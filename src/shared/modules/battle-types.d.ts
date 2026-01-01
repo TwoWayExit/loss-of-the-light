@@ -13,17 +13,23 @@ export interface Action<T extends ActionType = ActionType> {
 /** A server parsed version of a `SkillCastQueue` to be shared with all clients within the battle, also being the final object to be processed on the server for skill casting */
 export type ActionPlan = Action[];
 
-/** 2 phases for every turn, `DECIDE` when players are deciding on skills to cast, and `ACTION` when all skills are played out */
 export const enum BattlePhase {
+	/** Players decide their skills to cast during this phase */
 	DECIDE,
+	/** Animations play and queued skills are casted during this phase */
 	ACTION,
 }
 
 export interface SkillCast {
+	/** Skillset index */
 	skill: number;
+	/** Player ID */
 	casterPlayer: string;
+	/** Player ID */
 	targetPlayer: string;
+	/** playersAtom `combatants` array index */
 	casterCombatant: number;
+	/** playersAtom `combatants` array index */
 	targetCombatant: number;
 }
 
