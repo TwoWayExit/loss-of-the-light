@@ -7,14 +7,21 @@ import { createBattle, battlesAtom, removeBattle } from "shared/atoms/battles";
 import { clear, produce } from "@rbxts/better-immut";
 import { subscribe } from "@rbxts/charm";
 import { Events } from "server/network";
-import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/battle-types";
+import { BattlePhase, Action, ActionType, ActionPlan, SkillCast } from "shared/modules/battle-types";
 import combatantList, { CombatantList } from "shared/modules/combatant-list";
+import { AutoControl } from "shared/models/auto-control";
+import { Skillset } from "shared/models/skills";
 
 /** Wrapper type for playersAtom `combatants` member */
 export type BattleTeam = Map<BasePlayer, (keyof CombatantList)[]>;
 
 // NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
+	private autoControls: Record<Teams, Map<number, AutoControl>> = {
+		[Teams.TEAM1]: new Map(),
+		[Teams.TEAM2]: new Map(),
+	} as const;
+
 	private constructor(
 		id: string,
 		// TODO: Remove this extraneous member
@@ -25,25 +32,32 @@ export class ServerBattle extends Battle {
 		super(id, first);
 	}
 
-	// TODO: Add support for multiple players
-	public static createBattle(player1: BasePlayer, player2: BasePlayer, region: Region, first: Teams) {
-		// NPCs can be in as many battles as needed, but not players
-		assert(
-			!player1.getRbxPlayer() || playersAtom()[player1.id].battleId === undefined,
-			`${player1.getNickname()} (${player1.id}) already in battle`,
-		);
-		assert(
-			!player2.getRbxPlayer() || playersAtom()[player2.id].battleId === undefined,
-			`${player2.getNickname()} (${player2.id}) already in battle`,
-		);
+	public static createBattle(team1: BasePlayer[], team2: BasePlayer[], region: Region, first: Teams) {
+		assert(team1.size() > 0 && team2.size() > 0, "Both teams must have at least 1 player");
+
+		const assertion = (player: BasePlayer) => {
+			// NPCs can be in as many battles as needed, but not players
+			assert(
+				!player.getRbxPlayer() || playersAtom()[player.id].battleId === undefined,
+				`${player.getNickname()} (${player.id}) already in battle`,
+			);
+		};
+
+		for (const player of team1) {
+			assertion(player);
+		}
+
+		for (const player of team2) {
+			assertion(player);
+		}
 
 		const id = HttpService.GenerateGUID(false);
 
 		return new ServerBattle(
 			id,
 			new Map([
-				[Teams.TEAM1, new Map([[player1, playersAtom()[player1.id].combatants]])],
-				[Teams.TEAM2, new Map([[player2, playersAtom()[player2.id].combatants]])],
+				[Teams.TEAM1, new Map(team1.map((player) => [player, playersAtom()[player.id].combatants]))],
+				[Teams.TEAM2, new Map(team2.map((player) => [player, playersAtom()[player.id].combatants]))],
 			]),
 			region,
 			first,
@@ -54,6 +68,7 @@ export class ServerBattle extends Battle {
 		battlesAtom((state) => createBattle(state, this.id, this.region, this.first));
 
 		this.setupPlayers(true);
+		this.setupNPCs();
 
 		this.stopMovementOfTeams();
 
@@ -102,9 +117,50 @@ export class ServerBattle extends Battle {
 			}
 		}
 
-		// TODO: Implement appropriate skill cast timing based on animation and clash durations
-		// Perhaps using recursion to create a chain of promises iterating through the action plan?
 		print(plan);
+
+		// Do a recursive promise iteration through the action plan to allow a smooth cancellation if needed
+		const recurse = (i = plan.size() - 1): Promise<void> => {
+			if (i < 0) {
+				return Promise.resolve();
+			}
+
+			const action = plan[i];
+
+			if (action.type === ActionType.SINGLE) {
+				// TypeScript is unable to infer a union type-generic member's true type, shame
+				const cast = action.cast as SkillCast;
+				const casterCombatant = playersAtom()[cast.casterPlayer].combatants[cast.casterCombatant];
+
+				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
+
+				return recurse(i - 1)
+					.then(() => {
+						const { character } =
+							battlesAtom()[this.id].playerInfo[cast.casterPlayer].combatants[cast.casterCombatant];
+						const animation = character.Humanoid.Animator.LoadAnimation(skill.properties.animation);
+
+						// Wait for the animation to load, then play it and wait for an amount of seconds given by the duration
+						return Promise.fromEvent(
+							animation.GetPropertyChangedSignal("Length"),
+							() => animation.Length > 0,
+						).then(() => {
+							// OPTIMIZE: This could be moved to the client to reduce SFX/VFX desync if needed
+							animation.Play();
+
+							return Promise.delay(animation.Length);
+						});
+					})
+					.then(() => {
+						skill.cast(cast.casterPlayer, cast.targetPlayer, cast.targetCombatant);
+					});
+			} else {
+				// TODO: Implement clashing
+				return recurse(i - 1).then(() => {});
+			}
+		};
+
+		this.janitor.AddPromise(recurse());
 	}
 
 	public getTeam(teamName: Teams) {
@@ -241,6 +297,27 @@ export class ServerBattle extends Battle {
 		}
 	}
 
+	protected setupNPCs() {
+		for (const [teamName, team] of this.teams) {
+			for (const [player] of team) {
+				if (player.getRbxPlayer()) {
+					continue;
+				}
+
+				const { combatants } = playersAtom()[player.id];
+
+				for (const combatant of combatants) {
+					const { autoControlCtor } = combatantList[combatant];
+
+					this.autoControls[teamName].set(
+						battlesAtom()[this.id].teams[teamName].indexOf(player.id),
+						new autoControlCtor(this.id, player.id),
+					);
+				}
+			}
+		}
+	}
+
 	protected stopMovementOfTeams() {
 		for (const [, team] of this.teams) {
 			for (const [player] of team) {
@@ -281,6 +358,22 @@ export class ServerBattle extends Battle {
 				}
 
 				this.nextPhase();
+			},
+		);
+
+		// Run all NPC decision trees during the DECIDE phase
+		subscribe(
+			() => battlesAtom()[this.id].phase,
+			(phase) => {
+				if (phase !== BattlePhase.DECIDE) {
+					return;
+				}
+
+				for (const [, team] of pairs(this.autoControls)) {
+					for (const [, autoControl] of team) {
+						autoControl.runDecision();
+					}
+				}
 			},
 		);
 	}

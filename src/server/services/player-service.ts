@@ -1,4 +1,4 @@
-import { Players, ReplicatedStorage, RunService, Workspace } from "@rbxts/services";
+import { Players, RunService } from "@rbxts/services";
 import { Service, OnInit } from "@flamework/core";
 import { batch } from "@rbxts/charm";
 import { Events } from "server/network";

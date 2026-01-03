@@ -17,6 +17,12 @@ export class SelectCombatant implements OnInit {
 				return;
 			}
 
+			const { selectedCombatant } = battlesAtom()[battleId].playerInfo[tostring(player.UserId)];
+
+			if (selectedCombatant === selected) {
+				return;
+			}
+
 			battlesAtom((state) =>
 				produce(state, (draft) => {
 					draft[battleId].playerInfo[tostring(player.UserId)].selectedCombatant = selected;

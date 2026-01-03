@@ -1,22 +1,26 @@
-import type { Constructor } from "shared/lib/util";
 import { AutoControl } from "./auto-control";
 import { GenericAutoControl } from "./generic-auto-control";
 import { CombatantList } from "shared/modules/combatant-list";
 import { ReplicatedStorage } from "@rbxts/services";
 
+type AutoControlCtor<T extends AutoControl = AutoControl> = new (battleId: string, playerId: string) => T;
+
 export interface Combatant {
 	readonly baseCharacter: CombatantList[keyof CombatantList];
+
 	readonly health: number;
 	readonly energy: number;
 
-	readonly autoControlCtor: Constructor<AutoControl>;
+	readonly autoControlCtor: AutoControlCtor;
 }
 
 export class CombatantBuilder {
 	private baseCharacter: CombatantList[keyof CombatantList] = ReplicatedStorage.combatants.MaleMC;
+
 	private health = 100;
 	private energy = 5;
-	private autoControlCtor: Constructor<AutoControl> = GenericAutoControl;
+
+	private autoControlCtor: AutoControlCtor = GenericAutoControl;
 
 	public getFinal(): Combatant {
 		return {
@@ -45,7 +49,7 @@ export class CombatantBuilder {
 		return this;
 	}
 
-	public setAutoControl(autoControlCtor: Constructor<AutoControl>) {
+	public setAutoControl(autoControlCtor: AutoControlCtor) {
 		this.autoControlCtor = autoControlCtor;
 
 		return this;

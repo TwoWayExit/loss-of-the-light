@@ -41,8 +41,8 @@ export abstract class Skill {
 	 * @returns A success status boolean
 	 * @virtual
 	 */
-	public cast(caster: BasePlayer, target: BasePlayer, combatant: number) {
-		warn(`[WARN] Skill cast unimplemented, caster ${caster.id}, target ${target.id}, combatant index ${combatant}`);
+	public cast(casterId: string, targetId: string, combatant: number) {
+		warn(`[WARN] Skill cast unimplemented, caster ${casterId}, target ${targetId}, combatant index ${combatant}`);
 
 		return false;
 	}

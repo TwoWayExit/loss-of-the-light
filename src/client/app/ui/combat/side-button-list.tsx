@@ -7,6 +7,7 @@ import { atom, computed } from "@rbxts/charm";
 import { playersAtom } from "shared/atoms/players";
 import { Players } from "@rbxts/services";
 import { battlesAtom } from "shared/atoms/battles";
+import { selectedEnemy } from "client/atoms/client-info";
 
 export namespace Combat {
 	export const enum Menu {
@@ -64,6 +65,8 @@ export default function SideButtonList() {
 				color={Color3.fromRGB(108, 67, 67)}
 				onClick={() => {
 					Combat.currentMenu(Combat.Menu.ATTACK);
+
+					selectedEnemy([0, 0]);
 				}}
 			/>
 			<SideButton

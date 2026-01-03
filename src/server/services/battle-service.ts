@@ -8,10 +8,10 @@ import "shared/modules/skillsets";
 
 @Service({})
 export class BattleService implements OnStart, OnInit {
-	public async startBattle(first: Teams, player1: BasePlayer, player2: BasePlayer) {
-		const battle = ServerBattle.createBattle(player1, player2, playersAtom()[player1.id].region, first);
+	public async startBattle(first: Teams, team1: BasePlayer[], team2: BasePlayer[]) {
+		const battle = ServerBattle.createBattle(team1, team2, playersAtom()[team1[0].id].region, first);
 
-		await this.streamBattleground(battle, [player1, player2]);
+		await this.streamBattleground(battle, [...team1, ...team2]);
 
 		battle.startBattle();
 	}

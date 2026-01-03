@@ -16,7 +16,7 @@ interface Attributes {
 	isFirst: boolean;
 }
 
-/** @remarks Do not manually add this component via studio, use the `enemy` component tag instead */
+/** WARN: Do not manually add this component via studio, use the `enemy` component tag instead */
 @Component({
 	tag: "battle-trigger",
 	defaults: {
@@ -72,7 +72,11 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 		const distance = character.HumanoidRootPart.Position.sub(this.instance.HumanoidRootPart.Position).Magnitude;
 
 		if (distance <= this.attributes.triggerDistance) {
-			this.battleService.startBattle(this.attributes.isFirst ? Teams.TEAM2 : Teams.TEAM1, player, this.player);
+			this.battleService.startBattle(
+				this.attributes.isFirst ? Teams.TEAM2 : Teams.TEAM1,
+				[player],
+				[this.player],
+			);
 		}
 	}
 

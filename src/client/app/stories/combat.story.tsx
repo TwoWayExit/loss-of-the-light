@@ -52,7 +52,6 @@ export = {
 							character.Archivable = false;
 							character.Parent = Workspace.combatants;
 
-							// TODO: Make these pre-set values configurable
 							return {
 								character,
 								health,

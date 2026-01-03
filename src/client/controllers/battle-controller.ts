@@ -88,6 +88,11 @@ export class BattleController implements OnInit {
 	}
 
 	private onEnemySwitch(enemyIndex: number, combatantIndex: number) {
+		if (enemyIndex === -1 || combatantIndex === -1) {
+			this.onCombatantSwitch(clSelectedCombatant());
+			return;
+		}
+
 		const enemyCombatant = getEnemyCombatants(tostring(Players.LocalPlayer.UserId), enemyIndex)[combatantIndex];
 		const pivot = enemyCombatant.character.GetPivot();
 		const tween = TweenService.Create(Workspace.CurrentCamera!, this.tweenInfos.position, {

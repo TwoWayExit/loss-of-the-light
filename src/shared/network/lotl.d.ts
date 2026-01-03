@@ -1,9 +1,8 @@
-import { Action, ActionPlan } from "shared/modules/battle-types";
+import { ActionPlan } from "shared/modules/battle-types";
 
 export interface LotlServerEvents {
-	// TODO: Use `SkillCast` instead
 	queueSkill: (skill: number, targetId: string, casterCombatant: number, targetCombatant: number) => void;
-	// NOTE: This is marked for deletion if no use cases on the server are found
+	// TODO: This is marked for deletion if no use cases on the server are found
 	selectCombatant: (selected: number) => void;
 	finishTurn: () => void;
 }

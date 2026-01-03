@@ -23,6 +23,8 @@ export const confirm: Command = {
 
 		Combat.currentMenu(Combat.Menu.MAIN);
 
+		selectedEnemy([-1, -1]);
+
 		const [enemyIndex, combatantIndex] = selectedEnemy();
 		const team = getPlayerTeam(tostring(Players.LocalPlayer.UserId));
 		const enemyTeam = getOpposingTeam(team);
