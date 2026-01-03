@@ -23,10 +23,14 @@ export class BattleController implements OnInit {
 	public constructor(protected readonly cameraController: LotlCameraController) {}
 
 	protected setCameraActive(active: boolean) {
+		assert(this.currentBattle);
+
 		this.cameraController.useFixedPosition(active);
 
 		if (active) {
-			const { combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+			const { region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+			const { combatants } =
+				battlesAtom()[this.currentBattle.id].playerInfo[tostring(Players.LocalPlayer.UserId)];
 			const combatant = combatants[clSelectedCombatant()];
 			const position = combatant.character.GetPivot().Position;
 
@@ -37,7 +41,10 @@ export class BattleController implements OnInit {
 	}
 
 	private onCombatantSwitch(selected: number) {
-		const { combatants, region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+		assert(this.currentBattle);
+
+		const { region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
+		const { combatants } = battlesAtom()[this.currentBattle.id].playerInfo[tostring(Players.LocalPlayer.UserId)];
 
 		if (selected < 0 || selected >= combatants.size()) {
 			return;
@@ -103,11 +110,11 @@ export class BattleController implements OnInit {
 			return () => {
 				this.currentBattle?.stopBattle();
 
-				delete this.currentBattle;
-
 				clSelectedCombatant(-1);
 
 				this.setCameraActive(false);
+
+				delete this.currentBattle;
 			};
 		});
 

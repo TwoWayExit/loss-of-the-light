@@ -180,17 +180,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 		this.rayParams.FilterDescendantsInstances = [...bodyParts, ...this.rayParams.FilterDescendantsInstances];
 	}
 
-	protected reduceTimers() {
-		const frameMsec = 1000 * stats.frameTime;
-
-		if (this.player.localData.duckTime > 0) {
-			this.player.localData.duckTime -= frameMsec;
-
-			if (this.player.localData.duckTime < 0) {
-				this.player.localData.duckTime = 0;
-			}
-		}
-	}
+	protected reduceTimers() {}
 
 	protected stayOnGround() {
 		const end_ = this.move.getAbsOrigin().sub(new Vector3(0, this.player.getStepSize(), 0));

@@ -4,9 +4,13 @@ import { usePx } from "client/app/hooks/use-px";
 import Combatant from "./combatant";
 import { useAtom } from "@rbxts/react-charm";
 import { playersAtom } from "shared/atoms/players";
+import { battlesAtom } from "shared/atoms/battles";
 
 export default function CombatantList() {
-	const combatants = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.combatants);
+	const battleId = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId) ?? "";
+	const combatants = useAtom(
+		() => battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.combatants,
+	);
 
 	const px = usePx();
 

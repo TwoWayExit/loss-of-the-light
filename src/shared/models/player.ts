@@ -7,20 +7,10 @@ import { ViewVectors } from "shared/modules/view-vectors";
 import { networkVar } from "shared/lib/network";
 import { $env } from "rbxts-transform-env";
 
-export class PlayerData {
-	public isDucked = false;
-	public isDucking = false;
-
-	public duckTime = 0;
-
-	public allowAutoMovement = true;
-}
-
 export class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
 	/** @virtual */
 	public static readonly playerAdded = new Signal<BasePlayer>();
 
-	public readonly localData = new PlayerData();
 	public readonly command = new UserCommand();
 
 	/** A signal which fires whenever the player dies */

@@ -1,5 +1,7 @@
 import type { Teams } from "shared/models/battle";
 
+export type Constructor<T> = new (...args: never[]) => T;
+
 export function escapedRichText(text: string) {
 	text = text.gsub("&", "&amp;")[0];
 	text = text.gsub("<", "&lt;")[0];

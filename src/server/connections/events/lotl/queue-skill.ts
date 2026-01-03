@@ -29,17 +29,17 @@ export class CastSkill implements OnInit {
 
 			const casterCombatants = playersAtom()[tostring(player.UserId)].combatants;
 
-			if (!casterCombatants[casterCombatant]) {
+			if (casterCombatants[casterCombatant] === undefined) {
 				return;
 			}
 
 			const targetCombatants = playersAtom()[targetId].combatants;
 
-			if (!targetCombatants[targetCombatant]) {
+			if (targetCombatants[targetCombatant] === undefined) {
 				return;
 			}
 
-			const skillset = Skillset.getSkillset(casterCombatants[casterCombatant].character.Name);
+			const skillset = Skillset.getSkillset(casterCombatants[casterCombatant]);
 
 			if (!skillset.skills[skill]) {
 				return;

@@ -2,7 +2,7 @@ _G.__DEV__ = true;
 
 import React from "@rbxts/react";
 import ReactRoblox from "@rbxts/react-roblox";
-import { Players, ReplicatedStorage, Workspace } from "@rbxts/services";
+import { Players, Workspace } from "@rbxts/services";
 import { batch } from "@rbxts/charm";
 import { addCombatant, createPlayer, playersAtom } from "shared/atoms/players";
 import { produce } from "@rbxts/better-immut";
@@ -10,7 +10,8 @@ import { battlesAtom, createBattle } from "shared/atoms/battles";
 import { Teams } from "shared/models/battle";
 import { ClientBattle } from "client/models/client-battle";
 import { clSelectedCombatant } from "client/atoms/client-info";
-import CombatPageRouter from "../ui/combat/combat-page-router";
+import CombatPageRouter from "client/app/ui/combat/combat-page-router";
+import combatantList from "shared/modules/combatant-list";
 
 interface Controls {}
 
@@ -35,17 +36,7 @@ export = {
 			);
 
 			for (let i = 0; i < 4; i++) {
-				const character = ReplicatedStorage.combatants.MaleMC.Clone();
-
-				character.Archivable = false;
-				character.Parent = Workspace.combatants;
-
-				playersAtom((state) =>
-					addCombatant(state, tostring(Players.LocalPlayer.UserId), {
-						character,
-						health: 100,
-					}),
-				);
+				playersAtom((state) => addCombatant(state, tostring(Players.LocalPlayer.UserId), "MaleMC"));
 			}
 
 			clSelectedCombatant(0);
@@ -54,7 +45,20 @@ export = {
 				produce(state, (draft) => {
 					draft["test"].playerInfo[tostring(Players.LocalPlayer.UserId)] = {
 						selectedCombatant: -1,
-						energy: playersAtom()[tostring(Players.LocalPlayer.UserId)].combatants.map(() => 5),
+						combatants: playersAtom()[tostring(Players.LocalPlayer.UserId)].combatants.map((name) => {
+							const { baseCharacter, health, energy } = combatantList[name];
+							const character = baseCharacter.Clone();
+
+							character.Archivable = false;
+							character.Parent = Workspace.combatants;
+
+							// TODO: Make these pre-set values configurable
+							return {
+								character,
+								health,
+								energy,
+							};
+						}),
 						turnFinished: false,
 					};
 				}),

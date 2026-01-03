@@ -31,9 +31,9 @@ export default function CombatFrame() {
 	const energy =
 		useAtom(
 			() =>
-				battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.energy[
+				battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.combatants[
 					clSelectedCombatant()
-				],
+				].energy,
 		) ?? 0;
 
 	return (

@@ -1,7 +1,6 @@
 import { Players, Workspace } from "@rbxts/services";
-import type { AnimatedCharacter } from "server/models/combatant";
+import type { AnimatedCharacter } from "shared/modules/global-types";
 import { battlesAtom } from "shared/atoms/battles";
-import { playersAtom } from "shared/atoms/players";
 import { Battle, Teams } from "shared/models/battle";
 import { Action, ActionPlan } from "shared/modules/battle-types";
 
@@ -17,8 +16,8 @@ export class ClientBattle extends Battle {
 
 				this.combatants.set(playerId, list);
 
-				playersAtom()
-					[playerId].combatants.map((c) => c.character)
+				battlesAtom()
+					[this.id].playerInfo[playerId].combatants.map((c) => c.character)
 					.forEach((c) => list.push(c));
 			}
 		}

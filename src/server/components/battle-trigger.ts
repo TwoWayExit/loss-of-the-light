@@ -3,7 +3,7 @@ import { Component, Components } from "@flamework/components";
 import { ReplicatedStorage, Workspace } from "@rbxts/services";
 import { Character } from "shared/models/character";
 import { BasePlayer } from "shared/models/player";
-import { CombatantList } from "server/models/combatant";
+import { CombatantList } from "shared/modules/combatant-list";
 import { DisposableComponent } from "shared/components/disposable-component";
 import { Enemy } from "server/components/enemy";
 import { BattleService } from "server/services/battle-service";
@@ -58,16 +58,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 				continue;
 			}
 
-			const clone = ReplicatedStorage.combatants[combatant as keyof CombatantList].Clone();
-
-			clone.Parent = Workspace.combatants;
-
-			playersAtom((state) =>
-				addCombatant(state, this.player.id, {
-					character: clone,
-					health: 100,
-				}),
-			);
+			playersAtom((state) => addCombatant(state, this.player.id, combatant as keyof CombatantList));
 		}
 	}
 

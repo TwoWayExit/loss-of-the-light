@@ -2,15 +2,14 @@ import { Teams } from "shared/models/battle";
 import { Region } from "shared/modules/global-types";
 import { produce } from "@rbxts/better-immut";
 import { atom } from "@rbxts/charm";
-import { BattlePhase, SkillCast, SkillCastQueue } from "shared/modules/battle-types";
+import { BattlePhase, CombatantInfo, SkillCast, SkillCastQueue } from "shared/modules/battle-types";
 import { playersAtom } from "./players";
 import { getOpposingTeam } from "shared/lib/util";
 
 interface PlayerInfo {
 	/** -1 if no combatant is selected */
 	readonly selectedCombatant: number;
-	// NOTE: The assumption is made that the order of combatants will never change in battle, so we can safely use combatant list (in the players atom) indices instead of combatant names
-	readonly energy: number[];
+	readonly combatants: CombatantInfo[];
 	readonly turnFinished: boolean;
 }
 
@@ -29,7 +28,6 @@ interface BattleInfo {
 		readonly [playerId: string]: PlayerInfo;
 	};
 
-	/** Skill cast queue */
 	readonly skillsCasted: SkillCastQueue;
 }
 
@@ -76,7 +74,7 @@ export function getEnemyCombatants(playerId: string, enemyIndex: number) {
 	const enemyTeam = getOpposingTeam(team);
 	const enemyId = battle.teams[enemyTeam][enemyIndex];
 
-	return playersAtom()[enemyId].combatants;
+	return battle.playerInfo[enemyId].combatants;
 }
 
 export const createBattle = (state: BattlesState, id: string, region: BattleInfo["region"], first: Teams) =>
@@ -113,4 +111,15 @@ export const retargetCombatant = (state: BattlesState, id: string, casterSkillCa
 
 		draft[id].skillsCasted[enemyCastIndex].targetPlayer = casterSkillCast.casterPlayer;
 		draft[id].skillsCasted[enemyCastIndex].targetCombatant = casterSkillCast.casterCombatant;
+	});
+
+export const takeCombatantDamage = (
+	state: BattlesState,
+	id: string,
+	enemyId: string,
+	combatantIndex: number,
+	damage: number,
+) =>
+	produce(state, (draft) => {
+		draft[id].playerInfo[enemyId].combatants[combatantIndex].health -= damage;
 	});

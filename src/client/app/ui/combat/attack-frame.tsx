@@ -37,11 +37,13 @@ export default function AttackFrame() {
 	const battleId = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId) ?? "";
 	const energy = useAtom(
 		() =>
-			battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.energy[clSelectedCombatant()] ??
-			0,
+			battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.combatants[clSelectedCombatant()]
+				.energy ?? 0,
 	);
 	const combatantName = useAtom(
-		() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.combatants[clSelectedCombatant()].character.Name,
+		() =>
+			battlesAtom()[battleId].playerInfo[tostring(Players.LocalPlayer.UserId)]?.combatants[clSelectedCombatant()]
+				.character.Name,
 	);
 
 	const skillset = Skillset.getSkillset(combatantName);

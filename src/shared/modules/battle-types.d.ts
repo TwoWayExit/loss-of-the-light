@@ -1,3 +1,14 @@
+import type { AnimatedCharacter } from "shared/modules/global-types";
+
+/** Name can be accessed through `character.Name` */
+export interface CombatantInfo {
+	/** A clone of the original character rig for this combatant, used in battle */
+	readonly character: AnimatedCharacter;
+
+	readonly health: number;
+	readonly energy: number;
+}
+
 export const enum ActionType {
 	SINGLE,
 	CLASH,
@@ -18,6 +29,8 @@ export const enum BattlePhase {
 	DECIDE,
 	/** Animations play and queued skills are casted during this phase */
 	ACTION,
+	/** Victory/defeat phase */
+	FINISH,
 }
 
 export interface SkillCast {

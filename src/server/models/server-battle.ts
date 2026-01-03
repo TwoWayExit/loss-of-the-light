@@ -1,6 +1,5 @@
 import { HttpService, Workspace } from "@rbxts/services";
 import { Battle, Teams } from "shared/models/battle";
-import { Combatant } from "server/models/combatant";
 import { BasePlayer } from "shared/models/player";
 import { Globals, Region } from "shared/modules/global-types";
 import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
@@ -9,35 +8,42 @@ import { clear, produce } from "@rbxts/better-immut";
 import { subscribe } from "@rbxts/charm";
 import { Events } from "server/network";
 import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/battle-types";
+import combatantList, { CombatantList } from "shared/modules/combatant-list";
 
-export type BattleTeam = Map<BasePlayer, Combatant[]>;
+/** Wrapper type for playersAtom `combatants` member */
+export type BattleTeam = Map<BasePlayer, (keyof CombatantList)[]>;
 
 // NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
 	private constructor(
+		id: string,
+		// TODO: Remove this extraneous member
 		protected teams: Map<Teams, BattleTeam>,
 		public readonly region: Region,
 		first: Teams,
 	) {
-		super(HttpService.GenerateGUID(false), first);
-
-		// Add combatants for cleanup
-		for (const [, team] of this.teams) {
-			for (const [, combatants] of team) {
-				this.janitor.Add(() => {
-					combatants.forEach((combatant) => combatant.destroy());
-					combatants.clear();
-				});
-			}
-		}
+		super(id, first);
 	}
 
 	// TODO: Add support for multiple players
 	public static createBattle(player1: BasePlayer, player2: BasePlayer, region: Region, first: Teams) {
+		// NPCs can be in as many battles as needed, but not players
+		assert(
+			!player1.getRbxPlayer() || playersAtom()[player1.id].battleId === undefined,
+			`${player1.getNickname()} (${player1.id}) already in battle`,
+		);
+		assert(
+			!player2.getRbxPlayer() || playersAtom()[player2.id].battleId === undefined,
+			`${player2.getNickname()} (${player2.id}) already in battle`,
+		);
+
+		const id = HttpService.GenerateGUID(false);
+
 		return new ServerBattle(
+			id,
 			new Map([
-				[Teams.TEAM1, new Map([[player1, Combatant.createCombatants(player1)]])],
-				[Teams.TEAM2, new Map([[player2, Combatant.createCombatants(player2)]])],
+				[Teams.TEAM1, new Map([[player1, playersAtom()[player1.id].combatants]])],
+				[Teams.TEAM2, new Map([[player2, playersAtom()[player2.id].combatants]])],
 			]),
 			region,
 			first,
@@ -201,16 +207,27 @@ export class ServerBattle extends Battle {
 						produce(state, (draft) => {
 							draft[this.id].playerInfo[player.id] = {
 								selectedCombatant: -1,
-								energy: combatants.map(() => 5),
+								combatants: combatants.map((name, index) => {
+									const { baseCharacter, energy, health } = combatantList[name];
+									const character = baseCharacter.Clone();
+
+									character.PivotTo(this.getCombatantPosition(teamName, player, index));
+									character.AddTag(this.id);
+									character.Parent = Workspace.combatants;
+
+									// Mark for deletion once battle ends
+									this.janitor.Add(character);
+
+									return {
+										character,
+										energy,
+										health,
+									};
+								}),
 								turnFinished: false,
 							};
 						}),
 					);
-
-					combatants.forEach((combatant, index) => {
-						combatant.character.PivotTo(this.getCombatantPosition(teamName, player, index));
-						combatant.character.AddTag(this.id);
-					});
 				} else {
 					playersAtom((state) =>
 						produce(state, (draft) => {

@@ -8,6 +8,7 @@ import { PlayerNetworked } from "shared/models/player-networked";
 	loadOrder: 0,
 })
 export class InputController implements OnStart, OnRender {
+	// TODO: Fix this anti-pattern of utilizing static members within a singleton class
 	public static input?: Input;
 
 	public constructor(private components: Components) {}

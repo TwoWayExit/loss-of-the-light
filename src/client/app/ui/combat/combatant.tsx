@@ -1,6 +1,6 @@
 import React from "@rbxts/react";
 import { usePx } from "client/app/hooks/use-px";
-import { CombatantInfo } from "server/models/combatant";
+import { CombatantInfo } from "shared/modules/battle-types";
 
 export default function Combatant({
 	index,

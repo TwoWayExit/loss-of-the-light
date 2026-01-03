@@ -28,17 +28,7 @@ export class PlayerService implements OnInit {
 			if (player.getRbxPlayer()) {
 				batch(() => {
 					for (let i = 0; i < 3; i++) {
-						const character = ReplicatedStorage.combatants.MaleMC.Clone();
-
-						// We need to parent this to something that isn't nil to be able to replicate it to the client
-						character.Parent = Workspace.combatants;
-
-						playersAtom((state) =>
-							addCombatant(state, player.id, {
-								character,
-								health: 100,
-							}),
-						);
+						playersAtom((state) => addCombatant(state, player.id, "MaleMC"));
 					}
 				});
 			}
