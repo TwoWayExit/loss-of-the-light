@@ -4,7 +4,8 @@ import { Combat } from "./side-button-list";
 import AttackFrame from "./attack-frame";
 import CombatFrame from "./combat-frame";
 
-export default function CombatPage() {
+// TODO: Find a better way to route these which allows out-animations on page change
+export default function CombatPageRouter() {
 	const menu = useAtom(Combat.currentMenu);
 
 	switch (menu) {

@@ -10,7 +10,7 @@ import { battlesAtom, createBattle } from "shared/atoms/battles";
 import { Teams } from "shared/models/battle";
 import { ClientBattle } from "client/models/client-battle";
 import { clSelectedCombatant } from "client/atoms/client-info";
-import CombatPage from "../ui/combat/page";
+import CombatPageRouter from "../ui/combat/combat-page-router";
 
 interface Controls {}
 
@@ -63,6 +63,6 @@ export = {
 
 		new ClientBattle("test", Teams.TEAM1);
 
-		return <CombatPage />;
+		return <CombatPageRouter />;
 	},
 };
