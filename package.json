@@ -13,18 +13,17 @@
   "license": "ISC",
   "devDependencies": {
     "@rbxts/compiler-types": "^3.0.0-types.0",
-    "@rbxts/types": "^1.0.896",
-    "@typescript-eslint/parser": "^8.50.1",
+    "@rbxts/types": "^1.0.902",
     "eslint": "^9.39.2",
     "eslint-plugin-roblox-ts": "^1.3.1",
     "patch-package": "^8.0.0",
-    "prettier": "^3.7.4",
+    "prettier": "^3.8.0",
     "rbxts-transform-debug": "github:roblox-aurora/rbxts-transform-debug",
     "rbxts-transform-env": "github:roblox-aurora/rbxts-transform-env",
     "rbxts-transformer-flamework": "^1.3.2",
     "rbxts-transformer-t-new": "^1.1.5",
     "roblox-ts": "^3.0.0",
-    "typescript": "^5.5.3"
+    "typescript": "=5.5.3"
   },
   "dependencies": {
     "@flamework/components": "^1.3.2",
@@ -45,8 +44,8 @@
     "@rbxts/promise-child": "^1.2.1",
     "@rbxts/react": "^17.3.7-ts.1",
     "@rbxts/react-charm": "^0.3.0",
-    "@rbxts/react-devtools-core": "^17.3.7-alpha.1",
-    "@rbxts/react-globals": "^17.3.7-alpha.1",
+    "@rbxts/react-devtools-core": "^17.3.7-ts.1",
+    "@rbxts/react-globals": "^17.3.7-ts.1",
     "@rbxts/react-roblox": "^17.3.7-ts.1",
     "@rbxts/ripple": "^0.10.1",
     "@rbxts/services": "^1.6.0",
