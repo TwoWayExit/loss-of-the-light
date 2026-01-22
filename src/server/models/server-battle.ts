@@ -1,16 +1,15 @@
 import { HttpService, Workspace } from "@rbxts/services";
 import { Battle, Teams } from "shared/models/battle";
 import { BasePlayer } from "shared/models/player";
-import { Globals, Region } from "shared/modules/global-types";
+import { Region } from "shared/modules/global-types";
 import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
 import { createBattle, battlesAtom, removeBattle, BattleInfo } from "shared/atoms/battles";
 import { clear, produce } from "@rbxts/better-immut";
 import { batch, subscribe } from "@rbxts/charm";
 import { Events } from "server/network";
-import { BattlePhase, Action, ActionType, ActionPlan, SkillCast } from "shared/modules/battle-types";
+import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/battle-types";
 import combatantList from "shared/modules/combatant-list";
 import { AutoControl } from "shared/models/auto-control";
-import { Skillset } from "shared/models/skills";
 
 // NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
@@ -72,6 +71,7 @@ export class ServerBattle extends Battle {
 			});
 		}
 
+		// TODO: Uncomment this once StreamingEnabled is enabled again
 		// await this.streamBattleground(allPlayers);
 
 		// Wrap this as a batch so clients receive only the final state after all changes
@@ -80,8 +80,6 @@ export class ServerBattle extends Battle {
 
 			this.setupBattleAtom();
 		});
-
-		// TODO: Start the battle off by creating an action plan for whoever is first, then finishing their turn automatically
 
 		this.stopMovementOfTeams();
 		this.initAutoControls();
@@ -105,7 +103,7 @@ export class ServerBattle extends Battle {
 
 		// Send action plan to clients
 		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
-			for (const [playerId] of team) {
+			for (const playerId of team) {
 				const player = BasePlayer.getPlayerFromId(playerId);
 
 				assert(player);
@@ -157,6 +155,8 @@ export class ServerBattle extends Battle {
 	protected getActionPlan() {
 		const casted = [...battlesAtom()[this.id].skillsCasted];
 		const plan: ActionPlan = [];
+
+		// TODO: Create a special action plan exclusively for first hits
 
 		for (let i = 0; i < casted.size(); i++) {
 			let corresponding: number | undefined;
