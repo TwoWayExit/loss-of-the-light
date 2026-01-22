@@ -13,7 +13,7 @@ interface PlayerInfo {
 	readonly turnFinished: boolean;
 }
 
-interface BattleInfo {
+export interface BattleInfo {
 	readonly turn: number;
 	readonly region: Region;
 	readonly first: Teams;
@@ -58,7 +58,7 @@ export function getPlayerTeam(playerId: string) {
 
 /**
  * @returns The combatants of an enemy through a given index correspondent to an element in the enemy team array of player ids (as defined in battlesAtom)
- * @remarks Throws an error if the battleId member in the client (as defined in playersAtom) is undefined
+ * @remarks Throws an error if the battleId member (as defined in playersAtom) is undefined
  */
 export function getEnemyCombatants(playerId: string, enemyIndex: number) {
 	const { battleId } = playersAtom()[playerId];

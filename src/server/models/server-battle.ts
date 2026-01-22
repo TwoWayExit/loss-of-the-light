@@ -3,29 +3,26 @@ import { Battle, Teams } from "shared/models/battle";
 import { BasePlayer } from "shared/models/player";
 import { Globals, Region } from "shared/modules/global-types";
 import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
-import { createBattle, battlesAtom, removeBattle } from "shared/atoms/battles";
+import { createBattle, battlesAtom, removeBattle, BattleInfo } from "shared/atoms/battles";
 import { clear, produce } from "@rbxts/better-immut";
-import { subscribe } from "@rbxts/charm";
+import { batch, subscribe } from "@rbxts/charm";
 import { Events } from "server/network";
 import { BattlePhase, Action, ActionType, ActionPlan, SkillCast } from "shared/modules/battle-types";
-import combatantList, { CombatantList } from "shared/modules/combatant-list";
+import combatantList from "shared/modules/combatant-list";
 import { AutoControl } from "shared/models/auto-control";
 import { Skillset } from "shared/models/skills";
 
-/** Wrapper type for playersAtom `combatants` member */
-export type BattleTeam = Map<BasePlayer, (keyof CombatantList)[]>;
-
 // NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
-	private autoControls: Record<Teams, Map<number, AutoControl>> = {
-		[Teams.TEAM1]: new Map(),
-		[Teams.TEAM2]: new Map(),
+	private autoControls: Record<Teams, AutoControl[]> = {
+		[Teams.TEAM1]: new Array<AutoControl>(),
+		[Teams.TEAM2]: new Array<AutoControl>(),
 	} as const;
 
 	private constructor(
 		id: string,
-		// TODO: Remove this extraneous member
-		protected teams: Map<Teams, BattleTeam>,
+		/** This member is only used for the initialization phase, when the `battlesAtom` battle instance has not been set up */
+		protected teams: Record<Teams, string[]>,
 		public readonly region: Region,
 		first: Teams,
 	) {
@@ -55,44 +52,46 @@ export class ServerBattle extends Battle {
 
 		return new ServerBattle(
 			id,
-			new Map([
-				[Teams.TEAM1, new Map(team1.map((player) => [player, playersAtom()[player.id].combatants]))],
-				[Teams.TEAM2, new Map(team2.map((player) => [player, playersAtom()[player.id].combatants]))],
-			]),
+			{
+				[Teams.TEAM1]: team1.map((player) => player.id),
+				[Teams.TEAM2]: team2.map((player) => player.id),
+			},
 			region,
 			first,
 		);
 	}
 
-	public override startBattle() {
-		battlesAtom((state) => createBattle(state, this.id, this.region, this.first));
+	public override async startBattle() {
+		this.setupPlayersAtom(true);
 
-		this.setupPlayers(true);
-		this.setupNPCs();
+		const allPlayers = new Array<BasePlayer>();
 
-		this.stopMovementOfTeams();
-
-		for (const [name, team] of this.teams) {
-			const players = new Array<string>();
-
-			for (const [player] of team) {
-				players.push(player.id);
-			}
-
-			battlesAtom((state) =>
-				produce(state, (draft) => {
-					draft[this.id].teams[name] = players;
-				}),
-			);
+		for (const [, team] of pairs(this.teams)) {
+			team.mapFiltered((playerId) => BasePlayer.getPlayerFromId(playerId)).forEach((player) => {
+				allPlayers.push(player);
+			});
 		}
 
+		// await this.streamBattleground(allPlayers);
+
+		// Wrap this as a batch so clients receive only the final state after all changes
+		batch(() => {
+			battlesAtom((state) => createBattle(state, this.id, this.region, this.first));
+
+			this.setupBattleAtom();
+		});
+
+		// TODO: Start the battle off by creating an action plan for whoever is first, then finishing their turn automatically
+
+		this.stopMovementOfTeams();
+		this.initAutoControls();
 		this.subscribeAtoms();
 
 		super.startBattle();
 	}
 
 	public override stopBattle() {
-		this.setupPlayers(false);
+		this.setupPlayersAtom(false);
 
 		this.startMovementOfTeams();
 
@@ -105,8 +104,12 @@ export class ServerBattle extends Battle {
 		const plan = this.getActionPlan();
 
 		// Send action plan to clients
-		for (const [, team] of this.teams) {
-			for (const [player] of team) {
+		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
+			for (const [playerId] of team) {
+				const player = BasePlayer.getPlayerFromId(playerId);
+
+				assert(player);
+
 				const rbxPlayer = player.getRbxPlayer();
 
 				if (!rbxPlayer) {
@@ -118,61 +121,6 @@ export class ServerBattle extends Battle {
 		}
 
 		print(plan);
-
-		// Do a recursive promise iteration through the action plan to allow a smooth cancellation if needed
-		const recurse = (i = plan.size() - 1): Promise<void> => {
-			if (i < 0) {
-				return Promise.resolve();
-			}
-
-			const action = plan[i];
-
-			if (action.type === ActionType.SINGLE) {
-				// TypeScript is unable to infer a union type-generic member's true type, shame
-				const cast = action.cast as SkillCast;
-				const casterCombatant = playersAtom()[cast.casterPlayer].combatants[cast.casterCombatant];
-
-				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
-
-				return recurse(i - 1)
-					.then(() => {
-						const { character } =
-							battlesAtom()[this.id].playerInfo[cast.casterPlayer].combatants[cast.casterCombatant];
-						const animation = character.Humanoid.Animator.LoadAnimation(skill.properties.animation);
-
-						// Wait for the animation to load, then play it and wait for an amount of seconds given by the duration
-						return Promise.fromEvent(
-							animation.GetPropertyChangedSignal("Length"),
-							() => animation.Length > 0,
-						).then(() => {
-							// OPTIMIZE: This could be moved to the client to reduce SFX/VFX desync if needed
-							animation.Play();
-
-							return Promise.delay(animation.Length);
-						});
-					})
-					.then(() => {
-						skill.cast(cast.casterPlayer, cast.targetPlayer, cast.targetCombatant);
-					});
-			} else {
-				// TODO: Implement clashing
-				return recurse(i - 1).then(() => {});
-			}
-		};
-
-		this.janitor.AddPromise(recurse());
-	}
-
-	public getTeam(teamName: Teams) {
-		return this.teams.get(teamName);
-	}
-
-	public getCombatantPosition(team: Teams, player: BasePlayer, index: number) {
-		const origin = Workspace.battlegrounds[this.region][team].CFrame;
-		const combatantAmount = this.teams.get(team)!.get(player)!.size();
-		const firstPosition = origin.mul(new CFrame(-Globals.COMBATANT_SPACING * ((combatantAmount - 1) / 2), 0, 0));
-
-		return firstPosition.mul(new CFrame(Globals.COMBATANT_SPACING * index, 0, 0));
 	}
 
 	public nextTurn() {
@@ -246,50 +194,54 @@ export class ServerBattle extends Battle {
 		return plan;
 	}
 
-	protected setupPlayers(inBattle: boolean) {
-		for (const [teamName, team] of this.teams) {
-			for (const [player] of team) {
-				const { combatants } = playersAtom()[player.id];
+	protected setupBattleAtom() {
+		for (const [teamName, team] of pairs(this.teams)) {
+			battlesAtom((state) =>
+				produce(state, (draft) => {
+					draft[this.id].teams[teamName] = team;
+				}),
+			);
 
+			for (const playerId of team) {
+				const { combatants } = playersAtom()[playerId];
+
+				battlesAtom((state) =>
+					produce(state, (draft) => {
+						draft[this.id].playerInfo[playerId] = {
+							selectedCombatant: -1,
+							combatants: combatants.map((name) => {
+								const { energy, health } = combatantList[name];
+
+								return {
+									character: undefined!,
+									energy,
+									health,
+								};
+							}),
+							turnFinished: false,
+						};
+					}),
+				);
+			}
+		}
+	}
+
+	protected setupPlayersAtom(inBattle: boolean) {
+		for (const [, team] of pairs(this.teams)) {
+			for (const playerId of team) {
 				if (inBattle) {
 					playersAtom((state) =>
 						produce(state, (draft) => {
-							draft[player.id].status = LotlPlayerStatus.IN_BATTLE;
-							draft[player.id].battleId = this.id;
-						}),
-					);
-
-					battlesAtom((state) =>
-						produce(state, (draft) => {
-							draft[this.id].playerInfo[player.id] = {
-								selectedCombatant: -1,
-								combatants: combatants.map((name, index) => {
-									const { baseCharacter, energy, health } = combatantList[name];
-									const character = baseCharacter.Clone();
-
-									character.PivotTo(this.getCombatantPosition(teamName, player, index));
-									character.AddTag(this.id);
-									character.Parent = Workspace.combatants;
-
-									// Mark for deletion once battle ends
-									this.janitor.Add(character);
-
-									return {
-										character,
-										energy,
-										health,
-									};
-								}),
-								turnFinished: false,
-							};
+							draft[playerId].status = LotlPlayerStatus.IN_BATTLE;
+							draft[playerId].battleId = this.id;
 						}),
 					);
 				} else {
 					playersAtom((state) =>
 						produce(state, (draft) => {
-							draft[player.id].status = LotlPlayerStatus.IDLE;
+							draft[playerId].status = LotlPlayerStatus.IDLE;
 
-							delete draft[player.id].battleId;
+							delete draft[playerId].battleId;
 						}),
 					);
 				}
@@ -297,33 +249,52 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected setupNPCs() {
-		for (const [teamName, team] of this.teams) {
-			for (const [player] of team) {
+	protected async streamBattleground(players: BasePlayer[]) {
+		return await Promise.all(
+			players.map((player) =>
+				Promise.try(() => {
+					const rbxPlayer = player.getRbxPlayer();
+
+					if (rbxPlayer) {
+						rbxPlayer.RequestStreamAroundAsync(Workspace.battlegrounds[this.region].origin.Position);
+						rbxPlayer.ReplicationFocus = Workspace.battlegrounds[this.region].origin;
+					}
+				}),
+			),
+		);
+	}
+
+	protected initAutoControls() {
+		for (const [teamName, team] of pairs(battlesAtom()[this.id].teams)) {
+			for (let i = 0; i < team.size(); i++) {
+				const playerId = team[i];
+				const player = BasePlayer.getPlayerFromId(playerId);
+
+				assert(player);
+
 				if (player.getRbxPlayer()) {
 					continue;
 				}
 
-				const { combatants } = playersAtom()[player.id];
+				const { combatants } = playersAtom()[playerId];
 
 				for (const combatant of combatants) {
 					const { autoControlCtor } = combatantList[combatant];
 
-					this.autoControls[teamName].set(
-						battlesAtom()[this.id].teams[teamName].indexOf(player.id),
-						new autoControlCtor(this.id, player.id),
-					);
+					this.autoControls[teamName].push(new autoControlCtor(this.id, playerId));
 				}
 			}
 		}
 	}
 
 	protected stopMovementOfTeams() {
-		for (const [, team] of this.teams) {
-			for (const [player] of team) {
-				const rbxPlayer = player.getRbxPlayer();
+		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
+			for (const playerId of team) {
+				const player = BasePlayer.getPlayerFromId(playerId);
 
-				if (rbxPlayer) {
+				assert(player);
+
+				if (player.getRbxPlayer()) {
 					player.getCharacter()?.RemoveTag("lotl_movement");
 				}
 			}
@@ -331,13 +302,41 @@ export class ServerBattle extends Battle {
 	}
 
 	protected startMovementOfTeams() {
-		for (const [, team] of this.teams) {
-			for (const [player] of team) {
-				const rbxPlayer = player.getRbxPlayer();
+		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
+			for (const playerId of team) {
+				const player = BasePlayer.getPlayerFromId(playerId);
 
-				if (rbxPlayer) {
+				assert(player);
+
+				if (player.getRbxPlayer()) {
 					player.getCharacter()?.AddTag("lotl_movement");
 				}
+			}
+		}
+	}
+
+	protected onPlayerInfoChange(players: BattleInfo["playerInfo"]) {
+		if (battlesAtom()[this.id].phase !== BattlePhase.DECIDE) {
+			return;
+		}
+
+		for (const [, player] of pairs(players)) {
+			if (!player.turnFinished) {
+				return;
+			}
+		}
+
+		this.nextPhase();
+	}
+
+	protected onPhaseChange(phase: BattlePhase) {
+		if (phase !== BattlePhase.DECIDE) {
+			return;
+		}
+
+		for (const [, team] of pairs(this.autoControls)) {
+			for (const autoControl of team) {
+				autoControl.runDecision();
 			}
 		}
 	}
@@ -347,17 +346,7 @@ export class ServerBattle extends Battle {
 		subscribe(
 			() => battlesAtom()[this.id].playerInfo,
 			(players) => {
-				if (battlesAtom()[this.id].phase !== BattlePhase.DECIDE) {
-					return;
-				}
-
-				for (const [, player] of pairs(players)) {
-					if (!player.turnFinished) {
-						return;
-					}
-				}
-
-				this.nextPhase();
+				this.onPlayerInfoChange(players);
 			},
 		);
 
@@ -365,16 +354,12 @@ export class ServerBattle extends Battle {
 		subscribe(
 			() => battlesAtom()[this.id].phase,
 			(phase) => {
-				if (phase !== BattlePhase.DECIDE) {
-					return;
-				}
-
-				for (const [, team] of pairs(this.autoControls)) {
-					for (const [, autoControl] of team) {
-						autoControl.runDecision();
-					}
-				}
+				this.onPhaseChange(phase);
 			},
 		);
+
+		// Immediately run these despite no change to start the battle
+		this.onPlayerInfoChange(battlesAtom()[this.id].playerInfo);
+		this.onPhaseChange(battlesAtom()[this.id].phase);
 	}
 }

@@ -2,7 +2,10 @@ import type { AnimatedCharacter } from "shared/modules/global-types";
 
 /** Name can be accessed through `character.Name` */
 export interface CombatantInfo {
-	/** A clone of the original character rig for this combatant, used in battle */
+	/**
+	 * A clone of the original character rig for this combatant, used in battle
+	 * @remarks This member is undefined on the server, since characters should only be rendered on the client
+	 */
 	readonly character: AnimatedCharacter;
 
 	readonly health: number;

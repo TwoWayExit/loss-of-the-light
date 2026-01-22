@@ -7,7 +7,7 @@ import { atom, computed } from "@rbxts/charm";
 import { playersAtom } from "shared/atoms/players";
 import { Players } from "@rbxts/services";
 import { battlesAtom } from "shared/atoms/battles";
-import { selectedEnemy } from "client/atoms/client-info";
+import { selectedEnemy, selectedSkill } from "client/atoms/client-info";
 
 export namespace Combat {
 	export const enum Menu {
@@ -27,7 +27,8 @@ export default function SideButtonList() {
 				return false;
 			}
 
-			return !battlesAtom()[battleId].playerInfo[tostring(Players.LocalPlayer.UserId)].turnFinished;
+			// NOTE: Battle may not be loaded in yet despite battleId being assigned, so do an optional chain (?.) here
+			return battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)].turnFinished === false;
 		}),
 	);
 	const isVisible = useAtom(visibleAtom.current);
@@ -67,6 +68,7 @@ export default function SideButtonList() {
 					Combat.currentMenu(Combat.Menu.ATTACK);
 
 					selectedEnemy([0, 0]);
+					selectedSkill(0);
 				}}
 			/>
 			<SideButton

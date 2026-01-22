@@ -81,11 +81,11 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 	}
 
 	onTick() {
-		if (playersAtom()[this.player.id].status === LotlPlayerStatus.IN_BATTLE) {
-			return;
-		}
-
 		for (const player of LotlClient.getPlayers()) {
+			if (playersAtom()[player.id]?.status === LotlPlayerStatus.IN_BATTLE) {
+				continue;
+			}
+
 			this.checkDistance(player);
 		}
 	}

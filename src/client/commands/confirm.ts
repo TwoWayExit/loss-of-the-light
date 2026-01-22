@@ -23,8 +23,6 @@ export const confirm: Command = {
 
 		Combat.currentMenu(Combat.Menu.MAIN);
 
-		selectedEnemy([-1, -1]);
-
 		const [enemyIndex, combatantIndex] = selectedEnemy();
 		const team = getPlayerTeam(tostring(Players.LocalPlayer.UserId));
 		const enemyTeam = getOpposingTeam(team);
@@ -32,5 +30,8 @@ export const confirm: Command = {
 
 		// clSelectedCombatant will never be -1 if the player is in battle, there's no need to check
 		Events.lotl.queueSkill(skillIndex, enemyId, clSelectedCombatant(), combatantIndex);
+
+		selectedEnemy([-1, -1]);
+		selectedSkill(-1);
 	},
 };

@@ -13,10 +13,10 @@ export const switch_right: Command = {
 			return;
 		}
 
-		let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
-		const enemyCombatants = getEnemyCombatants(tostring(Players.LocalPlayer.UserId), enemyIndex);
+		if (selectedSkill() !== -1) {
+			let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
+			const enemyCombatants = getEnemyCombatants(tostring(Players.LocalPlayer.UserId), enemyIndex);
 
-		if (selectedSkill() !== undefined) {
 			if (++selectedEnemyCombatant < enemyCombatants.size()) {
 				selectedEnemy([enemyIndex, selectedEnemyCombatant]);
 			}

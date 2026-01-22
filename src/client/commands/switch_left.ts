@@ -12,9 +12,9 @@ export const switch_left: Command = {
 			return;
 		}
 
-		let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
+		if (selectedSkill() !== -1) {
+			let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
 
-		if (selectedSkill() !== undefined) {
 			if (--selectedEnemyCombatant >= 0) {
 				selectedEnemy([enemyIndex, selectedEnemyCombatant]);
 			}

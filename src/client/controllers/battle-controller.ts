@@ -104,13 +104,16 @@ export class BattleController implements OnInit {
 
 	private subscribeAtoms() {
 		observe(battlesAtom, (battleInfo, battleId) => {
-			this.currentBattle = new ClientBattle(battleId as string, battleInfo.first);
-			this.currentBattle.startBattle();
+			// Defer it to prevent an infinite recursion from charm calling update listeners
+			task.defer(() => {
+				this.currentBattle = new ClientBattle(battleId as string, battleInfo.first);
+				this.currentBattle.startBattle();
 
-			clSelectedCombatant(0);
+				clSelectedCombatant(0);
 
-			this.onCombatantSwitch(0);
-			this.setCameraActive(true);
+				this.onCombatantSwitch(0);
+				this.setCameraActive(true);
+			});
 
 			return () => {
 				this.currentBattle?.stopBattle();
