@@ -5,8 +5,5 @@ export abstract class AutoControl {
 		protected readonly playerId: string,
 	) {}
 
-	/** @virtual */
-	public runDecision() {
-		throw "Function not implemented!";
-	}
+	public abstract runDecision(): void;
 }

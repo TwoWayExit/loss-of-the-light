@@ -1,11 +1,10 @@
-import { backend } from "@rbxts/react-devtools-core";
-import ReactGlobals from "@rbxts/react-globals";
-import { Flamework } from "@flamework/core";
-
 // The DEV flag enables some DevTools features you otherwise wouldn't have
-ReactGlobals.__DEV__ = true;
+_G.__DEV__ = true;
 // The PROFILE flag allows you to run the DevTools profiler
-ReactGlobals.__PROFILE__ = true;
+_G.__PROFILE__ = true;
+
+import { backend } from "@rbxts/react-devtools-core";
+import { Flamework } from "@flamework/core";
 
 backend.connectToDevtools();
 

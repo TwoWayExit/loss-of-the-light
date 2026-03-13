@@ -98,9 +98,7 @@ export class ServerBattle extends Battle {
 		super.stopBattle();
 	}
 
-	public async startAction() {
-		const plan = this.getActionPlan();
-
+	public async startAction(plan = this.getActionPlan()) {
 		// Send action plan to clients
 		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
 			for (const playerId of team) {

@@ -1,5 +1,6 @@
 import { Janitor } from "@rbxts/janitor";
 import { Signal } from "@rbxts/beacon";
+import { ActionPlan } from "shared/modules/battle-types";
 
 export const enum Teams {
 	TEAM1 = "0",
@@ -40,8 +41,5 @@ export abstract class Battle {
 		this.battleEnded.Fire();
 	}
 
-	/** @virtual */
-	public async playoutBattle() {
-		throw "Function not implemented!";
-	}
+	public abstract startAction(plan: ActionPlan): Promise<void>;
 }
