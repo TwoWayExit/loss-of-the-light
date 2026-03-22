@@ -54,12 +54,5 @@
     "@rbxts/ui-labs": "^2.4.2",
     "@rbxts/validate-tree": "^2.0.2",
     "@twowayexit/dev-con": "^2.3.0-beta.2"
-  },
-  "overrides": {
-    "@rbxts/promise-character": {
-      "@rbxts/compiler-types": "latest",
-      "@rbxts/types": "latest",
-      "@rbxts/validate-tree": "latest"
-    }
   }
 }
