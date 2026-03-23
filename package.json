@@ -45,12 +45,11 @@
     "@rbxts/react-devtools-core": "^17.3.7-ts.1",
     "@rbxts/react-globals": "^17.3.7-ts.1",
     "@rbxts/react-roblox": "^17.3.7-ts.1",
-    "@rbxts/ripple": "^0.10.2",
     "@rbxts/services": "^1.6.0",
     "@rbxts/set-timeout": "^1.1.2",
     "@rbxts/t": "^3.1.1",
     "@rbxts/ui-labs": "^2.4.2",
     "@rbxts/validate-tree": "^2.0.2",
-    "@twowayexit/dev-con": "^2.3.0-beta.2"
+    "@twowayexit/dev-con": "2.3.0-beta.3"
   }
 }

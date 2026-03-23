@@ -8,7 +8,6 @@ overrides:
   '@rbxts/compiler-types': ^3.0.0-types.0
   '@rbxts/types': ^1.0.902
   '@rbxts/validate-tree': ^2.0.2
-  '@rbxts/ripple': ^0.10.2
   typescript: '=5.5.3'
 
 importers:
@@ -72,9 +71,6 @@ importers:
       '@rbxts/react-roblox':
         specifier: ^17.3.7-ts.1
         version: 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
-      '@rbxts/ripple':
-        specifier: ^0.10.2
-        version: 0.10.2
       '@rbxts/services':
         specifier: ^1.6.0
         version: 1.6.0
@@ -91,8 +87,8 @@ importers:
         specifier: ^2.0.2
         version: 2.0.2
       '@twowayexit/dev-con':
-        specifier: ^2.3.0-beta.2
-        version: 2.3.0-beta.2
+        specifier: 2.3.0-beta.3
+        version: 2.3.0-beta.3
     devDependencies:
       '@rbxts/compiler-types':
         specifier: ^3.0.0-types.0
@@ -350,8 +346,8 @@ packages:
   '@rbxts/reflex@4.3.1':
     resolution: {integrity: sha512-S5MbEpHKeRh9NWhwGJ789WbUsmlAlpQziWaNK4+kz1EpaaQ7uHQMZAuN1DYl4+QkqmOSuPlj04COwmArBGWH1Q==}
 
-  '@rbxts/ripple@0.10.2':
-    resolution: {integrity: sha512-IakL24BomX5BX0CZSMjDSZdCUNwRbTA6GP+H62qgXQymql3h9MLjit4Jsaz9+NLrKAZfNKSfajMREr/fJkNEdw==}
+  '@rbxts/ripple@0.9.3':
+    resolution: {integrity: sha512-GmwjQl7a8pvGPGQYLmaAcf2RBPpneOL5P1+U8CzTHt9tBhCdk0TEJ/MQoTv9JnHD62RMBE1jogQBvuGgl9VXAg==}
 
   '@rbxts/services@1.6.0':
     resolution: {integrity: sha512-YH02E1/tGHeMXB0Mam8qPdAZa2fjQWdylEscSL4Zn0RIaQeByYImA2qUsXM3nBdhcyKHDwltzSznDKyCGfFEWA==}
@@ -399,8 +395,8 @@ packages:
     resolution: {integrity: sha512-tlqY9xq5ukxTUZBmoOp+m61cqwQD5pHJtFY3Mn8CA8ps6yghLH/Hw8UPdqg4OLmFW3IFlcXnQNmo/dh8HzXYIQ==}
     engines: {node: '>=18'}
 
-  '@twowayexit/dev-con@2.3.0-beta.2':
-    resolution: {integrity: sha512-rcFWn72nqqa5LPhGcgBnz9QfkFfywJChR2rBAhaKDzIiC8SIust0p2UbpaEIhumNGpIPZtpRQmmQpbuOGyK4oA==, tarball: https://npm.pkg.github.com/download/@TwoWayExit/dev-con/2.3.0-beta.2/2f63e679731b97abe4f5bbf68a3192d9bbcc30c6}
+  '@twowayexit/dev-con@2.3.0-beta.3':
+    resolution: {integrity: sha512-TCIKJieKRhegBwkqIKEO7S4zBBwSS4gM697P+sRboW35fTJAN9icz/MmHbfPRmCaShRn0+RvNeLHmWqsg6bhjQ==, tarball: https://npm.pkg.github.com/download/@TwoWayExit/dev-con/2.3.0-beta.3/ca8911b169a1e92a946e0cefc84d3cd5fd4e76c4}
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
@@ -1567,7 +1563,7 @@ snapshots:
     dependencies:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
-      '@rbxts/ripple': 0.10.2
+      '@rbxts/ripple': 0.9.3
       '@rbxts/services': 1.6.0
       '@rbxts/set-timeout': 1.1.2
 
@@ -1608,7 +1604,7 @@ snapshots:
 
   '@rbxts/reflex@4.3.1': {}
 
-  '@rbxts/ripple@0.10.2': {}
+  '@rbxts/ripple@0.9.3': {}
 
   '@rbxts/services@1.6.0': {}
 
@@ -1648,7 +1644,7 @@ snapshots:
 
   '@sindresorhus/merge-streams@4.0.0': {}
 
-  '@twowayexit/dev-con@2.3.0-beta.2':
+  '@twowayexit/dev-con@2.3.0-beta.3':
     dependencies:
       '@rbxts/beacon': 2.1.1
       '@rbxts/pretty-react-hooks': 0.6.4(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
@@ -1656,7 +1652,6 @@ snapshots:
       '@rbxts/react-reflex': 0.3.7(@rbxts/react@17.3.7-ts.1)(@rbxts/reflex@4.3.1)
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
       '@rbxts/reflex': 4.3.1
-      '@rbxts/ripple': 0.10.2
       '@rbxts/services': 1.6.0
 
   '@types/estree@1.0.8': {}

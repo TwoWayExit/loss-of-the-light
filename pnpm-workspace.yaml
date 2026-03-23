@@ -1,3 +1,5 @@
+shamefullyHoist: true
+
 onlyBuiltDependencies:
   - "rbxts-transform-debug"
   - "rbxts-transform-env"
@@ -6,5 +8,4 @@ overrides:
   "@rbxts/compiler-types": "$@rbxts/compiler-types"
   "@rbxts/types": "$@rbxts/types"
   "@rbxts/validate-tree": "$@rbxts/validate-tree"
-  "@rbxts/ripple": "$@rbxts/ripple"
   "typescript": "$typescript"
