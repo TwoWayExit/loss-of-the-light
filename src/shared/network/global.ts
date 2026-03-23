@@ -1,10 +1,11 @@
 import { Networking } from "@flamework/networking";
 import { config } from "../config";
-import { globalReplicas } from "../replicas";
 import { DevConServerEvents, DevConServerFunctions } from "./dev-con";
 import { LotlClientEvents, LotlClientFunctions, LotlServerEvents, LotlServerFunctions } from "./lotl";
+import { StateOf } from "@rbxts/charm";
+import { svVarsAtom } from "shared/atoms/sv-vars";
 
-type MovementVar = keyof ReturnType<typeof globalReplicas.client.movement.GetValue>;
+type MovementVar = keyof StateOf<typeof svVarsAtom>;
 
 interface ServerEvents {
 	requestState: () => void;
@@ -24,7 +25,7 @@ interface ClientEvents {
 }
 
 interface ServerFunctions {
-	setMovementVar: (varName: MovementVar, value: number) => string;
+	setSvVar: (varName: MovementVar, value: number) => string;
 
 	devCon: DevConServerFunctions;
 	lotl: LotlServerFunctions;

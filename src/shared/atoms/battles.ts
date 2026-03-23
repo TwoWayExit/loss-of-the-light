@@ -39,7 +39,6 @@ const initialState: BattlesState = {};
 
 export const battlesAtom = atom(initialState);
 
-// TODO: Perhaps move these helper functions into a separate file
 export function getPlayerTeam(playerId: string) {
 	const { battleId } = playersAtom()[playerId];
 
@@ -77,49 +76,55 @@ export function getEnemyCombatants(playerId: string, enemyIndex: number) {
 	return battle.playerInfo[enemyId].combatants;
 }
 
-export const createBattle = (state: BattlesState, id: string, region: BattleInfo["region"], first: Teams) =>
-	produce(state, (draft) => {
-		draft[id] = {
-			turn: 0,
-			region,
-			first,
-			phase: BattlePhase.DECIDE,
-			teams: {} as BattleInfo["teams"],
-			spectators: new Set(),
-			playerInfo: {},
-			skillsCasted: [],
-		};
-	});
+export function createBattle(id: string, region: BattleInfo["region"], first: Teams) {
+	battlesAtom((state) =>
+		produce(state, (draft) => {
+			draft[id] = {
+				turn: 0,
+				region,
+				first,
+				phase: BattlePhase.DECIDE,
+				teams: {} as BattleInfo["teams"],
+				spectators: new Set(),
+				playerInfo: {},
+				skillsCasted: [],
+			};
+		}),
+	);
+}
 
-export const removeBattle = (state: BattlesState, id: string) =>
-	produce(state, (draft) => {
-		delete draft[id];
-	});
+export function removeBattle(id: string) {
+	battlesAtom((state) =>
+		produce(state, (draft) => {
+			delete draft[id];
+		}),
+	);
+}
 
 /** Redirects an enemy combatant's targeting to an ally skill caster */
-export const retargetCombatant = (state: BattlesState, id: string, casterSkillCast: SkillCast) =>
-	produce(state, (draft) => {
-		const enemyCastIndex = state[id].skillsCasted.findIndex(
-			(cast) =>
-				cast.casterPlayer === casterSkillCast.targetPlayer &&
-				cast.casterCombatant === casterSkillCast.targetCombatant,
-		);
+export function retargetCombatant(id: string, casterSkillCast: SkillCast) {
+	battlesAtom((state) =>
+		produce(state, (draft) => {
+			const enemyCastIndex = state[id].skillsCasted.findIndex(
+				(cast) =>
+					cast.casterPlayer === casterSkillCast.targetPlayer &&
+					cast.casterCombatant === casterSkillCast.targetCombatant,
+			);
 
-		if (enemyCastIndex === -1) {
-			return;
-		}
+			if (enemyCastIndex === -1) {
+				return;
+			}
 
-		draft[id].skillsCasted[enemyCastIndex].targetPlayer = casterSkillCast.casterPlayer;
-		draft[id].skillsCasted[enemyCastIndex].targetCombatant = casterSkillCast.casterCombatant;
-	});
+			draft[id].skillsCasted[enemyCastIndex].targetPlayer = casterSkillCast.casterPlayer;
+			draft[id].skillsCasted[enemyCastIndex].targetCombatant = casterSkillCast.casterCombatant;
+		}),
+	);
+}
 
-export const takeCombatantDamage = (
-	state: BattlesState,
-	id: string,
-	enemyId: string,
-	combatantIndex: number,
-	damage: number,
-) =>
-	produce(state, (draft) => {
-		draft[id].playerInfo[enemyId].combatants[combatantIndex].health -= damage;
-	});
+export function takeCombatantDamage(id: string, enemyId: string, combatantIndex: number, damage: number) {
+	battlesAtom((state) =>
+		produce(state, (draft) => {
+			draft[id].playerInfo[enemyId].combatants[combatantIndex].health -= damage;
+		}),
+	);
+}

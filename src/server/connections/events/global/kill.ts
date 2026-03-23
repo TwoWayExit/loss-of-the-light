@@ -1,6 +1,6 @@
 import { Service, OnInit } from "@flamework/core";
 import { Events } from "server/network";
-import { Replicas } from "server/replicas";
+import { isHighAuthority } from "shared/atoms/players";
 import { Character } from "shared/models/character";
 import { BasePlayer } from "shared/models/player";
 
@@ -13,7 +13,7 @@ export class Kill implements OnInit {
 			}
 
 			BasePlayer.getPlayerFromCharacter(
-				Replicas.authorized.GetValue(player) ? target : player.Character,
+				isHighAuthority(tostring(player.UserId)) ? target : player.Character,
 			)?.setHealth(0);
 		});
 	}

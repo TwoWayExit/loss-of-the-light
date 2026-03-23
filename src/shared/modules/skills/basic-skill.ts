@@ -2,7 +2,7 @@ import { RunService } from "@rbxts/services";
 import { CombatantList } from "shared/modules/combatant-list";
 import { Skill } from "shared/models/skills";
 import { playersAtom } from "shared/atoms/players";
-import { battlesAtom, takeCombatantDamage } from "shared/atoms/battles";
+import { takeCombatantDamage } from "shared/atoms/battles";
 import { $print } from "rbxts-transform-debug";
 
 export class BasicSkill extends Skill {
@@ -26,9 +26,7 @@ export class BasicSkill extends Skill {
 		}
 
 		if (RunService.IsServer()) {
-			battlesAtom((state) =>
-				takeCombatantDamage(state, battleId, targetId, combatant, this.properties.quantifier),
-			);
+			takeCombatantDamage(battleId, targetId, combatant, this.properties.quantifier);
 
 			$print(`Damaged ${targetId} combatant ${combatant}`);
 		} else {

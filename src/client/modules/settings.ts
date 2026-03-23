@@ -1,13 +1,14 @@
 import { BaseSettings, Setting } from "@twowayexit/dev-con";
 import { Functions } from "client/network";
-import { Replicas } from "client/replicas";
 import settingsList from "./settings-list";
+import { svVarsAtom } from "shared/atoms/sv-vars";
+import { StateOf } from "@rbxts/charm";
 
-type MovementVars = Writable<{ [i in keyof ReturnType<typeof Replicas.movement.GetValue>]: Setting<number> }>;
+type MovementVars = { [i in keyof StateOf<typeof svVarsAtom>]: Setting<number> };
 
 const movementVars: Partial<MovementVars> = {};
 
-for (const [i, v] of pairs(Replicas.movement.GetValue())) {
+for (const [i, v] of pairs(svVarsAtom())) {
 	movementVars[i] = {
 		value: v,
 		config: {
@@ -17,7 +18,7 @@ for (const [i, v] of pairs(Replicas.movement.GetValue())) {
 					return false;
 				}
 
-				const result = await Functions.setMovementVar(i, value);
+				const result = await Functions.setSvVar(i, value);
 
 				print(`! | ${result}`);
 

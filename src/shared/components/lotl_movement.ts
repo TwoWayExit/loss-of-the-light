@@ -5,7 +5,6 @@ import { CollectionService, Players, RunService, Workspace } from "@rbxts/servic
 import { promiseChildOfClass } from "@rbxts/promise-child";
 import { CharacterRigR15, CharacterRigR6 } from "@rbxts/promise-character";
 import { stats } from "shared/modules/stats-defs";
-import { globalReplicas } from "shared/replicas";
 import { BasePlayer } from "shared/models/player";
 import { ViewVectors } from "shared/modules/view-vectors";
 import { Trace, TraceT, RayT } from "shared/lib/trace";
@@ -13,6 +12,7 @@ import { PlayerCollidable } from "shared/models/player-collidable";
 import { $env } from "rbxts-transform-env";
 import { Tags } from "shared/modules/tags";
 import { States } from "shared/modules/states";
+import { svVarsAtom } from "shared/atoms/sv-vars";
 
 interface Attributes {
 	walkSpeed: number;
@@ -354,14 +354,11 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 	}
 
 	protected startGravity() {
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
 		if (this.groundEntity) {
 			this.velocity.VectorVelocity = new Vector3(this.getVelocity().X, 0, this.getVelocity().Z);
 		} else {
 			this.velocity.VectorVelocity = this.getVelocity().add(
-				new Vector3(0, -Replicas.movement.GetValue(player).sv_gravity * 0.5 * stats.frameTime, 0),
+				new Vector3(0, -svVarsAtom().sv_gravity * 0.5 * stats.frameTime, 0),
 			);
 		}
 
@@ -369,14 +366,11 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 	}
 
 	protected finishGravity() {
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
 		if (this.groundEntity) {
 			this.velocity.VectorVelocity = new Vector3(this.getVelocity().X, 0, this.getVelocity().Z);
 		} else {
 			this.velocity.VectorVelocity = this.getVelocity().add(
-				new Vector3(0, -Replicas.movement.GetValue(player).sv_gravity * 0.5 * stats.frameTime, 0),
+				new Vector3(0, -svVarsAtom().sv_gravity * 0.5 * stats.frameTime, 0),
 			);
 		}
 
@@ -384,9 +378,6 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 	}
 
 	protected checkVelocity() {
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
 		const vecVelocity = [this.getVelocity().X, this.getVelocity().Y, this.getVelocity().Z];
 
 		for (let i = 0; i < 3; i++) {
@@ -395,10 +386,10 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 				vecVelocity[i] = 0;
 			}
 
-			if (vecVelocity[i] > Replicas.movement.GetValue(player).sv_maxvelocity) {
-				vecVelocity[i] = Replicas.movement.GetValue(player).sv_maxvelocity;
-			} else if (vecVelocity[i] < -Replicas.movement.GetValue(player).sv_maxvelocity) {
-				vecVelocity[i] = -Replicas.movement.GetValue(player).sv_maxvelocity;
+			if (vecVelocity[i] > svVarsAtom().sv_maxvelocity) {
+				vecVelocity[i] = svVarsAtom().sv_maxvelocity;
+			} else if (vecVelocity[i] < -svVarsAtom().sv_maxvelocity) {
+				vecVelocity[i] = -svVarsAtom().sv_maxvelocity;
 			}
 		}
 
@@ -412,13 +403,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 			return;
 		}
 
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
-		const control =
-			speed < Replicas.movement.GetValue(player).sv_stopspeed
-				? Replicas.movement.GetValue(player).sv_stopspeed
-				: speed;
+		const control = speed < svVarsAtom().sv_stopspeed ? svVarsAtom().sv_stopspeed : speed;
 		const drop = control * amount * stats.frameTime;
 		const newspeed = math.max(speed - drop, 0);
 
@@ -551,10 +536,7 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 			wishSpeed = this.maxSpeed;
 		}
 
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
-		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate);
+		this.accelerate(wishDir, wishSpeed, svVarsAtom().sv_accelerate);
 
 		const speed = this.getVelocity().Magnitude;
 
@@ -727,11 +709,8 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 			wishSpeed = this.maxSpeed;
 		}
 
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
-		this.accelerate(wishDir, wishSpeed, Replicas.movement.GetValue(player).sv_accelerate * 10);
-		this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
+		this.accelerate(wishDir, wishSpeed, svVarsAtom().sv_accelerate * 10);
+		this.applyFriction(svVarsAtom().sv_friction);
 
 		// TODO: Fix underlying server and client position replication conflict to ultimately remove this check
 		if (RunService.IsClient()) {
@@ -747,11 +726,8 @@ export class LotlMovement<A extends Attributes = Attributes, I extends Model = M
 
 		this.categorizePosition();
 
-		const Replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player = this.player.getRbxPlayer() ?? Players.GetPlayers()[0];
-
 		if (this.groundEntity) {
-			this.applyFriction(Replicas.movement.GetValue(player).sv_friction);
+			this.applyFriction(svVarsAtom().sv_friction);
 		}
 
 		this.walkMove();

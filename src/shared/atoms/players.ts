@@ -3,9 +3,14 @@ import { atom } from "@rbxts/charm";
 import type { CombatantList } from "shared/modules/combatant-list";
 import { Region } from "shared/modules/global-types";
 
-export const enum LotlPlayerStatus {
+export const enum PlayerStatus {
 	IDLE,
 	IN_BATTLE,
+}
+
+export const enum PlayerAuthorityFlag {
+	PLAYER = 1 << 0,
+	MODERATOR = 1 << 1,
 }
 
 export interface PlayerInfo {
@@ -14,7 +19,9 @@ export interface PlayerInfo {
 	readonly combatants: (keyof CombatantList)[];
 
 	readonly region: Region;
-	readonly status: LotlPlayerStatus;
+	readonly status: PlayerStatus;
+
+	readonly authorityFlags: number;
 }
 
 interface PlayersState {
@@ -25,39 +32,50 @@ const initialState: PlayersState = {};
 
 export const playersAtom = atom(initialState);
 
-// TODO: Perhaps move these helper functions into a separate file
-export const createPlayer = (state: PlayersState, playerId: string) =>
-	produce(state, (draft) => {
-		draft[playerId] = {
-			combatants: [],
-			region: "baseplate",
-			status: LotlPlayerStatus.IDLE,
-		};
-	});
+export function isHighAuthority(playerId: string) {
+	return playersAtom()[playerId].authorityFlags >= PlayerAuthorityFlag.MODERATOR;
+}
 
-export const addCombatant = (state: PlayersState, playerId: string, name: keyof CombatantList) =>
-	produce(state, (draft) => {
-		insert(draft[playerId].combatants, name);
-	});
+export function createPlayer(playerId: string) {
+	playersAtom((state) =>
+		produce(state, (draft) => {
+			draft[playerId] = {
+				combatants: [],
+				region: "baseplate",
+				status: PlayerStatus.IDLE,
+				authorityFlags: PlayerAuthorityFlag.PLAYER,
+			};
+		}),
+	);
+}
 
-export const reorderCombatant = (
-	state: PlayersState,
-	playerId: string,
-	combatant: keyof CombatantList,
-	orderIndex: number,
-) =>
-	produce(state, (draft) => {
-		const { combatants } = draft[playerId];
-		const info = remove(combatants, combatants.indexOf(combatant));
+export function addCombatant(playerId: string, name: keyof CombatantList) {
+	playersAtom((state) =>
+		produce(state, (draft) => {
+			insert(draft[playerId].combatants, name);
+		}),
+	);
+}
 
-		assert(info, `Combatant ${combatant} not found in player ${playerId}`);
+export function reorderCombatant(playerId: string, combatant: keyof CombatantList, orderIndex: number) {
+	playersAtom((state) =>
+		produce(state, (draft) => {
+			const { combatants } = draft[playerId];
+			const info = remove(combatants, combatants.indexOf(combatant));
 
-		insert(combatants, orderIndex, info);
-	});
+			assert(info, `Combatant ${combatant} not found in player ${playerId}`);
 
-export const removeCombatant = (state: PlayersState, playerId: string, combatant: keyof CombatantList) =>
-	produce(state, (draft) => {
-		const { combatants } = draft[playerId];
+			insert(combatants, orderIndex, info);
+		}),
+	);
+}
 
-		remove(combatants, combatants.indexOf(combatant));
-	});
+export function removeCombatant(playerId: string, combatant: keyof CombatantList) {
+	playersAtom((state) =>
+		produce(state, (draft) => {
+			const { combatants } = draft[playerId];
+
+			remove(combatants, combatants.indexOf(combatant));
+		}),
+	);
+}

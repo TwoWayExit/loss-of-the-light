@@ -22,13 +22,13 @@ export = {
 
 	story: ({ controls }: { controls: Controls }) => {
 		batch(() => {
-			playersAtom((state) => createPlayer(state, tostring(Players.LocalPlayer.UserId)));
+			createPlayer(tostring(Players.LocalPlayer.UserId));
 			playersAtom((state) =>
 				produce(state, (draft) => {
 					draft[tostring(Players.LocalPlayer.UserId)].battleId = "test";
 				}),
 			);
-			battlesAtom((state) => createBattle(state, "test", "baseplate", Teams.TEAM1));
+			createBattle("test", "baseplate", Teams.TEAM1);
 			battlesAtom((state) =>
 				produce(state, (draft) => {
 					draft["test"].teams[Teams.TEAM1] = [tostring(Players.LocalPlayer.UserId)];
@@ -36,7 +36,7 @@ export = {
 			);
 
 			for (let i = 0; i < 4; i++) {
-				playersAtom((state) => addCombatant(state, tostring(Players.LocalPlayer.UserId), "MaleMC"));
+				addCombatant(tostring(Players.LocalPlayer.UserId), "MaleMC");
 			}
 
 			clSelectedCombatant(0);

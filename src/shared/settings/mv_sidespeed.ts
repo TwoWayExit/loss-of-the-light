@@ -1,6 +1,6 @@
-import { RunService } from "@rbxts/services";
+import { Players, RunService } from "@rbxts/services";
 import { Setting } from "@twowayexit/dev-con";
-import { globalReplicas } from "shared/replicas";
+import { isHighAuthority } from "shared/atoms/players";
 
 export const mv_sidespeed: Setting<number> = {
 	value: 34,
@@ -10,7 +10,7 @@ export const mv_sidespeed: Setting<number> = {
 				return true;
 			}
 
-			if (globalReplicas.client.authorized.GetValue()) {
+			if (isHighAuthority(tostring(Players.LocalPlayer.UserId))) {
 				return true;
 			}
 

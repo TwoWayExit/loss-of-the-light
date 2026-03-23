@@ -2,7 +2,7 @@ import { HttpService, Workspace } from "@rbxts/services";
 import { Battle, Teams } from "shared/models/battle";
 import { BasePlayer } from "shared/models/player";
 import { Region } from "shared/modules/global-types";
-import { LotlPlayerStatus, playersAtom } from "shared/atoms/players";
+import { PlayerStatus, playersAtom } from "shared/atoms/players";
 import { createBattle, battlesAtom, removeBattle, BattleInfo } from "shared/atoms/battles";
 import { clear, produce } from "@rbxts/better-immut";
 import { batch, subscribe } from "@rbxts/charm";
@@ -76,7 +76,7 @@ export class ServerBattle extends Battle {
 
 		// Wrap this as a batch so clients receive only the final state after all changes
 		batch(() => {
-			battlesAtom((state) => createBattle(state, this.id, this.region, this.first));
+			createBattle(this.id, this.region, this.first);
 
 			this.setupBattleAtom();
 		});
@@ -93,7 +93,7 @@ export class ServerBattle extends Battle {
 
 		this.startMovementOfTeams();
 
-		battlesAtom((state) => removeBattle(state, this.id));
+		removeBattle(this.id);
 
 		super.stopBattle();
 	}
@@ -230,14 +230,14 @@ export class ServerBattle extends Battle {
 				if (inBattle) {
 					playersAtom((state) =>
 						produce(state, (draft) => {
-							draft[playerId].status = LotlPlayerStatus.IN_BATTLE;
+							draft[playerId].status = PlayerStatus.IN_BATTLE;
 							draft[playerId].battleId = this.id;
 						}),
 					);
 				} else {
 					playersAtom((state) =>
 						produce(state, (draft) => {
-							draft[playerId].status = LotlPlayerStatus.IDLE;
+							draft[playerId].status = PlayerStatus.IDLE;
 
 							delete draft[playerId].battleId;
 						}),

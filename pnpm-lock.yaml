@@ -8,6 +8,7 @@ overrides:
   '@rbxts/compiler-types': ^3.0.0-types.0
   '@rbxts/types': ^1.0.902
   '@rbxts/validate-tree': ^2.0.2
+  '@rbxts/ripple': ^0.10.2
   typescript: '=5.5.3'
 
 importers:
@@ -41,18 +42,12 @@ importers:
       '@rbxts/clack':
         specifier: ^3.1.1
         version: 3.1.1
-      '@rbxts/fast-replica':
-        specifier: ^3.0.2
-        version: 3.0.2
       '@rbxts/janitor':
         specifier: ^1.18.3-ts.0
         version: 1.18.3-ts.0
       '@rbxts/lapis':
         specifier: ^0.3.8
         version: 0.3.8(@rbxts/t@3.2.1)
-      '@rbxts/object-utils':
-        specifier: ^1.0.4
-        version: 1.0.4
       '@rbxts/pretty-react-hooks':
         specifier: ^0.6.4
         version: 0.6.4(@rbxts/react-roblox@17.3.7-ts.1(@rbxts/react@17.3.7-ts.1))(@rbxts/react@17.3.7-ts.1)
@@ -78,7 +73,7 @@ importers:
         specifier: ^17.3.7-ts.1
         version: 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
       '@rbxts/ripple':
-        specifier: ^0.10.1
+        specifier: ^0.10.2
         version: 0.10.2
       '@rbxts/services':
         specifier: ^1.6.0
@@ -300,12 +295,6 @@ packages:
   '@rbxts/compiler-types@3.0.0-types.0':
     resolution: {integrity: sha512-VGOHJPoL7+56NTatMGqQj3K7xWuzEV+aP4QD5vZiHu+bcff3kiTmtoadaF6NkJrmwfFAvbsd4Dg764ZjWNceag==}
 
-  '@rbxts/fast-replica@3.0.2':
-    resolution: {integrity: sha512-I99GnzpJXw+HHgeziq7e6LhESNa4wy4qiGWLYgkLLcRFDdYoVU9M9YrOdBK40WtN2HZ+7qrWfp9cjGWrnWZ6Bw==}
-
-  '@rbxts/goodsignal@0.0.5':
-    resolution: {integrity: sha512-ZM4PH0fYCSLDThxNYY6/hUeKdyR343Rz5ICG3QPYFHgS5BQOSBa+FXnqg33E+zPJtQstghu9Kso8Gap9PZCAcQ==}
-
   '@rbxts/janitor@1.18.3-ts.0':
     resolution: {integrity: sha512-xr6DBJfQ+k0hbkx1pOYteYOBfinYO/otd+NnpiDaVaR78n89cusxBzKrdImNFzBs+GDVG9qnEZb6HbRZyMkz5g==}
 
@@ -363,9 +352,6 @@ packages:
 
   '@rbxts/ripple@0.10.2':
     resolution: {integrity: sha512-IakL24BomX5BX0CZSMjDSZdCUNwRbTA6GP+H62qgXQymql3h9MLjit4Jsaz9+NLrKAZfNKSfajMREr/fJkNEdw==}
-
-  '@rbxts/ripple@0.9.3':
-    resolution: {integrity: sha512-GmwjQl7a8pvGPGQYLmaAcf2RBPpneOL5P1+U8CzTHt9tBhCdk0TEJ/MQoTv9JnHD62RMBE1jogQBvuGgl9VXAg==}
 
   '@rbxts/services@1.6.0':
     resolution: {integrity: sha512-YH02E1/tGHeMXB0Mam8qPdAZa2fjQWdylEscSL4Zn0RIaQeByYImA2qUsXM3nBdhcyKHDwltzSznDKyCGfFEWA==}
@@ -1567,14 +1553,6 @@ snapshots:
 
   '@rbxts/compiler-types@3.0.0-types.0': {}
 
-  '@rbxts/fast-replica@3.0.2':
-    dependencies:
-      '@rbxts/goodsignal': 0.0.5
-      '@rbxts/services': 1.6.0
-      '@rbxts/t': 2.2.1
-
-  '@rbxts/goodsignal@0.0.5': {}
-
   '@rbxts/janitor@1.18.3-ts.0': {}
 
   '@rbxts/lapis@0.3.8(@rbxts/t@3.2.1)':
@@ -1589,7 +1567,7 @@ snapshots:
     dependencies:
       '@rbxts/react': 17.3.7-ts.1
       '@rbxts/react-roblox': 17.3.7-ts.1(@rbxts/react@17.3.7-ts.1)
-      '@rbxts/ripple': 0.9.3
+      '@rbxts/ripple': 0.10.2
       '@rbxts/services': 1.6.0
       '@rbxts/set-timeout': 1.1.2
 
@@ -1631,8 +1609,6 @@ snapshots:
   '@rbxts/reflex@4.3.1': {}
 
   '@rbxts/ripple@0.10.2': {}
-
-  '@rbxts/ripple@0.9.3': {}
 
   '@rbxts/services@1.6.0': {}
 

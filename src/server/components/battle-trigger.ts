@@ -8,7 +8,7 @@ import { DisposableComponent } from "shared/components/disposable-component";
 import { Enemy } from "server/components/enemy";
 import { BattleService } from "server/services/battle-service";
 import { LotlClient } from "shared/models/lotl_client";
-import { addCombatant, LotlPlayerStatus, playersAtom } from "shared/atoms/players";
+import { addCombatant, PlayerStatus, playersAtom } from "shared/atoms/players";
 import { Teams } from "shared/models/battle";
 
 interface Attributes {
@@ -58,7 +58,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 				continue;
 			}
 
-			playersAtom((state) => addCombatant(state, this.player.id, combatant as keyof CombatantList));
+			addCombatant(this.player.id, combatant as keyof CombatantList);
 		}
 	}
 
@@ -82,7 +82,7 @@ export class BattleTrigger extends DisposableComponent<Attributes, Character> im
 
 	onTick() {
 		for (const player of LotlClient.getPlayers()) {
-			if (playersAtom()[player.id]?.status === LotlPlayerStatus.IN_BATTLE) {
+			if (playersAtom()[player.id]?.status === PlayerStatus.IN_BATTLE) {
 				continue;
 			}
 

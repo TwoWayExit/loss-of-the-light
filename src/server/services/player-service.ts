@@ -3,10 +3,10 @@ import { Service, OnInit } from "@flamework/core";
 import { batch } from "@rbxts/charm";
 import { Events } from "server/network";
 import { config } from "shared/config";
-import { Replicas } from "server/replicas";
 import { BasePlayer } from "shared/models/player";
-import { addCombatant, createPlayer, playersAtom } from "shared/atoms/players";
+import { addCombatant, createPlayer, PlayerAuthorityFlag, playersAtom } from "shared/atoms/players";
 import "shared/models/lotl_client";
+import { produce } from "@rbxts/better-immut";
 
 @Service({})
 export class PlayerService implements OnInit {
@@ -15,20 +15,22 @@ export class PlayerService implements OnInit {
 			Events.updateSharedConfig.fire(player, config);
 
 			if (RunService.IsStudio() || (game.PrivateServerId === "" && game.PrivateServerOwnerId !== 0)) {
-				Replicas.authorized.SetValue(player, true);
+				playersAtom((state) =>
+					produce(state, (draft) => {
+						draft[tostring(player.UserId)].authorityFlags |= PlayerAuthorityFlag.MODERATOR;
+					}),
+				);
 			}
-
-			Replicas.movement.SetValue(player, Replicas.movement.GetValue(player)); // Update vars on join
 		});
 
 		BasePlayer.playerAdded.Connect((player) => {
-			playersAtom((state) => createPlayer(state, player.id));
+			createPlayer(player.id);
 
 			// TODO: Remove this placeholder when data loading is implemented
 			if (player.getRbxPlayer()) {
 				batch(() => {
 					for (let i = 0; i < 3; i++) {
-						playersAtom((state) => addCombatant(state, player.id, "MaleMC"));
+						addCombatant(player.id, "MaleMC");
 					}
 				});
 			}

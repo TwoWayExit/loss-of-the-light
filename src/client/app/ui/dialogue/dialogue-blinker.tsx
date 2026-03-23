@@ -11,7 +11,7 @@ export default function DialogueBlinker() {
 	const isActive = useAtom(dialogueIsActive);
 
 	useInterval(
-		() => motion.linear(alpha.getValue() === 1 ? 0 : 1, { speed: 5 }),
+		() => motion.tween(alpha.getValue() === 1 ? 0 : 1, { duration: 1 }),
 		isActive ? BLINK_INTERVAL : undefined,
 		{ immediate: true },
 	);

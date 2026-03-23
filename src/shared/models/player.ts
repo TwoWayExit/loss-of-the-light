@@ -1,11 +1,11 @@
 import { Players, RunService } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
-import { globalReplicas } from "shared/replicas";
 import { BaseCharacter } from "shared/models/character";
 import { UserCommand } from "shared/modules/user-command";
 import { ViewVectors } from "shared/modules/view-vectors";
 import { networkVar } from "shared/lib/network";
 import { $env } from "rbxts-transform-env";
+import { svVarsAtom } from "shared/atoms/sv-vars";
 
 export class BasePlayer<P extends Player | undefined = Player | undefined> extends BaseCharacter<P> {
 	/** @virtual */
@@ -137,10 +137,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns The player's step size
 	 */
 	public getStepSize() {
-		const replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player: Player = this.getRbxPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
-
-		return replicas.movement.GetValue(player).sv_stepsize;
+		return svVarsAtom().sv_stepsize;
 	}
 
 	/**
@@ -148,10 +145,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	 * @returns The player's max speed
 	 */
 	public getMaxSpeed() {
-		const replicas = RunService.IsClient() ? globalReplicas.client : globalReplicas.server;
-		const player: Player = this.getRbxPlayer() ?? Players.GetPlayers()[0]; // Every player should have the same value anyway
-
-		let maxSpeed = replicas.movement.GetValue(player).sv_maxspeed;
+		let maxSpeed = svVarsAtom().sv_maxspeed;
 
 		if (this.maxSpeed > 0 && this.maxSpeed < maxSpeed) {
 			maxSpeed = this.maxSpeed;
