@@ -125,7 +125,7 @@ export class ServerBattle extends Battle {
 				draft[this.id].turn++;
 				draft[this.id].phase = BattlePhase.DECIDE;
 
-				clear(draft[this.id].skillsCasted);
+				clear(draft[this.id].skillCastQueue);
 
 				// Let's index manually instead of using the value element of the iterator, just to ensure that immut does its job as intended
 				for (const [playerId] of pairs(draft[this.id].playerInfo)) {
@@ -151,7 +151,7 @@ export class ServerBattle extends Battle {
 	}
 
 	protected getActionPlan() {
-		const casted = [...battlesAtom()[this.id].skillsCasted];
+		const casted = [...battlesAtom()[this.id].skillCastQueue];
 		const plan: ActionPlan = [];
 
 		// TODO: Create a special action plan exclusively for first hits

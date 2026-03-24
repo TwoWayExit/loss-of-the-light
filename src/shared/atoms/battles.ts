@@ -28,7 +28,7 @@ export interface BattleInfo {
 		readonly [playerId: string]: PlayerInfo;
 	};
 
-	readonly skillsCasted: SkillCastQueue;
+	readonly skillCastQueue: SkillCastQueue;
 }
 
 interface BattlesState {
@@ -87,7 +87,7 @@ export function createBattle(id: string, region: BattleInfo["region"], first: Te
 				teams: {} as BattleInfo["teams"],
 				spectators: new Set(),
 				playerInfo: {},
-				skillsCasted: [],
+				skillCastQueue: [],
 			};
 		}),
 	);
@@ -105,7 +105,7 @@ export function removeBattle(id: string) {
 export function retargetCombatant(id: string, casterSkillCast: SkillCast) {
 	battlesAtom((state) =>
 		produce(state, (draft) => {
-			const enemyCastIndex = state[id].skillsCasted.findIndex(
+			const enemyCastIndex = state[id].skillCastQueue.findIndex(
 				(cast) =>
 					cast.casterPlayer === casterSkillCast.targetPlayer &&
 					cast.casterCombatant === casterSkillCast.targetCombatant,
@@ -115,8 +115,8 @@ export function retargetCombatant(id: string, casterSkillCast: SkillCast) {
 				return;
 			}
 
-			draft[id].skillsCasted[enemyCastIndex].targetPlayer = casterSkillCast.casterPlayer;
-			draft[id].skillsCasted[enemyCastIndex].targetCombatant = casterSkillCast.casterCombatant;
+			draft[id].skillCastQueue[enemyCastIndex].targetPlayer = casterSkillCast.casterPlayer;
+			draft[id].skillCastQueue[enemyCastIndex].targetCombatant = casterSkillCast.casterCombatant;
 		}),
 	);
 }

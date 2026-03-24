@@ -45,7 +45,7 @@ export class CastSkill implements OnInit {
 				return;
 			}
 
-			const existingIndex = battlesAtom()[battleId].skillsCasted.findIndex(
+			const existingIndex = battlesAtom()[battleId].skillCastQueue.findIndex(
 				(info) => info.casterCombatant === casterCombatant && info.casterPlayer === tostring(player.UserId),
 			);
 
@@ -54,14 +54,14 @@ export class CastSkill implements OnInit {
 				if (existingIndex !== -1) {
 					battlesAtom((state) =>
 						produce(state, (draft) => {
-							remove(draft[battleId].skillsCasted, existingIndex);
+							remove(draft[battleId].skillCastQueue, existingIndex);
 						}),
 					);
 				}
 
 				battlesAtom((state) =>
 					produce(state, (draft) => {
-						insert(draft[battleId].skillsCasted, {
+						insert(draft[battleId].skillCastQueue, {
 							skill,
 							casterPlayer: tostring(player.UserId),
 							targetPlayer: targetId,
