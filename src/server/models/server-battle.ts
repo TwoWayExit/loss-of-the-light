@@ -78,7 +78,7 @@ export class ServerBattle extends Battle {
 		batch(() => {
 			createBattle(this.id, this.region, this.first);
 
-			this.setupBattleAtom();
+			this.setupBattlesAtom();
 		});
 
 		this.stopMovementOfTeams();
@@ -192,7 +192,7 @@ export class ServerBattle extends Battle {
 		return plan;
 	}
 
-	protected setupBattleAtom() {
+	protected setupBattlesAtom() {
 		for (const [teamName, team] of pairs(this.teams)) {
 			battlesAtom((state) =>
 				produce(state, (draft) => {

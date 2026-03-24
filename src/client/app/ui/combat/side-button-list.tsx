@@ -21,14 +21,18 @@ export namespace Combat {
 export default function SideButtonList() {
 	const visibleAtom = useRef(
 		computed(() => {
-			const battleId = playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId;
+			// Call these atoms to start initially tracking them
+			const players = playersAtom();
+			const battles = battlesAtom();
+
+			const battleId = players[tostring(Players.LocalPlayer.UserId)]?.battleId;
 
 			if (battleId === undefined) {
 				return false;
 			}
 
 			// NOTE: Battle may not be loaded in yet despite battleId being assigned, so do an optional chain (?.) here
-			return battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)].turnFinished === false;
+			return battles[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)].turnFinished === false;
 		}),
 	);
 	const isVisible = useAtom(visibleAtom.current);

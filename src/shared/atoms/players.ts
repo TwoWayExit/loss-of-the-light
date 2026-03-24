@@ -57,25 +57,25 @@ export function addCombatant(playerId: string, name: keyof CombatantList) {
 	);
 }
 
-export function reorderCombatant(playerId: string, combatant: keyof CombatantList, orderIndex: number) {
+export function reorderCombatant(playerId: string, combatantIndex: number, orderIndex: number) {
 	playersAtom((state) =>
 		produce(state, (draft) => {
 			const { combatants } = draft[playerId];
-			const info = remove(combatants, combatants.indexOf(combatant));
+			const info = remove(combatants, combatantIndex);
 
-			assert(info, `Combatant ${combatant} not found in player ${playerId}`);
+			assert(info, `Combatant ${combatantIndex} out of bounds in player ${playerId}`);
 
 			insert(combatants, orderIndex, info);
 		}),
 	);
 }
 
-export function removeCombatant(playerId: string, combatant: keyof CombatantList) {
+export function removeCombatant(playerId: string, combatantIndex: number) {
 	playersAtom((state) =>
 		produce(state, (draft) => {
 			const { combatants } = draft[playerId];
 
-			remove(combatants, combatants.indexOf(combatant));
+			remove(combatants, combatantIndex);
 		}),
 	);
 }

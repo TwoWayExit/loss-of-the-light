@@ -78,13 +78,11 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 		}
 	}
 
-	protected async verifyAnimations(character: Model) {
+	protected verifyAnimations(character: Model) {
 		const animFolder = character.FindFirstChild("anim");
 
 		if (!animFolder || !validateTree(animFolder, this.tree)) {
-			return Promise.reject(
-				`Character anim folder type check fail on model '${character.GetFullName()}' (${character})`,
-			);
+			throw `Character anim folder type check fail on model '${character.GetFullName()}' (${character})`;
 		}
 
 		this.animations = animFolder;
@@ -131,7 +129,7 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 		this.player = player;
 		this.character = player.getCharacter() ?? player.characterLoaded.Wait()[0];
 
-		this.verifyAnimations(this.character).catch((e) => warn(`[WARN] ${e}`));
+		this.verifyAnimations(this.character);
 	}
 
 	onTick() {
