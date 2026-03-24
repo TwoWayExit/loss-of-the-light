@@ -15,7 +15,7 @@ export interface Combatant {
 }
 
 export class CombatantBuilder {
-	private baseCharacter: CombatantList[keyof CombatantList] = ReplicatedStorage.combatants.MaleMC;
+	private baseCharacter: CombatantList[keyof CombatantList] = ReplicatedStorage.combatants.malemc;
 
 	private health = 100;
 	private energy = 5;
