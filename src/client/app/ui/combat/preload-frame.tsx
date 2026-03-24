@@ -2,7 +2,7 @@ import { useAsyncEffect } from "@rbxts/pretty-react-hooks";
 import React, { useMemo, useState } from "@rbxts/react";
 import { ContentProvider } from "@rbxts/services";
 import { usePx } from "client/app/hooks/use-px";
-import assets, { Assets } from "shared/assets";
+import assets from "shared/assets";
 
 export default function PreloadFrame() {
 	const [currentLoading, setLoading] = useState<[count: number, name: string]>();
@@ -13,18 +13,10 @@ export default function PreloadFrame() {
 		const assetIds = new Array<string>();
 		const names = new Array<string>();
 
-		const recurse = (assets: Assets, prefix = "") => {
-			for (const [name, id] of pairs(assets)) {
-				if (typeIs(id, "string")) {
-					assetIds.push(id);
-					names.push(`${prefix}${name}`);
-				} else {
-					recurse(id, `${prefix}/${name}/`);
-				}
-			}
-		};
-
-		recurse(assets);
+		for (const [name, id] of pairs(assets)) {
+			assetIds.push(id);
+			names.push(name);
+		}
 
 		return [assetIds, names];
 	}, []);
@@ -33,7 +25,9 @@ export default function PreloadFrame() {
 		let i = 0;
 
 		ContentProvider.PreloadAsync(assetIds, (contentId, status) => {
-			setLoading([i++ + 1, names[i]]);
+			setLoading([i + 1, names[i]]);
+
+			i++;
 
 			print(`[PRELOAD] ${contentId} : ${status}`);
 		});
@@ -48,6 +42,7 @@ export default function PreloadFrame() {
 			BackgroundColor3={new Color3(0, 0, 0)}
 			Size={UDim2.fromScale(1, 1)}
 			Visible={currentLoading[0] !== assetIds.size()}
+			ZIndex={999}
 		>
 			<textlabel
 				AnchorPoint={new Vector2(0.5, 0.5)}

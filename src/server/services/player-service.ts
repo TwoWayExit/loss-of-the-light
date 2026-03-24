@@ -30,7 +30,7 @@ export class PlayerService implements OnInit {
 				// TODO: Remove this placeholder when data loading is implemented
 				batch(() => {
 					for (let i = 0; i < 3; i++) {
-						addCombatant(player.id, "MaleMC");
+						addCombatant(player.id, "malemc");
 					}
 				});
 			}

@@ -36,7 +36,7 @@ export = {
 			);
 
 			for (let i = 0; i < 4; i++) {
-				addCombatant(tostring(Players.LocalPlayer.UserId), "MaleMC");
+				addCombatant(tostring(Players.LocalPlayer.UserId), "malemc");
 			}
 
 			clSelectedCombatant(0);

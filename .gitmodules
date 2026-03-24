@@ -1,0 +1,3 @@
+[submodule "loss-of-the-light-assets"]
+	path = assets
+	url = https://github.com/TwoWayExit/loss-of-the-light-assets.git
