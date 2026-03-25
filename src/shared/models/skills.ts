@@ -33,10 +33,10 @@ export interface Skill {
 	readonly properties: SkillProperties;
 
 	/**
-	 * Overriden on the server for logic handling and animations; Overriden on the client for VFX/SFX excluding animations
-	 * @remarks Animations must be handled on the server in order to determine how long it will take for all animations involved in the skill to complete
+	 * For server implementation, this method should be responsible for providing async delays for animation durations, and to lastly mutate state to rehydrate all clients via charm sync
+	 * For client implementation, this method should be responsible for animation playing, VFX, SFX, and local (temporary) state changes
+	 * This allows for more control over what specific skill casts should be capable of doing
 	 * @returns A success status boolean
-	 * @virtual
 	 */
-	cast(casterId: string, targetId: string, combatant: number): boolean;
+	cast(casterId: string, targetId: string, combatant: number): Promise<boolean>;
 }

@@ -27,7 +27,7 @@ function recurse<T extends keyof Tree>(root: T, path: string, assets: Assets<str
 			recurse(root, `${path}${index}/`, asset);
 		} else {
 			// Cut off trailing slash
-			path = path.sub(1, path.size() - 1);
+			const p = path.sub(1, path.size() - 1);
 
 			switch (root) {
 				case "animations": {
@@ -35,7 +35,7 @@ function recurse<T extends keyof Tree>(root: T, path: string, assets: Assets<str
 
 					animation.AnimationId = asset;
 
-					assetInstances[root][path] = animation;
+					assetInstances[root][p] = animation;
 					break;
 				}
 
@@ -44,12 +44,12 @@ function recurse<T extends keyof Tree>(root: T, path: string, assets: Assets<str
 
 					sound.SoundId = asset;
 
-					assetInstances[root][path] = sound;
+					assetInstances[root][p] = sound;
 					break;
 				}
 
 				default: {
-					assetInstances[root][path] = asset;
+					assetInstances[root][p] = asset;
 				}
 			}
 		}

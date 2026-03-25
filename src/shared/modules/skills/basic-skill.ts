@@ -20,7 +20,7 @@ export class BasicSkill implements Skill {
 		};
 	}
 
-	public cast(casterId: string, targetId: string, combatant: number) {
+	public async cast(casterId: string, targetId: string, combatant: number) {
 		const battleId = playersAtom()[casterId].battleId;
 
 		assert(battleId, `Expected battleId to be defined in player ${casterId}`);
@@ -30,10 +30,12 @@ export class BasicSkill implements Skill {
 		}
 
 		if (RunService.IsServer()) {
+			// TODO: Implement animation timings using Promise.delay()
 			takeCombatantDamage(battleId, targetId, combatant, this.properties.quantifier);
 
 			$print(`Damaged ${targetId} combatant ${combatant}`);
 		} else {
+			// TODO: Implement animation playing (and timings)
 			// VFX here
 		}
 

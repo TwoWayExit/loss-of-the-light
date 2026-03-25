@@ -45,29 +45,32 @@ export class ClientBattle extends Battle {
 
 				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
 
-				return recurse(i - 1)
-					.then(() => {
-						const { character } =
-							battlesAtom()[this.id].playerInfo[cast.casterPlayer].combatants[cast.casterCombatant];
-						const animation = character.Humanoid.Animator.LoadAnimation(skill.properties.animation);
+				return (
+					recurse(i - 1)
+						// TODO: Move this whole then() block to the skill's cast() function instead to delegate more control over visual effects and animation durations
+						.then(() => {
+							const { character } =
+								battlesAtom()[this.id].playerInfo[cast.casterPlayer].combatants[cast.casterCombatant];
+							const animation = character.Humanoid.Animator.LoadAnimation(skill.properties.animation);
 
-						// Wait for the animation to load, then play it and wait for an amount of seconds given by the duration
-						return Promise.try(() => assert(animation.Length > 0))
-							.catch(() =>
-								Promise.fromEvent(
-									animation.GetPropertyChangedSignal("Length"),
-									() => animation.Length > 0,
-								),
-							)
-							.then(() => {
-								animation.Play();
+							// Wait for the animation to load, then play it and wait for an amount of seconds given by the duration
+							return Promise.try(() => assert(animation.Length > 0))
+								.catch(() =>
+									Promise.fromEvent(
+										animation.GetPropertyChangedSignal("Length"),
+										() => animation.Length > 0,
+									),
+								)
+								.then(() => {
+									animation.Play();
 
-								return Promise.delay(animation.Length);
-							});
-					})
-					.then(() => {
-						skill.cast(cast.casterPlayer, cast.targetPlayer, cast.targetCombatant);
-					});
+									return Promise.delay(animation.Length);
+								});
+						})
+						.then(() => {
+							skill.cast(cast.casterPlayer, cast.targetPlayer, cast.targetCombatant);
+						})
+				);
 			} else {
 				// TODO: Implement clashing
 				return recurse(i - 1).then(() => {});
