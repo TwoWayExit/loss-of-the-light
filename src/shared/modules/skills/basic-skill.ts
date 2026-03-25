@@ -1,22 +1,26 @@
 import { RunService } from "@rbxts/services";
 import { CombatantList } from "shared/modules/combatant-list";
-import { Skill } from "shared/models/skills";
+import { Skill, SkillProperties } from "shared/models/skills";
 import { playersAtom } from "shared/atoms/players";
 import { takeCombatantDamage } from "shared/atoms/battles";
 import { $print } from "rbxts-transform-debug";
+import assetInstances from "shared/asset-instances";
 
-export class BasicSkill extends Skill {
+export class BasicSkill implements Skill {
+	public readonly name: string;
+	public readonly properties: SkillProperties;
+
 	public constructor(protected readonly caster: keyof CombatantList) {
-		super("Basic", {
+		this.name = "basic";
+		this.properties = {
 			quantifier: 10,
 			coins: 1,
 			description: "placeholder",
-			// FIXME: Add an Animation here
-			animation: undefined!,
-		});
+			animation: assetInstances.animations[`${caster}/basic`],
+		};
 	}
 
-	public override cast(casterId: string, targetId: string, combatant: number) {
+	public cast(casterId: string, targetId: string, combatant: number) {
 		const battleId = playersAtom()[casterId].battleId;
 
 		assert(battleId, `Expected battleId to be defined in player ${casterId}`);

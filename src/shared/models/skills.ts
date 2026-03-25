@@ -1,10 +1,10 @@
-import { BasePlayer } from "shared/models/player";
+import { CombatantList } from "shared/modules/combatant-list";
 
 export class Skillset {
 	protected static skillsets = new Map<string, Skillset>();
 
 	public constructor(
-		public readonly name: string,
+		public readonly name: keyof CombatantList,
 		public readonly skills: Skill[],
 	) {
 		Skillset.skillsets.set(name, this);
@@ -28,12 +28,9 @@ export interface SkillProperties {
 	readonly animation: Animation;
 }
 
-export abstract class Skill {
-	/** @virtual */
-	public constructor(
-		public readonly name: string,
-		public readonly properties: SkillProperties,
-	) {}
+export interface Skill {
+	readonly name: string;
+	readonly properties: SkillProperties;
 
 	/**
 	 * Overriden on the server for logic handling and animations; Overriden on the client for VFX/SFX excluding animations
@@ -41,9 +38,5 @@ export abstract class Skill {
 	 * @returns A success status boolean
 	 * @virtual
 	 */
-	public cast(casterId: string, targetId: string, combatant: number) {
-		warn(`[WARN] Skill cast unimplemented, caster ${casterId}, target ${targetId}, combatant index ${combatant}`);
-
-		return false;
-	}
+	cast(casterId: string, targetId: string, combatant: number): boolean;
 }
