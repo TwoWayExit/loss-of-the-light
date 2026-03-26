@@ -6,7 +6,7 @@ id = 12439625
 
 [codegen]
 typescript = true
-style = "flat"
+style = "nested"
 strip_extensions = true
 
 [inputs.assets]

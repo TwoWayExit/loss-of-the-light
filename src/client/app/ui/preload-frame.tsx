@@ -2,34 +2,40 @@ import { useAsyncEffect } from "@rbxts/pretty-react-hooks";
 import React, { useMemo, useState } from "@rbxts/react";
 import { ContentProvider } from "@rbxts/services";
 import { usePx } from "client/app/hooks/use-px";
-import assets from "shared/assets";
+import assetInstances from "shared/asset-instances";
 
 export default function PreloadFrame() {
 	const [currentLoading, setLoading] = useState<[count: number, name: string]>();
 
 	const px = usePx();
 
-	const [assetIds, names] = useMemo(() => {
-		const assetIds = new Array<string>();
+	const [assetList, names] = useMemo(() => {
+		const assetList = new Array<string | Instance>();
 		const names = new Array<string>();
 
-		for (const [name, id] of pairs(assets)) {
-			assetIds.push(id);
-			names.push(name);
+		for (const [root, assets] of pairs(assetInstances)) {
+			for (const [path, asset] of pairs(assets)) {
+				assetList.push(asset);
+				names.push(`${root}/${path}`);
+			}
 		}
 
-		return [assetIds, names];
+		return [assetList, names];
 	}, []);
 
 	useAsyncEffect(async () => {
 		let i = 0;
 
-		ContentProvider.PreloadAsync(assetIds, (contentId, status) => {
+		ContentProvider.PreloadAsync(assetList, (contentId, status) => {
 			setLoading([i + 1, names[i]]);
 
 			i++;
 
-			print(`[PRELOAD] ${contentId} : ${status}`);
+			if (status === Enum.AssetFetchStatus.Success) {
+				print(`[PRELOAD] ${contentId}`);
+			} else {
+				warn(`[PRELOAD] Failed to preload ${contentId}`);
+			}
 		});
 	}, []);
 
@@ -41,13 +47,13 @@ export default function PreloadFrame() {
 		<frame
 			BackgroundColor3={new Color3(0, 0, 0)}
 			Size={UDim2.fromScale(1, 1)}
-			Visible={currentLoading[0] !== assetIds.size()}
+			Visible={currentLoading[0] !== assetList.size()}
 			ZIndex={999}
 		>
 			<textlabel
 				AnchorPoint={new Vector2(0.5, 0.5)}
 				Position={UDim2.fromScale(0.5, 0.5)}
-				Text={`[${currentLoading[0]}/${assetIds.size()}]: Loading asset ${currentLoading[1]}...`}
+				Text={`[${currentLoading[0]}/${assetList.size()}]: Loading asset ${currentLoading[1]}...`}
 				TextSize={px(14)}
 			/>
 		</frame>
