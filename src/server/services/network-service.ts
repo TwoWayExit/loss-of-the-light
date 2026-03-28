@@ -3,6 +3,7 @@ import { Events } from "server/network";
 import CharmSync from "@rbxts/charm-sync";
 import { playersAtom } from "shared/atoms/players";
 import { battlesAtom } from "shared/atoms/battles";
+import { svVarsAtom } from "shared/atoms/sv-vars";
 
 @Service()
 export class NetworkService implements OnInit {
@@ -11,6 +12,7 @@ export class NetworkService implements OnInit {
 			atoms: {
 				playersAtom,
 				battlesAtom,
+				svVarsAtom,
 			},
 		});
 
