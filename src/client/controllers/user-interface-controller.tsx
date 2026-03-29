@@ -4,7 +4,7 @@ import { Controller, OnStart } from "@flamework/core";
 import React, { StrictMode } from "@rbxts/react";
 import DialogueFrame from "client/app/ui/dialogue/dialogue-frame";
 import CombatPageRouter from "client/app/ui/combat/combat-page-router";
-import PreloadFrame from "client/app/ui/combat/preload-frame";
+import PreloadFrame from "client/app/ui/preload-frame";
 
 const app = (
 	<screengui IgnoreGuiInset={true} ResetOnSpawn={false} ZIndexBehavior={Enum.ZIndexBehavior.Sibling}>

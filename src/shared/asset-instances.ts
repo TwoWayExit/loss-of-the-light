@@ -26,8 +26,7 @@ function recurse<T extends keyof Tree>(root: T, path: string, assets: Assets<str
 		if (typeIs(asset, "table")) {
 			recurse(root, `${path}${index}/`, asset);
 		} else {
-			// Cut off trailing slash
-			const p = path.sub(1, path.size() - 1);
+			const p = path + index;
 
 			switch (root) {
 				case "animations": {
@@ -61,7 +60,5 @@ for (const [key] of pairs(assetInstances)) {
 		recurse(key, "", assets[key as keyof typeof assets]);
 	}
 }
-
-print(assetInstances);
 
 export default assetInstances;
