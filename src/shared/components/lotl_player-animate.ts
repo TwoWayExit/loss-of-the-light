@@ -1,41 +1,42 @@
 import { Players, RunService, Workspace } from "@rbxts/services";
 import { OnStart, OnTick } from "@flamework/core";
-import { Component, BaseComponent, Components } from "@flamework/components";
+import { Component, Components } from "@flamework/components";
 import { promiseChildOfClass } from "@rbxts/promise-child";
 import { PlayerCollidable } from "shared/models/player-collidable";
 import { CharacterRigR15, CharacterRigR6 } from "@rbxts/promise-character";
-import { validateTree, EvaluateInstanceTree } from "@rbxts/validate-tree";
 import { LotlMovement } from "shared/components/lotl_movement";
 import { Actions } from "shared/modules/actions";
 import { $env } from "rbxts-transform-env";
+import { atom, subscribe } from "@rbxts/charm";
+import { DisposableComponent } from "./disposable-component";
+import assetInstances from "shared/asset-instances";
 
 interface Attributes {}
 
 @Component({
-	tag: "player-animate",
+	tag: "PlayerAnimate",
 	predicate: (instance) => instance.IsDescendantOf(Workspace),
 })
-export class PlayerAnimate extends BaseComponent<Attributes, Model> implements OnStart, OnTick {
+export class PlayerAnimate extends DisposableComponent<Attributes, Model> implements OnStart, OnTick {
 	protected player!: PlayerCollidable<Player | undefined>;
 	protected character!: CharacterRigR6 | CharacterRigR15;
+
+	protected action = atom<Actions>(Actions.IDLE);
 
 	/** @virtual */
 	protected tree = {
 		$className: "Folder",
 	} as const;
 
-	/** This property is only defined if the player character exists and is fully loaded */
-	protected animations?: EvaluateInstanceTree<typeof this.tree>;
-
 	public constructor(protected readonly components: Components) {
 		super();
 	}
 
-	public getAnimations() {
-		return this.animations as Readonly<typeof this.animations>;
+	public getAction() {
+		return this.action();
 	}
 
-	public getAction() {
+	protected evaluateAction() {
 		const character = this.player.getCharacter();
 
 		if (!character) {
@@ -62,34 +63,24 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 		return Actions.IDLE;
 	}
 
-	protected animatePlayer() {
+	protected animatePlayer(action: Actions) {
 		if (!this.player.isAlive()) {
 			return;
 		}
 
-		if (!this.animations) {
+		const animationHandler = this.player.getAnimationHandler();
+
+		if (!animationHandler) {
 			return;
 		}
 
-		switch (this.getAction()) {
+		animationHandler.stopAllAnimations();
+
+		switch (action) {
 			case Actions.IDLE:
-				this.player.stopAnimations(this.animations.GetChildren() as Animation[]);
+				animationHandler.playAnimation(assetInstances.animations["general/idle"]);
 				break;
 		}
-	}
-
-	protected verifyAnimations(character: Model) {
-		const animFolder = character.FindFirstChild("anim");
-
-		if (!animFolder || !validateTree(animFolder, this.tree)) {
-			throw `Character anim folder type check fail on model '${character.GetFullName()}' (${character})`;
-		}
-
-		this.animations = animFolder;
-
-		this.player.characterDestroyed.Once(() => {
-			this.animations = undefined;
-		});
 	}
 
 	async onStart() {
@@ -129,7 +120,14 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 		this.player = player;
 		this.character = player.getCharacter() ?? player.characterLoaded.Wait()[0];
 
-		this.verifyAnimations(this.character);
+		this.janitor.Add(
+			subscribe(this.action, (action) => {
+				this.animatePlayer(action);
+			}),
+		);
+
+		// Start animating the default action
+		this.animatePlayer(this.action());
 	}
 
 	onTick() {
@@ -137,6 +135,6 @@ export class PlayerAnimate extends BaseComponent<Attributes, Model> implements O
 			return;
 		}
 
-		this.animatePlayer();
+		this.action(this.evaluateAction());
 	}
 }

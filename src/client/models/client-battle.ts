@@ -2,14 +2,12 @@ import { Players, Workspace } from "@rbxts/services";
 import { Globals, type AnimatedCharacter } from "shared/modules/global-types";
 import { battlesAtom } from "shared/atoms/battles";
 import { Battle, Teams } from "shared/models/battle";
-import { ActionPlan, ActionType, SkillCast } from "shared/modules/battle-types";
 import { playersAtom } from "shared/atoms/players";
-import { Skillset } from "shared/models/skills";
 import { produce } from "@rbxts/better-immut";
 import combatantList from "shared/modules/combatant-list";
-import { batch } from "@rbxts/charm";
+import { batch, subscribe } from "@rbxts/charm";
 import assetInstances from "shared/asset-instances";
-import { $NODE_ENV } from "rbxts-transform-env";
+import { AnimationHandler } from "shared/models/animation-handler";
 
 export class ClientBattle extends Battle {
 	private playerCombatantChars = new Map<string, AnimatedCharacter[]>();
@@ -23,53 +21,13 @@ export class ClientBattle extends Battle {
 
 		this.hideCombatants();
 		this.playCombatantIdles();
+		this.subscribeAtoms();
 
 		super.startBattle();
 	}
 
 	public override stopBattle() {
 		super.stopBattle();
-	}
-
-	public async startAction(plan: ActionPlan) {
-		print(plan);
-
-		// Do a recursive promise iteration through the action plan to allow a smooth cancellation if needed
-		const recurse = (i = 0): Promise<void> => {
-			if (i === plan.size()) {
-				return Promise.resolve();
-			}
-
-			const action = plan[i];
-
-			if (action.type === ActionType.SINGLE) {
-				// TypeScript is unable to infer a union type-generic member's true type, shame
-				const cast = action.cast as SkillCast;
-				const casterCombatant = playersAtom()[cast.casterPlayer].combatants[cast.casterCombatant];
-
-				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
-
-				return skill
-					.cast(cast.casterPlayer, cast.casterCombatant, cast.targetPlayer, cast.targetCombatant)
-					.then((success) => {
-						if (success) {
-							if ($NODE_ENV === "development") {
-								print(`Finished animation + cast of skill '${skill.name}'`);
-								print(cast);
-							}
-						} else {
-							warn(`[WARN] Ignored skill cast '${skill.name}'`);
-							warn(cast);
-						}
-					})
-					.then(() => recurse(i + 1));
-			} else {
-				// TODO: Implement clashing
-				return Promise.try(() => {}).then(() => recurse(i + 1));
-			}
-		};
-
-		return this.janitor.AddPromise(recurse());
 	}
 
 	public getCombatantPosition(teamName: Teams, playerId: string, index: number) {
@@ -137,7 +95,9 @@ export class ClientBattle extends Battle {
 								this.janitor.Add(character);
 
 								return {
+									name,
 									character,
+									animationHandler: new AnimationHandler(character),
 									energy,
 									health,
 								};
@@ -152,5 +112,32 @@ export class ClientBattle extends Battle {
 				}
 			}
 		});
+	}
+
+	private onCombatantHurt(player: string, combatant: number) {
+		const { name, animationHandler } = battlesAtom()[this.id].playerInfo[player].combatants[combatant];
+
+		this.queue.insert(this.getQueuePosition() + 1, () =>
+			animationHandler
+				.playAnimation(assetInstances.animations[`${name}/hurt`])
+				.then((track) => Promise.delay(track.Length)),
+		);
+	}
+
+	private subscribeAtoms() {
+		for (const [playerId, player] of pairs(battlesAtom()[this.id].playerInfo)) {
+			for (let i = 0; i < player.combatants.size(); i++) {
+				this.janitor.Add(
+					subscribe(
+						() => battlesAtom()[this.id].playerInfo[playerId].combatants[i].health,
+						(health, prev) => {
+							if (health < prev) {
+								this.onCombatantHurt(playerId as string, i);
+							}
+						},
+					),
+				);
+			}
+		}
 	}
 }

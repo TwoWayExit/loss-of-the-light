@@ -7,7 +7,7 @@ interface Attributes {}
 
 /** A base component to create unique identifiers on components shared across server > client */
 @Component({
-	tag: "uuid-generator",
+	tag: "UUID",
 })
 export class UuidComponent<A extends Attributes, I extends Instance> extends DisposableComponent<A, I> {
 	protected uuid: Uuid;

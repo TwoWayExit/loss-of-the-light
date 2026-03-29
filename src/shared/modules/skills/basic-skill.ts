@@ -7,7 +7,8 @@ import { takeCombatantDamage } from "shared/atoms/battles";
 import { $print } from "rbxts-transform-debug";
 import assetInstances from "shared/asset-instances";
 import { $NODE_ENV } from "rbxts-transform-env";
-import { getAnimationLength, waitForAnimationLoaded } from "shared/lib/util";
+import { getAnimationLength } from "shared/lib/util";
+import { produce } from "@rbxts/better-immut";
 
 export class BasicSkill implements Skill {
 	public readonly name = "basic";
@@ -45,22 +46,29 @@ export class BasicSkill implements Skill {
 				});
 		} else {
 			// VFX here
-			const { character } = battlesAtom()[battleId].playerInfo[casterId].combatants[casterCombatant];
-			const { character: enemyCharacter } =
-				battlesAtom()[battleId].playerInfo[targetId].combatants[targetCombatant];
-			const attackAnim = character.Humanoid.Animator.LoadAnimation(this.properties.animation);
-			const hurtAnim = enemyCharacter.Humanoid.Animator.LoadAnimation(
-				assetInstances.animations[`${enemyCharacter.Name}/hurt`],
-			);
+			const { animationHandler } = battlesAtom()[battleId].playerInfo[casterId].combatants[casterCombatant];
+			// We want to store the original health to prevent desynchronization when rehydrating information from the server
+			// This desynchronization exists when the server is able to update the health before the client reads it, thus we read it now to ensure this never happens
+			const combatantHealth = battlesAtom()[battleId].playerInfo[targetId].combatants[targetCombatant].health;
 
-			return waitForAnimationLoaded(attackAnim)
-				.then(() => {
-					attackAnim.Play();
-
+			return animationHandler
+				.playAnimation(this.properties.animation)
+				.then((attackAnim) => {
 					return Promise.delay(attackAnim.Length);
 				})
 				.then(() => {
-					hurtAnim.Play();
+					battlesAtom((state) =>
+						produce(state, (draft) => {
+							draft[battleId].playerInfo[targetId].combatants[targetCombatant].health =
+								combatantHealth - this.properties.quantifier;
+						}),
+					);
+
+					if ($NODE_ENV === "development") {
+						$print(
+							`Locally damaged ${targetId} combatant ${targetCombatant} for ${this.properties.quantifier}`,
+						);
+					}
 
 					return true;
 				});
