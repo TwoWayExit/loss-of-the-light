@@ -7,16 +7,18 @@ import { createBattle, battlesAtom, removeBattle, BattleInfo } from "shared/atom
 import { clear, produce } from "@rbxts/better-immut";
 import { batch, subscribe } from "@rbxts/charm";
 import { Events } from "server/network";
-import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/battle-types";
+import { BattlePhase, Action, ActionType, ActionPlan, SkillCast } from "shared/modules/battle-types";
 import combatantList from "shared/modules/combatant-list";
 import { AutoControl } from "shared/models/auto-control";
+import { Skillset } from "shared/models/skills";
+import { $NODE_ENV } from "rbxts-transform-env";
 
 // NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
-	private autoControls: Record<Teams, AutoControl[]> = {
+	private autoControls = {
 		[Teams.TEAM1]: new Array<AutoControl>(),
 		[Teams.TEAM2]: new Array<AutoControl>(),
-	} as const;
+	} as const satisfies Record<Teams, AutoControl[]>;
 
 	private constructor(
 		id: string,
@@ -74,13 +76,7 @@ export class ServerBattle extends Battle {
 		// TODO: Uncomment this once StreamingEnabled is enabled again
 		// await this.streamBattleground(allPlayers);
 
-		// Wrap this as a batch so clients receive only the final state after all changes
-		batch(() => {
-			createBattle(this.id, this.region, this.first);
-
-			this.setupBattlesAtom();
-		});
-
+		this.setupBattlesAtom();
 		this.stopMovementOfTeams();
 		this.initAutoControls();
 		this.subscribeAtoms();
@@ -117,6 +113,41 @@ export class ServerBattle extends Battle {
 		}
 
 		print(plan);
+
+		const recurse = (i = 0): Promise<void> => {
+			if (i === plan.size()) {
+				return Promise.resolve();
+			}
+
+			const action = plan[i];
+
+			if (action.type === ActionType.SINGLE) {
+				const cast = action.cast as SkillCast;
+				const casterCombatant = playersAtom()[cast.casterPlayer].combatants[cast.casterCombatant];
+
+				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
+
+				return skill
+					.cast(cast.casterPlayer, cast.casterCombatant, cast.targetPlayer, cast.targetCombatant)
+					.then((success) => {
+						if (success) {
+							if ($NODE_ENV === "development") {
+								print(`Finished animation + cast of skill '${skill.name}'`);
+								print(cast);
+							}
+						} else {
+							warn(`[WARN] Ignored skill cast '${skill.name}'`);
+							warn(cast);
+						}
+					})
+					.then(() => recurse(i + 1));
+			} else {
+				// TODO: Implement clashing
+				return Promise.try(() => {}).then(() => recurse(i + 1));
+			}
+		};
+
+		return this.janitor.AddPromise(recurse());
 	}
 
 	public nextTurn() {
@@ -128,26 +159,11 @@ export class ServerBattle extends Battle {
 				clear(draft[this.id].skillCastQueue);
 
 				// Let's index manually instead of using the value element of the iterator, just to ensure that immut does its job as intended
-				for (const [playerId] of pairs(draft[this.id].playerInfo)) {
+				for (const [playerId] of pairs(state[this.id].playerInfo)) {
 					draft[this.id].playerInfo[playerId].turnFinished = false;
 				}
 			}),
 		);
-	}
-
-	public nextPhase() {
-		battlesAtom((state) =>
-			produce(state, (draft) => {
-				draft[this.id].phase++;
-				draft[this.id].phase %= 2;
-			}),
-		);
-
-		if (battlesAtom()[this.id].phase === BattlePhase.ACTION) {
-			this.startAction();
-		} else {
-			this.nextTurn();
-		}
 	}
 
 	protected getActionPlan() {
@@ -193,35 +209,40 @@ export class ServerBattle extends Battle {
 	}
 
 	protected setupBattlesAtom() {
-		for (const [teamName, team] of pairs(this.teams)) {
-			battlesAtom((state) =>
-				produce(state, (draft) => {
-					draft[this.id].teams[teamName] = team;
-				}),
-			);
+		// Wrap this as a batch so clients receive only the final state after all changes
+		batch(() => {
+			createBattle(this.id, this.region, this.first);
 
-			for (const playerId of team) {
-				const { combatants } = playersAtom()[playerId];
-
+			for (const [teamName, team] of pairs(this.teams)) {
 				battlesAtom((state) =>
 					produce(state, (draft) => {
-						draft[this.id].playerInfo[playerId] = {
-							selectedCombatant: -1,
-							combatants: combatants.map((name) => {
-								const { energy, health } = combatantList[name];
-
-								return {
-									character: undefined!,
-									energy,
-									health,
-								};
-							}),
-							turnFinished: false,
-						};
+						draft[this.id].teams[teamName] = team;
 					}),
 				);
+
+				for (const playerId of team) {
+					const { combatants } = playersAtom()[playerId];
+
+					battlesAtom((state) =>
+						produce(state, (draft) => {
+							draft[this.id].playerInfo[playerId] = {
+								selectedCombatant: -1,
+								combatants: combatants.map((name) => {
+									const { energy, health } = combatantList[name];
+
+									return {
+										character: undefined!,
+										energy,
+										health,
+									};
+								}),
+								turnFinished: false,
+							};
+						}),
+					);
+				}
 			}
-		}
+		});
 	}
 
 	protected setupPlayersAtom(inBattle: boolean) {
@@ -318,13 +339,20 @@ export class ServerBattle extends Battle {
 			return;
 		}
 
+		// Transition from DECIDE to ACTION when all players have finished their turns
 		for (const [, player] of pairs(players)) {
 			if (!player.turnFinished) {
 				return;
 			}
 		}
 
-		this.nextPhase();
+		battlesAtom((state) => produce(state, (draft) => {
+			draft[this.id].phase = BattlePhase.ACTION;
+		}));
+
+		this.startAction().then(() => {
+			this.nextTurn();
+		});
 	}
 
 	protected onPhaseChange(phase: BattlePhase) {
@@ -332,6 +360,7 @@ export class ServerBattle extends Battle {
 			return;
 		}
 
+		// Run all NPC decision trees during the DECIDE phase
 		for (const [, team] of pairs(this.autoControls)) {
 			for (const autoControl of team) {
 				autoControl.runDecision();
@@ -340,7 +369,6 @@ export class ServerBattle extends Battle {
 	}
 
 	protected subscribeAtoms() {
-		// Transition from DECIDE to ACTION when all players have finished their turns
 		subscribe(
 			() => battlesAtom()[this.id].playerInfo,
 			(players) => {
@@ -348,7 +376,6 @@ export class ServerBattle extends Battle {
 			},
 		);
 
-		// Run all NPC decision trees during the DECIDE phase
 		subscribe(
 			() => battlesAtom()[this.id].phase,
 			(phase) => {

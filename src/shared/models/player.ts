@@ -34,14 +34,6 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 
 	private flags = 0;
 
-	static {
-		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
-			print(
-				"[NOTICE] MULTI_LOCALPLAYER_INSTANCES env is TRUE, be wary of potential conflicts when using derivatives",
-			);
-		}
-	}
-
 	public constructor(character?: Model, rbxPlayer?: P);
 
 	public constructor(character?: Model, rbxPlayer?: P, id?: string);
@@ -49,7 +41,7 @@ export class BasePlayer<P extends Player | undefined = Player | undefined> exten
 	public constructor(character?: Model, rbxPlayer?: P, id = rbxPlayer && tostring(rbxPlayer.UserId)) {
 		assert(id, "No player id associated");
 
-		if ($env.boolean("MULTI_LOCALPLAYER_INSTANCES")) {
+		if ($env.boolean("MULTI_BASEPLAYER_INSTANCES")) {
 			// Exclude this check
 		} else {
 			if (rbxPlayer) {

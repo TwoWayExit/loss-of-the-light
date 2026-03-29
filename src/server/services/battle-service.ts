@@ -3,7 +3,7 @@ import { BasePlayer } from "shared/models/player";
 import { ServerBattle } from "../models/server-battle";
 import { playersAtom } from "shared/atoms/players";
 import { Teams } from "shared/models/battle";
-import "shared/modules/skillsets";
+import "shared/modules/skillset-list";
 
 @Service({})
 export class BattleService implements OnStart, OnInit {

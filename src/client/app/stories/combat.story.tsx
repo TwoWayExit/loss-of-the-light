@@ -12,6 +12,7 @@ import { ClientBattle } from "client/models/client-battle";
 import { clSelectedCombatant } from "client/atoms/client-info";
 import CombatPageRouter from "client/app/ui/combat/combat-page-router";
 import combatantList from "shared/modules/combatant-list";
+import "shared/modules/skillset-list";
 
 interface Controls {}
 

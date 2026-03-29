@@ -50,13 +50,14 @@ export class CastSkill implements OnInit {
 			);
 
 			batch(() => {
-				// If the combatant already casted a skill, assume that we want to delete it
+				// If the combatant already casted a skill, assume that the player wants to delete it from the queue
 				if (existingIndex !== -1) {
 					battlesAtom((state) =>
 						produce(state, (draft) => {
 							remove(draft[battleId].skillCastQueue, existingIndex);
 						}),
 					);
+					return;
 				}
 
 				battlesAtom((state) =>

@@ -8,7 +8,7 @@ import { battlesAtom, getEnemyCombatants } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
 import { clSelectedCombatant, selectedEnemy } from "client/atoms/client-info";
 import { Events } from "client/network";
-import "shared/modules/skillsets";
+import "shared/modules/skillset-list";
 
 // NOTE: The idea is that BattleController will handle user-prompted events (e.g. combatant switching, skill targeting), while logic in ClientBattle will respond to state changes (e.g. starting, next phase, ending)
 @Controller({})
@@ -21,6 +21,10 @@ export class BattleController implements OnInit {
 	private currentBattle?: ClientBattle;
 
 	public constructor(protected readonly cameraController: LotlCameraController) {}
+
+	public getCurrentBattle() {
+		return this.currentBattle;
+	}
 
 	protected setCameraActive(active: boolean) {
 		assert(this.currentBattle);
