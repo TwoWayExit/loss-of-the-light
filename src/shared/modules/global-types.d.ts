@@ -5,10 +5,6 @@ export const enum Globals {
 	COMBATANT_SPACING = 4,
 }
 
-export interface AnimatedCharacter extends CharacterRigR6 {
-	anims: Folder & {
-		idle: Animation;
-	};
-}
+export interface AnimatedCharacter extends CharacterRigR6 {}
 
 export type Region = ExtractKeys<Workspace["regions"], Folder>;

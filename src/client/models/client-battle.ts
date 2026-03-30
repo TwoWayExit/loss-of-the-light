@@ -8,9 +8,11 @@ import { Skillset } from "shared/models/skills";
 import { produce } from "@rbxts/better-immut";
 import combatantList from "shared/modules/combatant-list";
 import { batch } from "@rbxts/charm";
+import assetInstances from "shared/asset-instances";
+import { $NODE_ENV } from "rbxts-transform-env";
 
 export class ClientBattle extends Battle {
-	private combatants: Map<string, AnimatedCharacter[]> = new Map();
+	private playerCombatantChars = new Map<string, AnimatedCharacter[]>();
 
 	public constructor(id: string, first: Teams) {
 		super(id, first);
@@ -30,9 +32,11 @@ export class ClientBattle extends Battle {
 	}
 
 	public async startAction(plan: ActionPlan) {
+		print(plan);
+
 		// Do a recursive promise iteration through the action plan to allow a smooth cancellation if needed
-		const recurse = (i = plan.size() - 1): Promise<void> => {
-			if (i < 0) {
+		const recurse = (i = 0): Promise<void> => {
+			if (i === plan.size()) {
 				return Promise.resolve();
 			}
 
@@ -45,35 +49,23 @@ export class ClientBattle extends Battle {
 
 				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
 
-				return (
-					recurse(i - 1)
-						// TODO: Move this whole then() block to the skill's cast() function instead to delegate more control over visual effects and animation durations
-						.then(() => {
-							const { character } =
-								battlesAtom()[this.id].playerInfo[cast.casterPlayer].combatants[cast.casterCombatant];
-							const animation = character.Humanoid.Animator.LoadAnimation(skill.properties.animation);
-
-							// Wait for the animation to load, then play it and wait for an amount of seconds given by the duration
-							return Promise.try(() => assert(animation.Length > 0))
-								.catch(() =>
-									Promise.fromEvent(
-										animation.GetPropertyChangedSignal("Length"),
-										() => animation.Length > 0,
-									),
-								)
-								.then(() => {
-									animation.Play();
-
-									return Promise.delay(animation.Length);
-								});
-						})
-						.then(() => {
-							skill.cast(cast.casterPlayer, cast.targetPlayer, cast.targetCombatant);
-						})
-				);
+				return skill
+					.cast(cast.casterPlayer, cast.casterCombatant, cast.targetPlayer, cast.targetCombatant)
+					.then((success) => {
+						if (success) {
+							if ($NODE_ENV === "development") {
+								print(`Finished animation + cast of skill '${skill.name}'`);
+								print(cast);
+							}
+						} else {
+							warn(`[WARN] Ignored skill cast '${skill.name}'`);
+							warn(cast);
+						}
+					})
+					.then(() => recurse(i + 1));
 			} else {
 				// TODO: Implement clashing
-				return recurse(i - 1).then(() => {});
+				return Promise.try(() => {}).then(() => recurse(i + 1));
 			}
 		};
 
@@ -90,7 +82,7 @@ export class ClientBattle extends Battle {
 
 	private hideCombatants() {
 		// Hide the player's combatants
-		for (const character of this.combatants.get(tostring(Players.LocalPlayer.UserId))!) {
+		for (const character of this.playerCombatantChars.get(tostring(Players.LocalPlayer.UserId))!) {
 			for (const child of character.GetDescendants()) {
 				if (child.IsA("BasePart")) {
 					child.LocalTransparencyModifier = 1;
@@ -111,9 +103,11 @@ export class ClientBattle extends Battle {
 	}
 
 	private playCombatantIdles() {
-		for (const [, combatants] of this.combatants) {
+		for (const [, combatants] of this.playerCombatantChars) {
 			for (const combatant of combatants) {
-				const anim = combatant.Humanoid.Animator.LoadAnimation(combatant.anims.idle);
+				const anim = combatant.Humanoid.Animator.LoadAnimation(
+					assetInstances.animations[`${combatant.Name}/idle`],
+				);
 
 				anim.Play();
 			}
@@ -128,6 +122,7 @@ export class ClientBattle extends Battle {
 				for (const playerId of team) {
 					const { combatants } = playersAtom()[playerId];
 
+					// Create characters on the client; they're not defined on the server by default
 					battlesAtom((state) =>
 						produce(state, (draft) => {
 							draft[this.id].playerInfo[playerId].combatants = combatants.map((name, index) => {
@@ -141,7 +136,6 @@ export class ClientBattle extends Battle {
 								// Mark for deletion once battle ends
 								this.janitor.Add(character);
 
-								// We already defined the members other than `character` on the server but why not
 								return {
 									character,
 									energy,
@@ -151,7 +145,7 @@ export class ClientBattle extends Battle {
 						}),
 					);
 
-					this.combatants.set(
+					this.playerCombatantChars.set(
 						playerId,
 						battlesAtom()[this.id].playerInfo[playerId].combatants.map((c) => c.character),
 					);

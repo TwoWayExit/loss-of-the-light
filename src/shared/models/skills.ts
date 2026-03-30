@@ -38,5 +38,5 @@ export interface Skill {
 	 * This allows for more control over what specific skill casts should be capable of doing
 	 * @returns A success status boolean
 	 */
-	cast(casterId: string, targetId: string, combatant: number): Promise<boolean>;
+	cast(casterId: string, casterCombatant: number, targetId: string, targetCombatant: number): Promise<boolean>;
 }

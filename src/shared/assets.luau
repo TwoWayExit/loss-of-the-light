@@ -5,7 +5,7 @@ local assets = {
 		malemc = {
 			basic = "rbxassetid://90120704204112",
 			hurt = "rbxassetid://119532351795340",
-			idle = "rbxassetid://134532549708616",
+			idle = "rbxassetid://137928949226863",
 		},
 	},
 }

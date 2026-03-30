@@ -1,4 +1,7 @@
+import { KeyframeSequenceProvider } from "@rbxts/services";
 import type { Teams } from "shared/models/battle";
+
+const animationLengthCache = new Map<string, number>();
 
 export type Constructor<T> = new (...args: never[]) => T;
 
@@ -50,4 +53,37 @@ export function findAllStringOccurrences(text: string, target: string) {
 /** Returns the team opposite to what is provided as an argument */
 export function getOpposingTeam(friendlyTeam: Teams) {
 	return tostring((tonumber(friendlyTeam)! + 1) % 2) as Teams; // We're assuming that there will only ever be two teams
+}
+
+export async function getAnimationLength(animationId: string) {
+	const cached = animationLengthCache.get(animationId);
+
+	if (cached !== undefined) {
+		return cached;
+	}
+
+	const sequence = KeyframeSequenceProvider.GetKeyframeSequenceAsync(animationId);
+	const keyframes = sequence.GetKeyframes();
+
+	let length = 0;
+
+	for (const keyframe of keyframes) {
+		if (keyframe.Time > length) {
+			length = keyframe.Time;
+		}
+	}
+
+	animationLengthCache.set(animationId, length);
+
+	return length;
+}
+
+export async function waitForAnimationLoaded(track: AnimationTrack) {
+	return new Promise<void>((resolve, reject) => {
+		if (track.Length > 0) {
+			resolve();
+		} else {
+			reject();
+		}
+	}).catch(() => Promise.fromEvent(track.GetPropertyChangedSignal("Length"), () => track.Length > 0));
 }

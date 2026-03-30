@@ -4,6 +4,7 @@ import { Events } from "client/network";
 import { AtomsList } from "shared/atoms/atoms-list";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
+import { svVarsAtom } from "shared/atoms/sv-vars";
 
 @Controller({})
 export class NetworkController implements OnInit {
@@ -12,6 +13,7 @@ export class NetworkController implements OnInit {
 			atoms: {
 				playersAtom,
 				battlesAtom,
+				svVarsAtom,
 			},
 		});
 
