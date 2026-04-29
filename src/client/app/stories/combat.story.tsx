@@ -13,6 +13,7 @@ import { clSelectedCombatant } from "client/atoms/client-info";
 import CombatPageRouter from "client/app/ui/combat/combat-page-router";
 import combatantList from "shared/modules/combatant-list";
 import "shared/modules/skillset-list";
+import { AnimationHandler } from "shared/models/animation-handler";
 
 interface Controls {}
 
@@ -54,7 +55,9 @@ export = {
 							character.Parent = Workspace.combatants;
 
 							return {
+								name,
 								character,
+								animationHandler: new AnimationHandler(character),
 								health,
 								energy,
 							};

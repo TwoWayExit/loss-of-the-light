@@ -1,12 +1,18 @@
+import { AnimationHandler } from "shared/models/animation-handler";
 import type { AnimatedCharacter } from "shared/modules/global-types";
 
-/** Name can be accessed through `character.Name` */
 export interface CombatantInfo {
+	/** This property should be equivalent to `character.Name` */
+	readonly name: string;
 	/**
 	 * A clone of the original character rig for this combatant, used in battle
 	 * @remarks This member is undefined on the server, since characters should only be rendered on the client
 	 */
 	readonly character: AnimatedCharacter;
+	/**
+	 * @remarks This member is undefined on the server, since characters should only be rendered on the client
+	 */
+	readonly animationHandler: AnimationHandler;
 
 	readonly health: number;
 	readonly energy: number;

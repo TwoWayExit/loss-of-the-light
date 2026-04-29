@@ -16,7 +16,7 @@ interface Attributes {
 	isFirst: boolean;
 }
 
-/** WARN: Do not manually add this component via studio, use the `enemy` component tag instead */
+/** WARN: Do not manually add this component via studio, use the `Enemy` component tag instead */
 @Component({
 	tag: "battle-trigger",
 	defaults: {

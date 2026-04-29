@@ -8,7 +8,7 @@ interface Attributes {
 }
 
 @Component({
-	tag: "enemy",
+	tag: "Enemy",
 })
 export class Enemy<A extends Attributes = Attributes, I extends CharacterRigR6 = CharacterRigR6> extends UuidComponent<
 	A,
@@ -25,8 +25,7 @@ export class Enemy<A extends Attributes = Attributes, I extends CharacterRigR6 =
 	}
 
 	/**
-	 * Gets the player associated with this enemy, may return `undefined` on the client if the id of this instance hasn't loaded yet
-	 * @returns The player associated with this enemy
+	 * @returns The `BasePlayer` associated with this enemy
 	 */
 	public getPlayer() {
 		return this.player;

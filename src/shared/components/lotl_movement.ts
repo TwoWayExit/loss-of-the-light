@@ -75,7 +75,7 @@ export class MoveData {
 }
 
 @Component({
-	tag: "lotl_movement",
+	tag: "LotlMovement",
 	defaults: {
 		walkSpeed: 18,
 	},

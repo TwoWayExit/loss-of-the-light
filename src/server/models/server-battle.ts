@@ -7,11 +7,11 @@ import { createBattle, battlesAtom, removeBattle, BattleInfo } from "shared/atom
 import { clear, produce } from "@rbxts/better-immut";
 import { batch, subscribe } from "@rbxts/charm";
 import { Events } from "server/network";
-import { BattlePhase, Action, ActionType, ActionPlan, SkillCast } from "shared/modules/battle-types";
+import { BattlePhase, Action, ActionType, ActionPlan } from "shared/modules/battle-types";
 import combatantList from "shared/modules/combatant-list";
 import { AutoControl } from "shared/models/auto-control";
-import { Skillset } from "shared/models/skills";
-import { $NODE_ENV } from "rbxts-transform-env";
+import assetInstances from "shared/asset-instances";
+import { getAnimationLength } from "shared/lib/util";
 
 // NOTE: Server-sided battle logic is handled here
 export class ServerBattle extends Battle {
@@ -23,7 +23,7 @@ export class ServerBattle extends Battle {
 	private constructor(
 		id: string,
 		/** This member is only used for the initialization phase, when the `battlesAtom` battle instance has not been set up */
-		protected teams: Record<Teams, string[]>,
+		private teams: Record<Teams, string[]>,
 		public readonly region: Region,
 		first: Teams,
 	) {
@@ -94,7 +94,7 @@ export class ServerBattle extends Battle {
 		super.stopBattle();
 	}
 
-	public async startAction(plan = this.getActionPlan()) {
+	public override async startAction(plan = this.getActionPlan()) {
 		// Send action plan to clients
 		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
 			for (const playerId of team) {
@@ -112,42 +112,7 @@ export class ServerBattle extends Battle {
 			}
 		}
 
-		print(plan);
-
-		const recurse = (i = 0): Promise<void> => {
-			if (i === plan.size()) {
-				return Promise.resolve();
-			}
-
-			const action = plan[i];
-
-			if (action.type === ActionType.SINGLE) {
-				const cast = action.cast as SkillCast;
-				const casterCombatant = playersAtom()[cast.casterPlayer].combatants[cast.casterCombatant];
-
-				const skill = Skillset.getSkillset(casterCombatant).skills[cast.skill];
-
-				return skill
-					.cast(cast.casterPlayer, cast.casterCombatant, cast.targetPlayer, cast.targetCombatant)
-					.then((success) => {
-						if (success) {
-							if ($NODE_ENV === "development") {
-								print(`Finished animation + cast of skill '${skill.name}'`);
-								print(cast);
-							}
-						} else {
-							warn(`[WARN] Ignored skill cast '${skill.name}'`);
-							warn(cast);
-						}
-					})
-					.then(() => recurse(i + 1));
-			} else {
-				// TODO: Implement clashing
-				return Promise.try(() => {}).then(() => recurse(i + 1));
-			}
-		};
-
-		return this.janitor.AddPromise(recurse());
+		return super.startAction(plan);
 	}
 
 	public nextTurn() {
@@ -166,7 +131,7 @@ export class ServerBattle extends Battle {
 		);
 	}
 
-	protected getActionPlan() {
+	public getActionPlan() {
 		const casted = [...battlesAtom()[this.id].skillCastQueue];
 		const plan: ActionPlan = [];
 
@@ -208,7 +173,7 @@ export class ServerBattle extends Battle {
 		return plan;
 	}
 
-	protected setupBattlesAtom() {
+	private setupBattlesAtom() {
 		// Wrap this as a batch so clients receive only the final state after all changes
 		batch(() => {
 			createBattle(this.id, this.region, this.first);
@@ -231,7 +196,9 @@ export class ServerBattle extends Battle {
 									const { energy, health } = combatantList[name];
 
 									return {
+										name,
 										character: undefined!,
+										animationHandler: undefined!,
 										energy,
 										health,
 									};
@@ -245,7 +212,7 @@ export class ServerBattle extends Battle {
 		});
 	}
 
-	protected setupPlayersAtom(inBattle: boolean) {
+	private setupPlayersAtom(inBattle: boolean) {
 		for (const [, team] of pairs(this.teams)) {
 			for (const playerId of team) {
 				if (inBattle) {
@@ -268,7 +235,7 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected async streamBattleground(players: BasePlayer[]) {
+	private async streamBattleground(players: BasePlayer[]) {
 		return await Promise.all(
 			players.map((player) =>
 				Promise.try(() => {
@@ -283,7 +250,7 @@ export class ServerBattle extends Battle {
 		);
 	}
 
-	protected initAutoControls() {
+	private initAutoControls() {
 		for (const [teamName, team] of pairs(battlesAtom()[this.id].teams)) {
 			for (let i = 0; i < team.size(); i++) {
 				const playerId = team[i];
@@ -306,7 +273,7 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected stopMovementOfTeams() {
+	private stopMovementOfTeams() {
 		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
 			for (const playerId of team) {
 				const player = BasePlayer.getPlayerFromId(playerId);
@@ -320,7 +287,7 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected startMovementOfTeams() {
+	private startMovementOfTeams() {
 		for (const [, team] of pairs(battlesAtom()[this.id].teams)) {
 			for (const playerId of team) {
 				const player = BasePlayer.getPlayerFromId(playerId);
@@ -334,7 +301,7 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected onPlayerInfoChange(players: BattleInfo["playerInfo"]) {
+	private onPlayerInfoChange(players: BattleInfo["playerInfo"]) {
 		if (battlesAtom()[this.id].phase !== BattlePhase.DECIDE) {
 			return;
 		}
@@ -346,16 +313,18 @@ export class ServerBattle extends Battle {
 			}
 		}
 
-		battlesAtom((state) => produce(state, (draft) => {
-			draft[this.id].phase = BattlePhase.ACTION;
-		}));
+		battlesAtom((state) =>
+			produce(state, (draft) => {
+				draft[this.id].phase = BattlePhase.ACTION;
+			}),
+		);
 
 		this.startAction().then(() => {
 			this.nextTurn();
 		});
 	}
 
-	protected onPhaseChange(phase: BattlePhase) {
+	private onPhaseChange(phase: BattlePhase) {
 		if (phase !== BattlePhase.DECIDE) {
 			return;
 		}
@@ -368,20 +337,49 @@ export class ServerBattle extends Battle {
 		}
 	}
 
-	protected subscribeAtoms() {
-		subscribe(
-			() => battlesAtom()[this.id].playerInfo,
-			(players) => {
-				this.onPlayerInfoChange(players);
-			},
+	private onCombatantHurt(player: string, combatant: number) {
+		const { name } = battlesAtom()[this.id].playerInfo[player].combatants[combatant];
+
+		this.queue.insert(this.getQueuePosition() + 1, () =>
+			getAnimationLength(assetInstances.animations[`${name}/hurt`].AnimationId).then((length) =>
+				Promise.delay(length),
+			),
+		);
+	}
+
+	private subscribeAtoms() {
+		this.janitor.Add(
+			subscribe(
+				() => battlesAtom()[this.id].playerInfo,
+				(players) => {
+					this.onPlayerInfoChange(players);
+				},
+			),
 		);
 
-		subscribe(
-			() => battlesAtom()[this.id].phase,
-			(phase) => {
-				this.onPhaseChange(phase);
-			},
+		this.janitor.Add(
+			subscribe(
+				() => battlesAtom()[this.id].phase,
+				(phase) => {
+					this.onPhaseChange(phase);
+				},
+			),
 		);
+
+		for (const [playerId, player] of pairs(battlesAtom()[this.id].playerInfo)) {
+			for (let i = 0; i < player.combatants.size(); i++) {
+				this.janitor.Add(
+					subscribe(
+						() => battlesAtom()[this.id].playerInfo[playerId].combatants[i].health,
+						(health, prev) => {
+							if (health < prev) {
+								this.onCombatantHurt(playerId as string, i);
+							}
+						},
+					),
+				);
+			}
+		}
 
 		// Immediately run these despite no change to start the battle
 		this.onPlayerInfoChange(battlesAtom()[this.id].playerInfo);

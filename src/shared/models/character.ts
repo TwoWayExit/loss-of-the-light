@@ -5,6 +5,7 @@ import { Workspace } from "@rbxts/services";
 import { Signal } from "@rbxts/beacon";
 import { stats } from "shared/modules/stats-defs";
 import { LifecycleHook } from "shared/lib/lifecycle-hooks";
+import { AnimationHandler } from "./animation-handler";
 
 export interface Character extends Model {
 	Humanoid: Humanoid & {
@@ -39,8 +40,7 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	}>();
 
 	protected character?: CharacterRigR6 | CharacterRigR15;
-
-	private activeAnimations = new Map<Animation, AnimationTrack>();
+	protected animationHandler?: AnimationHandler;
 
 	// We're not using a parameter property here to avoid P | undefined
 	public constructor(character?: Model, rbxPlayer?: P) {
@@ -128,15 +128,6 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	}
 
 	/**
-	 * Returns the AnimationTrack from the Animation provided if there is one playing on the character
-	 * @param animation - The Animation which was used to animate the character
-	 * @returns The AnimationTrack which is playing on the character
-	 */
-	public getAnimationTrack(animation: Animation) {
-		return this.activeAnimations.get(animation);
-	}
-
-	/**
 	 * Sets the player character's absolute origin
 	 * @remarks The absolute origin of the character is located at the feet
 	 * @virtual
@@ -154,72 +145,10 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	}
 
 	/**
-	 * Plays an Animation on the character and returns the AnimationTrack
-	 * @param animation - The Animation to play
-	 * @param args - The arguments to pass into the AnimationTrack.Play() method
-	 * @returns The AnimationTrack playing on the character
-	 * @remarks This will always return undefined if the character's body parts have not loaded yet
+	 * @returns The associated `AnimationHandler` of this `BaseCharacter`, if the character instance is defined
 	 */
-	public playAnimation(animation: Animation, ...args: Parameters<AnimationTrack["Play"]>) {
-		if (!this.character) {
-			return;
-		}
-
-		const existing = this.activeAnimations.get(animation);
-
-		if (existing) {
-			existing.Play(...args);
-			return;
-		}
-
-		try {
-			const track = this.character.Humanoid.Animator.LoadAnimation(animation);
-
-			track.Ended.Once(() => this.activeAnimations.delete(animation));
-			track.Stopped.Once(() => {
-				this.activeAnimations.delete(animation);
-
-				track.Destroy(); // Destroy the track to prevent Ended from firing
-			});
-
-			track.Play(...args);
-
-			this.activeAnimations.set(animation, track);
-
-			return track;
-		} catch (e) {
-			warn(e);
-		}
-	}
-
-	/**
-	 * Stops an AnimationTrack playing on the character with the Animation provided
-	 * @param animation - The Animation used to find the active AnimationTrack
-	 * @param args - The arguments to pass into the AnimationTrack.Stop() method
-	 */
-	public stopAnimation(animation: Animation, ...args: Parameters<AnimationTrack["Stop"]>) {
-		this.activeAnimations.get(animation)?.Stop(...args);
-		this.activeAnimations.delete(animation);
-	}
-
-	/**
-	 * Stops AnimationTracks playing on the character with the list of Animations provided
-	 * @param animations - The list of Animations used to find the active AnimationTracks
-	 * @param args - The arguments to pass into the AnimationTrack.Stop() method
-	 */
-	public stopAnimations(animations: Animation[], ...args: Parameters<AnimationTrack["Stop"]>) {
-		for (const animation of animations) {
-			this.stopAnimation(animation, ...args);
-		}
-	}
-
-	/**
-	 * Stops all currently playing animations
-	 * @param args - The arguments to pass into the AnimationTrack.Stop() method
-	 */
-	public stopAllAnimations(...args: Parameters<AnimationTrack["Stop"]>) {
-		this.activeAnimations.forEach((track) => track.Stop(...args));
-		this.activeAnimations.clear();
+	public getAnimationHandler() {
+		return this.animationHandler;
 	}
 
 	/**
@@ -274,6 +203,7 @@ export abstract class BaseCharacter<P extends Player | undefined = Player | unde
 	/** @virtual */
 	protected setCharacter(character: CharacterRigR6 | CharacterRigR15) {
 		this.character = character;
+		this.animationHandler = new AnimationHandler(character);
 
 		this.characterLoaded.Fire(character);
 
