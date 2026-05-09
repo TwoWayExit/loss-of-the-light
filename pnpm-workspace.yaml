@@ -1,8 +1,8 @@
 shamefullyHoist: true
 
-onlyBuiltDependencies:
-  - "rbxts-transform-debug"
-  - "rbxts-transform-env"
+allowBuilds:
+  rbxts-transform-debug: true
+  rbxts-transform-env: true
 
 overrides:
   "@rbxts/compiler-types": "$@rbxts/compiler-types"
