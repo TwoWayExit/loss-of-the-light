@@ -62,9 +62,7 @@ export function getPlayerTeam(playerId: string) {
 export function getEnemyCombatants(playerId: string, enemyIndex: number) {
 	const { battleId } = playersAtom()[playerId];
 
-	if (battleId === undefined) {
-		throw "Not currently in battle";
-	}
+	assert(battleId, `Player ${playerId} is not currently in battle`);
 
 	const battle = battlesAtom()[battleId];
 
@@ -74,6 +72,24 @@ export function getEnemyCombatants(playerId: string, enemyIndex: number) {
 	const enemyId = battle.teams[enemyTeam][enemyIndex];
 
 	return battle.playerInfo[enemyId].combatants;
+}
+
+export function getNextLivingCombatant(playerId: string, selectedCombatant: number, step: number) {
+	const { battleId } = playersAtom()[playerId];
+
+	assert(battleId, `Player ${playerId} is not currently in battle`);
+
+	const { combatants } = battlesAtom()[battleId].playerInfo[playerId];
+
+	if (selectedCombatant < 0 || selectedCombatant >= combatants.size()) {
+		return -1;
+	}
+
+	if (combatants[selectedCombatant + step].health > 0) {
+		return selectedCombatant + step;
+	}
+
+	return getNextLivingCombatant(playerId, selectedCombatant + step, step);
 }
 
 export function createBattle(id: string, region: BattleInfo["region"], first: Teams) {

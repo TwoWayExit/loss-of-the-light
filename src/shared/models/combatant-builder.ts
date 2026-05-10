@@ -22,7 +22,7 @@ export class CombatantBuilder {
 
 	private autoControlCtor: AutoControlCtor = GenericAutoControl;
 
-	public getFinal(): Combatant {
+	public get(): Combatant {
 		return {
 			baseCharacter: this.baseCharacter,
 			health: this.health,

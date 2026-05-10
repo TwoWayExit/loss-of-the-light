@@ -52,7 +52,8 @@ export function findAllStringOccurrences(text: string, target: string) {
 
 /** Returns the team opposite to what is provided as an argument */
 export function getOpposingTeam(friendlyTeam: Teams) {
-	return tostring((tonumber(friendlyTeam)! + 1) % 2) as Teams; // We're assuming that there will only ever be two teams
+	// NOTE: We're assuming that there will only ever be two teams
+	return tostring((tonumber(friendlyTeam)! + 1) % 2) as Teams;
 }
 
 export async function getAnimationLength(animationId: string) {
@@ -86,4 +87,14 @@ export async function waitForAnimationLoaded(track: AnimationTrack) {
 			reject();
 		}
 	}).catch(() => Promise.fromEvent(track.GetPropertyChangedSignal("Length"), () => track.Length > 0));
+}
+
+export function createSequenceArray(len: number) {
+	const arr = new Array<number>();
+
+	for (let i = 0; i < len; i++) {
+		arr.push(i);
+	}
+
+	return arr;
 }

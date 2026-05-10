@@ -63,8 +63,6 @@ export class ServerBattle extends Battle {
 	}
 
 	public override async startBattle() {
-		this.setupPlayersAtom(true);
-
 		const allPlayers = new Array<BasePlayer>();
 
 		for (const [, team] of pairs(this.teams)) {
@@ -76,7 +74,10 @@ export class ServerBattle extends Battle {
 		// TODO: Uncomment this once StreamingEnabled is enabled again
 		// await this.streamBattleground(allPlayers);
 
+		// Set up the battles atom before setting the players' battleIds to prevent issues down the line
 		this.setupBattlesAtom();
+		this.setupPlayersAtom();
+
 		this.stopMovementOfTeams();
 		this.initAutoControls();
 		this.subscribeAtoms();
@@ -85,11 +86,10 @@ export class ServerBattle extends Battle {
 	}
 
 	public override stopBattle() {
-		this.setupPlayersAtom(false);
+		this.cleanupPlayersAtom();
+		this.cleanupBattlesAtom();
 
 		this.startMovementOfTeams();
-
-		removeBattle(this.id);
 
 		super.stopBattle();
 	}
@@ -212,25 +212,33 @@ export class ServerBattle extends Battle {
 		});
 	}
 
-	private setupPlayersAtom(inBattle: boolean) {
+	private cleanupBattlesAtom() {
+		removeBattle(this.id);
+	}
+
+	private setupPlayersAtom() {
 		for (const [, team] of pairs(this.teams)) {
 			for (const playerId of team) {
-				if (inBattle) {
-					playersAtom((state) =>
-						produce(state, (draft) => {
-							draft[playerId].status = PlayerStatus.IN_BATTLE;
-							draft[playerId].battleId = this.id;
-						}),
-					);
-				} else {
-					playersAtom((state) =>
-						produce(state, (draft) => {
-							draft[playerId].status = PlayerStatus.IDLE;
+				playersAtom((state) =>
+					produce(state, (draft) => {
+						draft[playerId].status = PlayerStatus.IN_BATTLE;
+						draft[playerId].battleId = this.id;
+					}),
+				);
+			}
+		}
+	}
 
-							delete draft[playerId].battleId;
-						}),
-					);
-				}
+	private cleanupPlayersAtom() {
+		for (const [, team] of pairs(this.teams)) {
+			for (const playerId of team) {
+				playersAtom((state) =>
+					produce(state, (draft) => {
+						draft[playerId].status = PlayerStatus.IDLE;
+
+						delete draft[playerId].battleId;
+					}),
+				);
 			}
 		}
 	}

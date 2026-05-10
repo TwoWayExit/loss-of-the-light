@@ -1,15 +1,15 @@
 import React from "@rbxts/react";
 import { useAtom } from "@rbxts/react-charm";
-import { Combat } from "./side-button-list";
 import AttackFrame from "./attack-frame";
 import CombatFrame from "./combat-frame";
+import { currentMenu, Menu } from "client/atoms/combat-ui";
 
 // TODO: Find a better way to route these which allows out-animations on page change
 export default function CombatPageRouter() {
-	const menu = useAtom(Combat.currentMenu);
+	const menu = useAtom(currentMenu);
 
 	switch (menu) {
-		case Combat.Menu.ATTACK:
+		case Menu.ATTACK:
 			return <AttackFrame />;
 
 		default:

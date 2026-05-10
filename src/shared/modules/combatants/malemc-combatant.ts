@@ -1,3 +1,3 @@
 import { CombatantBuilder } from "shared/models/combatant-builder";
 
-export const maleMcCombatant = new CombatantBuilder().getFinal();
+export const maleMcCombatant = new CombatantBuilder().get();

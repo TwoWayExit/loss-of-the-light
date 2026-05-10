@@ -5,7 +5,7 @@ export class Skillset {
 
 	public constructor(
 		public readonly name: keyof CombatantList,
-		public readonly skills: Skill[],
+		public readonly skills: readonly Skill[],
 	) {
 		Skillset.skillsets.set(name, this);
 	}
@@ -23,13 +23,15 @@ export interface SkillProperties {
 	/** Damage/healing amount */
 	readonly quantifier: number;
 	readonly coins: number;
-	readonly description: string;
 
 	readonly animation: Animation;
 }
 
 export interface Skill {
 	readonly name: string;
+	readonly description: string;
+	/** Whether or not this skill should be shown in the attack menu */
+	readonly isHidden: boolean;
 	readonly properties: SkillProperties;
 
 	/**
