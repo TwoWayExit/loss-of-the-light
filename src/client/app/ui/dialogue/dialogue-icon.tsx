@@ -1,20 +1,18 @@
 import React, { useEffect } from "@rbxts/react";
 import { useMotion } from "@rbxts/pretty-react-hooks";
 import { useAtom } from "@rbxts/react-charm";
-import { currentDialogue } from "client/atoms/dialogue";
 import { dialogueIsActive } from "client/atoms/dialogue";
 import { usePx } from "client/app/hooks/use-px";
 
-export default function DialogueName() {
-	const [xPosition, xPositionMotion] = useMotion(1.5);
+export default function DialogueIcon() {
+	const [xPosition, xPositionMotion] = useMotion(2);
 	const [transparency, transparencyMotion] = useMotion(1);
-	const name = useAtom(() => currentDialogue()?.name);
 	const isActive = useAtom(dialogueIsActive);
 	const px = usePx();
 
 	useEffect(() => {
 		if (isActive) {
-			xPositionMotion.set(1.5);
+			xPositionMotion.set(2);
 			xPositionMotion.tween(1, {
 				time: 0.5,
 				style: Enum.EasingStyle.Exponential,
@@ -36,20 +34,30 @@ export default function DialogueName() {
 	}, [isActive]);
 
 	return (
-		<textlabel
-			key="Name"
+		<imagelabel
+			key="Icon"
+			ZIndex={2}
 			BorderSizePixel={0}
-			TextXAlignment={Enum.TextXAlignment.Left}
+			Position={xPosition.map((xPositionMulti) => UDim2.fromScale(0.108 * xPositionMulti, 0.008))}
 			BackgroundTransparency={1}
-			FontFace={
-				new Font("rbxasset://fonts/families/AccanthisADFStd.json", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-			}
-			Text={name}
-			TextColor3={Color3.fromRGB(255, 165, 55)}
-			TextSize={px(40)}
-			TextTransparency={transparency}
-			Size={UDim2.fromOffset(px(424), px(53))}
-			Position={xPosition.map((xPositionMult) => UDim2.fromScale(0.342 * xPositionMult, 0.263))}
-		/>
+			ImageTransparency={transparency}
+			Image={"rbxassetid://134488366773164"} // since we don't have a modular thing yet for combatants and stuff
+			Size={UDim2.fromOffset(px(206), px(275))}
+			ScaleType={Enum.ScaleType.Fit}
+		>
+			<uigradient
+				key="UIGradient"
+				Rotation={45}
+				Transparency={
+					new NumberSequence([
+						new NumberSequenceKeypoint(0, 1, 0),
+						new NumberSequenceKeypoint(0.1024, 0, 0),
+						new NumberSequenceKeypoint(0.4993, 0, 0),
+						new NumberSequenceKeypoint(0.8267, 1, 0),
+						new NumberSequenceKeypoint(1, 1, 0),
+					])
+				}
+			/>
+		</imagelabel>
 	);
 }

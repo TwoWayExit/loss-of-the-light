@@ -1,41 +1,63 @@
-import React from "@rbxts/react";
+import React, { useEffect } from "@rbxts/react";
+import { useMotion } from "@rbxts/pretty-react-hooks";
 import { useAtom } from "@rbxts/react-charm";
+import { dialogueIsActive } from "client/atoms/dialogue";
 import { dialogueText } from "client/atoms/dialogue";
+import { usePx } from "client/app/hooks/use-px";
 
 export default function DialogueText() {
+	const isActive = useAtom(dialogueIsActive);
+	const [textTransparency, textTransparencyMotion] = useMotion(0);
+	const [visibleGraphemes, visibleGraphemesMotion] = useMotion(0);
+
 	const text = useAtom(dialogueText);
+	const textLength = text.size();
+	const textTime = textLength * 0.03;
+	const px = usePx();
+
+	useEffect(() => {
+		if (isActive) {
+			textTransparencyMotion.tween(0, {
+				time: 0, // weird fix for text not rendering
+				//(if you have a much better solution, feel free to update),
+			});
+		} else {
+			textTransparencyMotion.tween(1, {
+				time: 0.5,
+				style: Enum.EasingStyle.Exponential,
+				direction: Enum.EasingDirection.Out,
+			});
+		}
+	}, [isActive]);
+
+	useEffect(() => {
+		visibleGraphemesMotion.set(0);
+		visibleGraphemesMotion.tween(textLength, { time: textTime });
+	}, [text]);
 
 	return (
-		<imagelabel
-			key={"TextCarrier"}
+		<textlabel
+			key="TextLabel"
+			TextWrapped={true}
+			RichText={true}
+			BorderSizePixel={0}
+			TextXAlignment={Enum.TextXAlignment.Left}
 			BackgroundTransparency={1}
-			Image={"rbxassetid://95885578"}
-			ImageColor3={Color3.fromRGB(167, 167, 167)}
-			ImageTransparency={0.4}
-			ScaleType={Enum.ScaleType.Crop}
-			Size={new UDim2(1, 0, 1, 0)}
-		>
-			<textlabel
-				key={"Dialogue"}
-				BackgroundColor3={Color3.fromRGB(70, 63, 55)}
-				BackgroundTransparency={0.2}
-				BorderColor3={Color3.fromRGB(0, 0, 0)}
-				BorderSizePixel={5}
-				Font={Enum.Font.Kalam}
-				FontFace={
-					new Font("rbxasset://fonts/families/Kalam.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
-				}
-				Position={new UDim2(0.013000000000000001, 0, 0.053, 0)}
-				Size={new UDim2(0.974, 0, 0.894, 0)}
-				Text={text}
-				TextColor3={Color3.fromRGB(0, 0, 0)}
-				TextSize={40}
-				TextStrokeColor3={Color3.fromRGB(255, 255, 255)}
-				TextStrokeTransparency={0.8}
-				TextWrapped={true}
-				TextXAlignment={Enum.TextXAlignment.Left}
-				TextYAlignment={Enum.TextYAlignment.Top}
-			/>
-		</imagelabel>
+			FontFace={
+				new Font(
+					"rbxasset://fonts/families/AccanthisADFStd.json",
+					Enum.FontWeight.Regular,
+					Enum.FontStyle.Normal,
+				)
+			}
+			Text={text}
+			TextTransparency={textTransparency}
+			TextYAlignment={Enum.TextYAlignment.Top}
+			TextColor3={Color3.fromRGB(255, 255, 255)}
+			TextSize={px(21)}
+			MaxVisibleGraphemes={visibleGraphemes}
+			Size={UDim2.fromOffset(px(423), px(127))}
+			Position={UDim2.fromScale(0.3417, 0.5041)}
+		/>
 	);
 }
