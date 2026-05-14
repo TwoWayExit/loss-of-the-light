@@ -15,9 +15,13 @@ import CombatPageRouter from "client/app/ui/combat/combat-page-router";
 import combatantList from "shared/modules/combatant-list";
 import "shared/modules/skillset-list";
 
+// Clash testing
+import { currentMenu, Menu } from "client/atoms/combat-ui";
+
 interface Controls {
 	energy: number;
 	selectedCombatant: number;
+	viewClash: boolean; // testing
 }
 
 batch(() => {
@@ -69,6 +73,7 @@ export = {
 	controls: identity<Controls>({
 		energy: 5,
 		selectedCombatant: 0,
+		viewClash: false,
 	}),
 
 	story: ({ controls }: { controls: Controls }) => {
@@ -86,6 +91,15 @@ export = {
 		useEffect(() => {
 			selectedCombatant(controls.selectedCombatant);
 		}, [selectedCombatant]);
+
+		// Clash Testing
+		useEffect(() => {
+			if (controls.viewClash) {
+				currentMenu(Menu.CLASH);
+			} else {
+				currentMenu(Menu.MAIN); // Should be intended behavior as the Clash UI will always appear during ACTION phase only (you may have another state)
+			}
+		}, [controls.viewClash]);
 
 		return <CombatPageRouter />;
 	},
