@@ -1,4 +1,4 @@
-import React from "@rbxts/react";
+import React, { useEffect } from "@rbxts/react";
 import SideButtonList from "./side-button-list";
 import MenuButton from "./menu-button";
 import CombatantList from "./combatant-list";
@@ -7,8 +7,17 @@ import { playersAtom } from "shared/atoms/players";
 import { Players } from "@rbxts/services";
 import CombatantDetails from "./combatant-details";
 
-export default function CombatFrame() {
+export default function CombatFrame(props: { active?: boolean }) {
 	const battleId = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId);
+
+	// Page animation
+	useEffect(() => {
+		if (props.active) {
+			print("COMBAT FRAME | active menu");
+		} else {
+			print("COMBAT FRAME | goodbye!");
+		}
+	}, [props.active]);
 
 	return (
 		<frame

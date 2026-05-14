@@ -1,4 +1,4 @@
-import React from "@rbxts/react";
+import React, { useEffect } from "@rbxts/react";
 import { Players } from "@rbxts/services";
 import { selectedCombatant } from "client/atoms/battle";
 import { battlesAtom } from "shared/atoms/battles";
@@ -16,7 +16,7 @@ const buttonPositions = [
 	[new Vector2(1, 1), UDim2.fromScale(1, 1)],
 ] as const satisfies [anchorPoint: Vector2, position: UDim2][];
 
-export default function AttackFrame() {
+export default function AttackFrame(props: { active?: boolean }) {
 	const px = usePx();
 
 	const isVisible = useAtom(() => currentMenu() === Menu.ATTACK);
@@ -34,6 +34,15 @@ export default function AttackFrame() {
 	});
 
 	const skillset = Skillset.getSkillset(combatantName);
+
+	// Page animation
+	useEffect(() => {
+		if (props.active) {
+			print("ATTACK FRAME | active menu!");
+		} else {
+			print("ATTACK FRAME | bye!");
+		}
+	}, [props.active]);
 
 	return (
 		<frame
