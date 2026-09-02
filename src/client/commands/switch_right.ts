@@ -1,18 +1,19 @@
 import { Players } from "@rbxts/services";
 import { Command } from "@twowayexit/dev-con";
-import { clSelectedCombatant, selectedEnemy, selectedSkill } from "client/atoms/client-info";
+import { selectedCombatant, selectedEnemy, selectedSkill } from "client/atoms/battle";
 import { getEnemyCombatants } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
 
 export const switch_right: Command = {
 	execute: () => {
 		const { battleId, combatants } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
-		let selectedCombatant = clSelectedCombatant();
+		let combatant = selectedCombatant();
 
 		if (battleId === undefined) {
 			return;
 		}
 
+		// TODO: Make this account for dead combatants using the getNextLivingCombatant() function
 		if (selectedSkill() !== -1) {
 			let [enemyIndex, selectedEnemyCombatant] = selectedEnemy();
 			const enemyCombatants = getEnemyCombatants(tostring(Players.LocalPlayer.UserId), enemyIndex);
@@ -21,8 +22,8 @@ export const switch_right: Command = {
 				selectedEnemy([enemyIndex, selectedEnemyCombatant]);
 			}
 		} else {
-			if (++selectedCombatant < combatants.size()) {
-				clSelectedCombatant(selectedCombatant);
+			if (++combatant < combatants.size()) {
+				selectedCombatant(combatant);
 			}
 		}
 	},

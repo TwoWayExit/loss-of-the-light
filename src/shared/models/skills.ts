@@ -5,7 +5,7 @@ export class Skillset {
 
 	public constructor(
 		public readonly name: keyof CombatantList,
-		public readonly skills: Skill[],
+		public readonly skills: readonly Skill[],
 	) {
 		Skillset.skillsets.set(name, this);
 	}
@@ -23,13 +23,15 @@ export interface SkillProperties {
 	/** Damage/healing amount */
 	readonly quantifier: number;
 	readonly coins: number;
-	readonly description: string;
 
 	readonly animation: Animation;
 }
 
 export interface Skill {
 	readonly name: string;
+	readonly description: string;
+	/** Whether or not this skill should be shown in the attack menu */
+	readonly isHidden: boolean;
 	readonly properties: SkillProperties;
 
 	/**
@@ -39,4 +41,10 @@ export interface Skill {
 	 * @returns A success status boolean
 	 */
 	cast(casterId: string, casterCombatant: number, targetId: string, targetCombatant: number): Promise<boolean>;
+
+	/**
+	 * Mocks a skill cast on the server with state mutations, used for skill cast previews on the client
+	 * @returns A success status boolean
+	 */
+	predict(casterId: string, casterCombatant: number, targetId: string, targetCombatant: number): boolean;
 }

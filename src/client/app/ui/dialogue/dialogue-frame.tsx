@@ -1,40 +1,33 @@
-import { useEventListener, useMotion } from "@rbxts/pretty-react-hooks";
+import React, { useEffect } from "@rbxts/react";
 import { DialogueBuilder } from "shared/lib/dialogue";
+import DialogueBlinker from "./dialogue-blinker";
 import DialogueName from "./dialogue-name";
 import DialogueText from "./dialogue-text";
-import DialogueBlinker from "./dialogue-blinker";
-import React, { useEffect } from "@rbxts/react";
-import { dialogueIsActive } from "client/atoms/dialogue";
-import { useAtom } from "@rbxts/react-charm";
+import DialogueBar from "./dialogue-bar";
+import DialogueIcon from "./dialogue-icon";
+import DialogueChoiceList from "./dialogue-choice-list";
+import { usePx } from "client/app/hooks/use-px";
 
 export default function DialogueFrame() {
-	const [scale, motion] = useMotion(1);
-
-	const isActive = useAtom(dialogueIsActive);
+	const px = usePx();
 
 	// useEventListener(DialogueBuilder.dialogueStarted, () => dialogueIsActive(true));
 	// useEventListener(DialogueBuilder.dialogueEnded, () => dialogueIsActive(false));
 
-	useEffect(() => {
-		if (isActive) {
-			motion.tween(0);
-		} else {
-			motion.tween(1);
-		}
-	}, [isActive]);
-
 	return (
 		<frame
-			BackgroundColor3={Color3.fromRGB(59, 55, 53)}
-			BackgroundTransparency={0}
-			BorderColor3={Color3.fromRGB(85, 79, 77)}
-			BorderSizePixel={4}
-			Position={scale.map((scale) => UDim2.fromScale(0.159, 0.593).Lerp(UDim2.fromScale(0.159, 1.1), scale))}
-			Size={UDim2.fromScale(0.652, 0.319)}
+			BorderSizePixel={0}
+			Position={new UDim2(0.5, 0, 1, -70)}
+			AnchorPoint={new Vector2(0.5, 1)}
+			BackgroundTransparency={1}
+			Size={UDim2.fromOffset(px(935), px(278))}
 		>
+			<DialogueIcon />
+			<DialogueBar />
 			<DialogueName />
 			<DialogueText />
 			<DialogueBlinker />
+			<DialogueChoiceList />
 		</frame>
 	);
 }

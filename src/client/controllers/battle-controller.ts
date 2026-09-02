@@ -6,7 +6,7 @@ import { Players, TweenService, Workspace } from "@rbxts/services";
 import { observe, subscribe } from "@rbxts/charm";
 import { battlesAtom, getEnemyCombatants } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
-import { clSelectedCombatant, selectedEnemy } from "client/atoms/client-info";
+import { selectedCombatant, selectedEnemy } from "client/atoms/battle";
 import { Events } from "client/network";
 import "shared/modules/skillset-list";
 
@@ -35,7 +35,7 @@ export class BattleController implements OnInit {
 			const { region } = playersAtom()[tostring(Players.LocalPlayer.UserId)];
 			const { combatants } =
 				battlesAtom()[this.currentBattle.id].playerInfo[tostring(Players.LocalPlayer.UserId)];
-			const combatant = combatants[clSelectedCombatant()];
+			const combatant = combatants[selectedCombatant()];
 			const position = combatant.character.GetPivot().Position;
 
 			this.cameraController.setFixedPosition(
@@ -93,7 +93,7 @@ export class BattleController implements OnInit {
 
 	private onEnemySwitch(enemyIndex: number, combatantIndex: number) {
 		if (enemyIndex === -1 || combatantIndex === -1) {
-			this.onCombatantSwitch(clSelectedCombatant());
+			this.onCombatantSwitch(selectedCombatant());
 			return;
 		}
 
@@ -113,7 +113,7 @@ export class BattleController implements OnInit {
 				this.currentBattle = new ClientBattle(battleId as string, battleInfo.first);
 				this.currentBattle.startBattle();
 
-				clSelectedCombatant(0);
+				selectedCombatant(0);
 
 				this.onCombatantSwitch(0);
 				this.setCameraActive(true);
@@ -122,7 +122,7 @@ export class BattleController implements OnInit {
 			return () => {
 				this.currentBattle?.stopBattle();
 
-				clSelectedCombatant(-1);
+				selectedCombatant(-1);
 
 				this.setCameraActive(false);
 
@@ -130,7 +130,7 @@ export class BattleController implements OnInit {
 			};
 		});
 
-		subscribe(clSelectedCombatant, (selected) => {
+		subscribe(selectedCombatant, (selected) => {
 			this.onCombatantSwitch(selected);
 		});
 

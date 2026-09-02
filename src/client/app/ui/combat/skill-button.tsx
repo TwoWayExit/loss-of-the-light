@@ -1,5 +1,5 @@
 import React from "@rbxts/react";
-import { selectedSkill } from "client/atoms/client-info";
+import { selectedSkill } from "client/atoms/battle";
 import { Skill } from "shared/models/skills";
 
 export default function SkillButton({
@@ -71,7 +71,7 @@ export default function SkillButton({
 				FontFace={
 					new Font("rbxasset://fonts/families/GothamSSm.json", Enum.FontWeight.Regular, Enum.FontStyle.Normal)
 				}
-				Text={skill.properties.description}
+				Text={skill.description}
 				TextYAlignment={Enum.TextYAlignment.Top}
 				TextScaled={true}
 				TextColor3={Color3.fromRGB(255, 255, 255)}

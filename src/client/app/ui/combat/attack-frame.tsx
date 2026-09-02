@@ -1,27 +1,13 @@
-import React from "@rbxts/react";
+import React, { useEffect } from "@rbxts/react";
 import { Players } from "@rbxts/services";
-import { clSelectedCombatant } from "client/atoms/client-info";
+import { selectedCombatant } from "client/atoms/battle";
 import { battlesAtom } from "shared/atoms/battles";
 import { playersAtom } from "shared/atoms/players";
 import SkillButton from "./skill-button";
 import { Skillset } from "shared/models/skills";
 import { useAtom } from "@rbxts/react-charm";
 import { usePx } from "client/app/hooks/use-px";
-import { Combat } from "./side-button-list";
-
-function EnergyUnit({ index, energy }: { index: number; energy: number }) {
-	const px = usePx();
-
-	return (
-		<frame
-			BorderSizePixel={0}
-			BackgroundColor3={energy > index ? Color3.fromRGB(195, 195, 195) : Color3.fromRGB(47, 47, 47)}
-			Size={UDim2.fromOffset(px(70), px(10))}
-		>
-			<uistroke key="UIStroke" Color={Color3.fromRGB(76, 76, 76)} ApplyStrokeMode={Enum.ApplyStrokeMode.Border} />
-		</frame>
-	);
-}
+import { currentMenu, Menu } from "client/atoms/combat-ui";
 
 const buttonPositions = [
 	[new Vector2(), new UDim2()],
@@ -30,23 +16,33 @@ const buttonPositions = [
 	[new Vector2(1, 1), UDim2.fromScale(1, 1)],
 ] as const satisfies [anchorPoint: Vector2, position: UDim2][];
 
-export default function AttackFrame() {
+export default function AttackFrame(props: { active?: boolean }) {
 	const px = usePx();
 
-	const isVisible = useAtom(() => Combat.currentMenu() === Combat.Menu.ATTACK);
-	const battleId = useAtom(() => playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId) ?? "";
-	const energy = useAtom(
-		() =>
-			battlesAtom()[battleId]?.playerInfo[tostring(Players.LocalPlayer.UserId)]?.combatants[clSelectedCombatant()]
-				.energy ?? 0,
-	);
-	const combatantName = useAtom(
-		() =>
-			battlesAtom()[battleId].playerInfo[tostring(Players.LocalPlayer.UserId)]?.combatants[clSelectedCombatant()]
-				.character.Name,
-	);
+	const isVisible = useAtom(() => currentMenu() === Menu.ATTACK);
+	const combatantName = useAtom(() => {
+		// Call these atoms to mark them as dependencies
+		const battles = battlesAtom();
+		const combatant = selectedCombatant();
+		const battleId = playersAtom()[tostring(Players.LocalPlayer.UserId)]?.battleId;
+
+		if (battleId === undefined) {
+			return "";
+		}
+
+		return battles[battleId].playerInfo[tostring(Players.LocalPlayer.UserId)].combatants[combatant].character.Name;
+	});
 
 	const skillset = Skillset.getSkillset(combatantName);
+
+	// Page animation
+	useEffect(() => {
+		if (props.active) {
+			print("ATTACK FRAME | active menu!");
+		} else {
+			print("ATTACK FRAME | bye!");
+		}
+	}, [props.active]);
 
 	return (
 		<frame
@@ -58,28 +54,6 @@ export default function AttackFrame() {
 			Size={UDim2.fromScale(1, 1)}
 			Visible={isVisible}
 		>
-			<frame
-				key="Energy"
-				BorderSizePixel={0}
-				AnchorPoint={new Vector2(0.5, 0)}
-				Position={new UDim2(0.5, 0, 1, -25)}
-				BackgroundTransparency={1}
-				Size={UDim2.fromOffset(px(93), px(10))}
-			>
-				<uilistlayout
-					key="UIListLayout"
-					HorizontalAlignment={Enum.HorizontalAlignment.Center}
-					HorizontalFlex={Enum.UIFlexAlignment.SpaceAround}
-					FillDirection={Enum.FillDirection.Horizontal}
-					VerticalAlignment={Enum.VerticalAlignment.Center}
-					SortOrder={Enum.SortOrder.LayoutOrder}
-					Padding={new UDim(0.1, 0)}
-				/>
-
-				{[0, 1, 2, 3].map((index) => (
-					<EnergyUnit key={index} index={index} energy={energy} />
-				))}
-			</frame>
 			<textlabel
 				key="EnergyNumber"
 				TextWrapped={true}
@@ -188,7 +162,7 @@ export default function AttackFrame() {
 				{buttonPositions.mapFiltered(([anchorPoint, position], index) => {
 					const skill = skillset.skills[index];
 
-					if (!skill) {
+					if (!skill || skill.isHidden) {
 						return;
 					}
 

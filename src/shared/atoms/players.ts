@@ -1,3 +1,4 @@
+// WARN: This file must never import the battles atom!! A circular dependency error will occur; put all battle related utility functions in shared/atoms/battles.ts
 import { insert, produce, remove } from "@rbxts/better-immut";
 import { atom } from "@rbxts/charm";
 import type { CombatantList } from "shared/modules/combatant-list";
