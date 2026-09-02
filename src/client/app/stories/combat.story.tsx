@@ -17,6 +17,7 @@ import "shared/modules/skillset-list";
 
 // Clash testing
 import { currentMenu, Menu } from "client/atoms/combat-ui";
+import { AnimatedCharacter } from "shared/modules/global-types";
 
 interface Controls {
 	energy: number;
@@ -47,7 +48,10 @@ batch(() => {
 
 					return {
 						name,
-						character: undefined!,
+						// Use a mock roblox instance so we don't have to do the expensive operation of creating a new one purely for story rendering
+						character: {
+							Name: "malemc",
+						} as AnimatedCharacter,
 						animationHandler: undefined!,
 						health,
 						energy,
@@ -90,7 +94,7 @@ export = {
 
 		useEffect(() => {
 			selectedCombatant(controls.selectedCombatant);
-		}, [selectedCombatant]);
+		}, [controls.selectedCombatant]);
 
 		// Clash Testing
 		useEffect(() => {
